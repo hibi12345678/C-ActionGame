@@ -1,0 +1,4948 @@
+{
+    "version": 1,
+    "globalProperties": {
+        "ambientLight": [
+            0.699999988079071,
+            0.699999988079071,
+            0.699999988079071
+        ],
+        "directionalLight": {
+            "direction": [
+                0.0,
+                -0.7070000171661377,
+                -0.7070000171661377
+            ],
+            "color": [
+                0.7799999713897705,
+                0.8799999952316284,
+                1.0
+            ]
+        }
+    },
+    "actors": [
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    0.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 400.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Board.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -1750.0,
+                            -1750.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            1750.0,
+                            1750.0,
+                            0.0
+                        ],
+                        "worldMin": [
+                            -1750.0,
+                            -1750.0,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            1750.0,
+                            1750.0,
+                            -100.0
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1250.0,
+                    -1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1750.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -750.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1250.0,
+                    1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1750.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -750.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1000.0,
+                    -1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -500.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1000.0,
+                    1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -500.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -750.0,
+                    -1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1250.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -250.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -750.0,
+                    1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1250.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -250.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -500.0,
+                    1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1000.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            0.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -500.0,
+                    1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1000.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            0.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -250.0,
+                    -1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -750.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            250.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -250.0,
+                    1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -750.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            250.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    -1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -500.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            500.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -500.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            500.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    250.0,
+                    -1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -250.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            750.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    250.0,
+                    1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -250.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            750.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    500.0,
+                    -1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            0.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1000.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    500.0,
+                    1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            0.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1000.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    750.0,
+                    -1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            250.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1250.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    750.0,
+                    1500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            250.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1250.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1000.0,
+                    -1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            500.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1000.0,
+                    1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            500.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1500.0,
+                    -1250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1750.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            -750.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1500.0,
+                    -1250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -1750.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            -750.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1750.0,
+                    -1000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            -500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1750.0,
+                    -1000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -1500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            -500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1500.0,
+                    -750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            -250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1500.0,
+                    750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -1250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            -250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1750.0,
+                    -500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1000.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            0.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1750.0,
+                    -500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -1000.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            0.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1500.0,
+                    -250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -750.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1500.0,
+                    -250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -750.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1750.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1750.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1500.0,
+                    250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            750.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1500.0,
+                    250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            750.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1750.0,
+                    500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            0.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            1000.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1750.0,
+                    500.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            0.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            1000.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1500.0,
+                    750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            1250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1500.0,
+                    750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            1250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1750.0,
+                    1000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            1500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1750.0,
+                    1000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            1500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1200.0,
+                    -2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1750.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -750.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1200.0,
+                    2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1750.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -750.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1100.0,
+                    -2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -500.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1100.0,
+                    2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -500.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -700.0,
+                    -2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1250.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -250.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -700.0,
+                    2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1250.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            -250.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -600.0,
+                    2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1000.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            0.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -600.0,
+                    2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1000.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            0.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -200.0,
+                    -2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -750.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            250.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -200.0,
+                    2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -750.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            250.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    -1750.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -500.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            500.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    100.0,
+                    2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -500.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            500.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    200.0,
+                    -2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -250.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            750.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    200.0,
+                    2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -250.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            750.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    600.0,
+                    -2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            0.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1000.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    600.0,
+                    2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            0.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1000.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    700.0,
+                    -2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            250.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1250.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    700.0,
+                    2000.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            250.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1250.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1100.0,
+                    -2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            500.0,
+                            -1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            -1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1100.0,
+                    2250.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            500.0,
+                            1500.0,
+                            -499.9999694824219
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            1500.0,
+                            499.9999694824219
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2000.0,
+                    -1200.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1750.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            -750.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    2000.0,
+                    -1200.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -1750.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            -750.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2250.0,
+                    -1100.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            -500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    2250.0,
+                    -1100.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -1500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            -500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2000.0,
+                    -700.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            -250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2000.0,
+                    700.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -1250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            -250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2050.0,
+                    -600.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -1000.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            0.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    2250.0,
+                    -600.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -1000.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            0.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2000.0,
+                    -200.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -750.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    2000.0,
+                    -200.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -750.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2250.0,
+                    100.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    2250.0,
+                    100.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2000.0,
+                    200.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            -250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            750.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    2000.0,
+                    200.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            -250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            750.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2250.0,
+                    600.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            0.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            1000.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    2250.0,
+                    600.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            0.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            1000.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2000.0,
+                    700.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            1250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    2000.0,
+                    700.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            1500.0,
+                            250.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            1500.0,
+                            1250.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -2250.0,
+                    1100.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 30.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Tree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            -0.0
+                        ],
+                        "worldMin": [
+                            -1500.0,
+                            500.0,
+                            -499.99993896484377
+                        ],
+                        "worldMax": [
+                            -1500.0,
+                            1500.0,
+                            499.99993896484377
+                        ],
+                        "shouldRotate": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "EnemyActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    465.26531982421877,
+                    577.0105590820313,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.55787193775177,
+                    0.8299270868301392
+                ],
+                "scale": 1.0,
+                "moving": false
+            },
+            "components": [
+                {
+                    "type": "MoveComponent",
+                    "properties": {
+                        "updateOrder": 10,
+                        "angularSpeed": 0.0,
+                        "forwardSpeed": 0.0,
+                        "strafeSpeed": 0.0
+                    }
+                },
+                {
+                    "type": "SkeletalMeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Enemy.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": true,
+                        "skelFile": "Assets/Enemy.gpskel",
+                        "animPlayRate": 1.0,
+                        "animTime": 0.0
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            170.0
+                        ],
+                        "worldMin": [
+                            415.26531982421877,
+                            527.0105590820313,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            515.2653198242188,
+                            627.0105590820313,
+                            70.0
+                        ],
+                        "shouldRotate": false
+                    }
+                },
+                {
+                    "type": "AudioComponent",
+                    "properties": {
+                        "updateOrder": 200
+                    }
+                }
+            ]
+        },
+        {
+            "type": "EnemyActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    104.58686065673828,
+                    434.44879150390627,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.6865641474723816,
+                    0.7270692586898804
+                ],
+                "scale": 1.0,
+                "moving": false
+            },
+            "components": [
+                {
+                    "type": "MoveComponent",
+                    "properties": {
+                        "updateOrder": 10,
+                        "angularSpeed": 0.0,
+                        "forwardSpeed": 0.0,
+                        "strafeSpeed": 0.0
+                    }
+                },
+                {
+                    "type": "SkeletalMeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Enemy.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": true,
+                        "skelFile": "Assets/Enemy.gpskel",
+                        "animPlayRate": 1.0,
+                        "animTime": 0.0
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            170.0
+                        ],
+                        "worldMin": [
+                            54.58686065673828,
+                            384.44879150390627,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            154.58685302734376,
+                            484.44879150390627,
+                            70.0
+                        ],
+                        "shouldRotate": false
+                    }
+                },
+                {
+                    "type": "AudioComponent",
+                    "properties": {
+                        "updateOrder": 200
+                    }
+                }
+            ]
+        },
+        {
+            "type": "EnemyActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    153.43203735351563,
+                    93.51776123046875,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.746124267578125,
+                    0.6658067107200623
+                ],
+                "scale": 1.0,
+                "moving": true
+            },
+            "components": [
+                {
+                    "type": "MoveComponent",
+                    "properties": {
+                        "updateOrder": 10,
+                        "angularSpeed": 0.0,
+                        "forwardSpeed": 100.0,
+                        "strafeSpeed": 0.0
+                    }
+                },
+                {
+                    "type": "SkeletalMeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Enemy.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": true,
+                        "skelFile": "Assets/Enemy.gpskel",
+                        "animPlayRate": 1.0,
+                        "animTime": 0.0
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -50.0,
+                            -50.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            50.0,
+                            50.0,
+                            170.0
+                        ],
+                        "worldMin": [
+                            103.43203735351563,
+                            43.51776123046875,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            203.43203735351563,
+                            143.51776123046876,
+                            70.0
+                        ],
+                        "shouldRotate": false
+                    }
+                },
+                {
+                    "type": "AudioComponent",
+                    "properties": {
+                        "updateOrder": 200
+                    }
+                }
+            ]
+        },
+        {
+            "type": "FollowActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    140.12765502929688,
+                    -78.90818786621094,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.6109596490859985,
+                    -0.7916628122329712
+                ],
+                "scale": 1.0,
+                "moving": false
+            },
+            "components": [
+                {
+                    "type": "MoveComponent",
+                    "properties": {
+                        "updateOrder": 10,
+                        "angularSpeed": 0.0,
+                        "forwardSpeed": 0.0,
+                        "strafeSpeed": -400.0
+                    }
+                },
+                {
+                    "type": "SkeletalMeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/CatWarrior.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": true,
+                        "skelFile": "Assets/CatWarrior.gpskel",
+                        "animFile": "Assets/CatActionIdle.gpanim",
+                        "animPlayRate": 1.0,
+                        "animTime": 1.4600145816802979
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -25.0,
+                            -25.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            25.0,
+                            25.0,
+                            170.0
+                        ],
+                        "worldMin": [
+                            115.12765502929688,
+                            -103.90818786621094,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            165.12765502929688,
+                            -53.90818786621094,
+                            70.0
+                        ],
+                        "shouldRotate": false
+                    }
+                },
+                {
+                    "type": "AudioComponent",
+                    "properties": {
+                        "updateOrder": 200
+                    }
+                },
+                {
+                    "type": "FollowCamera",
+                    "properties": {
+                        "updateOrder": 200,
+                        "actualPos": [
+                            -350.0,
+                            0.0,
+                            150.0
+                        ],
+                        "velocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "horzDist": 350.0,
+                        "vertDist": 250.0,
+                        "targetDist": 100.0,
+                        "springConstant": 128.0
+                    }
+                },
+                {
+                    "type": "MirrorCamera",
+                    "properties": {
+                        "updateOrder": 200,
+                        "horzDist": 150.0,
+                        "vertDist": 200.0,
+                        "targetDist": 400.0
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 80.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/SkyBox.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,265 @@
+{
+    "version": 1,
+    "globalProperties": {
+        "ambientLight": [
+                0.7,
+                0.7,
+                0.7
+        ],
+        "directionalLight": {
+            "direction": [
+                0.0,
+                -0.7070000171661377,
+                -0.7070000171661377
+            ],
+            "color": [0.78, 0.88, 1.0]
+            }
+    },
+    "actors": [        {
+            "type": "EnemyActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    800.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0,
+                "moving": false
+            },
+            "components": [
+                {
+                    "type": "MoveComponent",
+                    "properties": {
+                        "updateOrder": 10,
+                        "angularSpeed": 0.0,
+                        "forwardSpeed": 0.0,
+                        "strafeSpeed": 0.0
+                    }
+                },
+                {
+                    "type": "SkeletalMeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Enemy.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": true,
+                        "skelFile": "Assets/Skel/Enemy.gpskel",
+                        "animFile": "Assets/Anim/EnemyWalke.gpanim",
+                        "animPlayRate": 1.0,
+                        "animTime": 0.0
+                    }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
+                    }
+                }
+            ]
+        },
+{
+            "type": "EnemyActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -500.0,
+                    500.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0,
+                "moving": false
+            },
+            "components": [
+                {
+                    "type": "MoveComponent",
+                    "properties": {
+                        "updateOrder": 10,
+                        "angularSpeed": 0.0,
+                        "forwardSpeed": 0.0,
+                        "strafeSpeed": 0.0
+                    }
+                },
+                {
+                    "type": "SkeletalMeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Enemy.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": true,
+                        "skelFile": "Assets/Skel/Enemy.gpskel",
+                        "animFile": "Assets/Anim/EnemyWalke.gpanim",
+                        "animPlayRate": 1.0,
+                        "animTime": 0.0
+                    }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
+                    }
+                }
+            ]
+        },
+{
+            "type": "EnemyActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    500.0,
+                    500.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0,
+                "moving": false
+            },
+            "components": [
+                {
+                    "type": "MoveComponent",
+                    "properties": {
+                        "updateOrder": 10,
+                        "angularSpeed": 0.0,
+                        "forwardSpeed": 0.0,
+                        "strafeSpeed": 0.0
+                    }
+                },
+                {
+                    "type": "SkeletalMeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Enemy.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": true,
+                        "skelFile": "Assets/Skel/Enemy.gpskel",
+                        "animFile": "Assets/Anim/EnemyWalke.gpanim",
+                        "animPlayRate": 1.0,
+                        "animTime": 0.0
+                    }
+                },
+                {
+                    "type": "TargetComponent",
+                    "properties": {
+                        "updateOrder": 100
+                    }
+                }
+            ]
+        },
+
+        {
+            "type": "FollowActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1000.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0,
+                "moving": false
+            },
+            "components": [
+                {
+                    "type": "MoveComponent",
+                    "properties": {
+                        "updateOrder": 10,
+                        "angularSpeed": 0.0,
+                        "forwardSpeed": 0.0,
+                        "strafeSpeed": 0.0
+                    }
+                },
+                {
+                    "type": "SkeletalMeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Player.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": true,
+                        "skelFile": "Assets/Object/Player.gpskel",
+                        "animFile": "Assets/Object/PlayerBlock.gpanim",
+                        "animPlayRate": 1.0,
+                        "animTime": 0.0
+                    }
+                },               
+                {
+                    "type": "FollowCamera",
+                    "properties": {
+                        "updateOrder": 200,
+                        "actualPos": [
+                            -350.0,
+                            0.0,
+                            150.0
+                        ],
+                        "velocity": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "horzDist": 350.0,
+                        "vertDist": 250.0,
+                        "targetDist": 100.0,
+                        "springConstant": 128.0
+                    }
+                }
+            ]
+        },{
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 80.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/SkyBox.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        }
+   
+
+]
+}
