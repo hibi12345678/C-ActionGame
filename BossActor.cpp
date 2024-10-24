@@ -13,7 +13,6 @@
 #include "ReactActor.h"
 #include "FollowActor.h"
 #include <cmath>
-
 #include <cstdlib>  // rand(), srand()
 #include <ctime>    // time()
 #include "Random.h"
@@ -40,11 +39,10 @@ BossActor::BossActor(Game* game)
 {
 	SetScale(2.0f);
 	mMeshComp = new SkeletalMeshComponent(this);
-	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Enemy.gpmesh");
+	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/EnemyBoss.gpmesh");
 	mMeshComp->SetMesh(mesh);
-	//mMeshComp->SetMesh(game->GetRenderer()->GetMesh("Assets/Paladin WProp J Nordstrom.gpmesh"));
-	//mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Paladin WProp J Nordstrom.gpskel"));
-	//mMeshComp->PlayAnimation(game->GetAnimation("Assets/CatActionIdle.gpanim"));
+    mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Object/EnemyBoss.gpskel"));
+	//mMeshComp->PlayAnimation(game->GetAnimation("Assets/Object/EnemyBossWalk.gpanim"));
 	game->SetBossActor(this);
 	mMoveComp = new MoveComponent(this);
 	mAudioComp = new AudioComponent(this);
@@ -251,7 +249,7 @@ void BossActor::UpdateActor(float deltaTime) {
 		}
 	}
 	if (mHealth <= 0.0f) {
-
+		mHealth = 0.0f;
 		mState = EDead;
 	}
 }

@@ -373,7 +373,7 @@ void Game::UpdateGame()
 		delete actor;
 	}
 
-	if (scoreNumber ==1) {
+	if (scoreNumber ==3) {
 		mBossTime -= deltaTime;
 		if (mBossTime < 0.0f) {
 			BossActor* boss = new BossActor(this);
@@ -671,7 +671,7 @@ void Game::RemoveEnemy(EnemyActor* enemy)
 	mEnemys.erase(iter);
 	scoreNumber++;
 	SetScore(scoreNumber);
-	if (scoreNumber == 1) {
+	if (scoreNumber == 3) {
 		
 		mBossTime = 5.0f;
 	}

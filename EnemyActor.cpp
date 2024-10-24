@@ -38,9 +38,6 @@ EnemyActor::EnemyActor(Game* game)
 	, mReactFlag(true)
 {
 	mMeshComp = new SkeletalMeshComponent(this);
-	//mMeshComp->SetMesh(game->GetRenderer()->GetMesh("Assets/Paladin WProp J Nordstrom.gpmesh"));
-	//mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Paladin WProp J Nordstrom.gpskel"));
-	//mMeshComp->PlayAnimation(game->GetAnimation("Assets/CatActionIdle.gpanim"));
 	mMoveComp = new MoveComponent(this);
 	mAudioComp = new AudioComponent(this);
 	new TargetComponent(this);
@@ -366,7 +363,7 @@ void EnemyActor::FixCollisions()
 			const AABB& enemyAttackBox = player->GetAttackBox()->GetWorldBox();
 			if (Intersect(playerBox, enemyAttackBox) && mDamageTimer <= 0.0f) {
 				mAudioComp->PlayEvent("event:/EnemyHit");
-				mHealth -= 0.4f;
+				mHealth -= 0.5f;
 				mDamageTimer = 4.0f;
 			}
 		}
