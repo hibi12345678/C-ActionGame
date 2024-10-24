@@ -99,7 +99,7 @@ void HUD::Draw(Shader* shader)
 			tex = mFont->RenderText("Score1", Color::White, 24);
 			DrawTexture(shader, tex, Vector2(300.0, 350.0f));
 		}
-		else if (mGame->GetScore() == 4) {
+		else if (mGame->GetScore() == 2) {
 			Texture* tex = new Texture();
 			tex = mFont->RenderText("Score2", Color::White, 24);
 			DrawTexture(shader, tex, Vector2(300.0, 350.0f));
@@ -109,7 +109,7 @@ void HUD::Draw(Shader* shader)
 			tex = mFont->RenderText("Score3", Color::White, 24);
 			DrawTexture(shader, tex, Vector2(300.0, 350.0f));
 		}
-		else if (mGame->GetScore() == 2) {
+		else if (mGame->GetScore() == 4) {
 
 			Texture* tex = new Texture();
 			tex = mFont->RenderText("Score4", Color::White, 24);

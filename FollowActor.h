@@ -18,7 +18,8 @@ public:
 	{
 		EJump,
 		EFall,
-		EGrounded
+		EGrounded,
+		EDead
 	};
 	void ActorInput(const uint8_t* keys) override;
 

@@ -43,16 +43,9 @@ FollowActor::FollowActor(Game* game)
 	
 {
 	mMeshComp = new SkeletalMeshComponent(this);
-	//mMeshComp->SetMesh(game->GetRenderer()->GetMesh("Assets/Paladin WProp J Nordstrom.gpmesh"));
-	//mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Paladin WProp J Nordstrom.gpskel"));
-	
-	//mMeshComp->PlayAnimation(game->GetAnimation("Assets/CatActionIdle.gpanim"));
 	mAudioComp = new AudioComponent(this);
 	mMoveComp = new MoveComponent(this);
 	mCameraComp = new FollowCamera(this);
-	
-
-
 	game->SetFollowActor(this);
 	// Add a box component
 	mBoxComp = new BoxComponent(this);
@@ -75,7 +68,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 	{
 		forwardSpeed += 400.0f;
 	}
-	if (keys[SDL_SCANCODE_S])
+	else if (keys[SDL_SCANCODE_S])
 	{
 		forwardSpeed -= 400.0f;
 	}
@@ -83,7 +76,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 	{
 		strafeSpeed -= 400.0f;
 	}
-	if (keys[SDL_SCANCODE_D])
+	else if (keys[SDL_SCANCODE_D])
 	{
 		strafeSpeed += 400.0f;
 	}
@@ -190,11 +183,15 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		mMoveComp->SetForwardSpeed(forwardSpeed);
 		mMoveComp->SetStrafeSpeed(strafeSpeed);
 	}
-	else {
-		mMoving = false;
-		
-	}
+	
+	else{
+		mMeshComp->SetVisible(true);
+		mMoveComp->SetAngularSpeed(0.0f);
+		mCameraComp->SetPitchSpeed(0.0f);
 
+		mMoveComp->SetForwardSpeed(0.0f);
+		mMoveComp->SetStrafeSpeed(0.0f);
+	}
 }
 
 void FollowActor::UpdateActor(float deltaTime) {
@@ -279,10 +276,9 @@ void FollowActor::UpdateActor(float deltaTime) {
 	}
 
 	if (mHealth <= 0.0f) {
-		mMeshComp->SetVisible(true);
+
+		mState = EDead;
 		mHealth = 0.0f;
-		
-	   
 	}
 	
 

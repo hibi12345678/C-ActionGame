@@ -202,8 +202,8 @@
                         "textureIndex": 0,
                         "visible": true,
                         "isSkeletal": true,
-                        "skelFile": "Assets/Object/Player.gpskel",
-                        "animFile": "Assets/Object/PlayerBlock.gpanim",
+                        "skelFile": "Assets/Skel/Player.gpskel",
+                        "animFile": "Assets/Anim/PlayerIdl.gpanim",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }

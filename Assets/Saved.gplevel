@@ -23157,15 +23157,15 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    -105.08786010742188,
-                    306.473388671875,
+                    102.36785888671875,
+                    310.61187744140627,
                     -100.0
                 ],
                 "rotation": [
                     0.0,
                     0.0,
-                    -0.4104309678077698,
-                    0.9118916392326355
+                    -0.029902802780270578,
+                    0.9995527863502502
                 ],
                 "scale": 1.0,
                 "moving": true
@@ -23188,7 +23188,7 @@
                         "textureIndex": 0,
                         "visible": true,
                         "isSkeletal": true,
-                        "skelFile": "Assets/Skel/Enemy.gpskel",
+                        "skelFile": "Assets/Object/Enemy.gpskel",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }
@@ -23214,13 +23214,13 @@
                             170.0
                         ],
                         "worldMin": [
-                            -155.08786010742188,
-                            256.473388671875,
+                            52.36785888671875,
+                            260.61187744140627,
                             -100.0
                         ],
                         "worldMax": [
-                            -55.087860107421878,
-                            356.473388671875,
+                            152.36785888671876,
+                            360.61187744140627,
                             70.0
                         ],
                         "shouldRotate": false
@@ -23239,15 +23239,15 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    -91.34095001220703,
-                    172.2919921875,
+                    -29.683937072753908,
+                    303.48980712890627,
                     -100.0
                 ],
                 "rotation": [
                     0.0,
                     0.0,
-                    -0.17614305019378663,
-                    0.9843645691871643
+                    -0.004861188121140003,
+                    0.9999881982803345
                 ],
                 "scale": 1.0,
                 "moving": true
@@ -23270,7 +23270,7 @@
                         "textureIndex": 0,
                         "visible": true,
                         "isSkeletal": true,
-                        "skelFile": "Assets/Skel/Enemy.gpskel",
+                        "skelFile": "Assets/Object/Enemy.gpskel",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }
@@ -23296,13 +23296,13 @@
                             170.0
                         ],
                         "worldMin": [
-                            -141.3409423828125,
-                            122.2919921875,
+                            -79.6839370727539,
+                            253.48980712890626,
                             -100.0
                         ],
                         "worldMax": [
-                            -41.34095001220703,
-                            222.2919921875,
+                            20.316062927246095,
+                            353.48980712890627,
                             70.0
                         ],
                         "shouldRotate": false
@@ -23321,18 +23321,18 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    564.2217407226563,
-                    95.27635955810547,
+                    202.36785888671876,
+                    384.0340270996094,
                     -100.0
                 ],
                 "rotation": [
                     0.0,
                     0.0,
-                    0.9998148679733276,
-                    0.01924177072942257
+                    -0.4244345724582672,
+                    0.9054586291313171
                 ],
                 "scale": 1.0,
-                "moving": true
+                "moving": false
             },
             "components": [
                 {
@@ -23340,7 +23340,7 @@
                     "properties": {
                         "updateOrder": 10,
                         "angularSpeed": 0.0,
-                        "forwardSpeed": -50.0,
+                        "forwardSpeed": 0.0,
                         "strafeSpeed": 0.0
                     }
                 },
@@ -23350,9 +23350,9 @@
                         "updateOrder": 100,
                         "meshFile": "Assets/Object/Enemy.gpmesh",
                         "textureIndex": 0,
-                        "visible": false,
+                        "visible": true,
                         "isSkeletal": true,
-                        "skelFile": "Assets/Skel/Enemy.gpskel",
+                        "skelFile": "Assets/Object/Enemy.gpskel",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }
@@ -23378,16 +23378,43 @@
                             170.0
                         ],
                         "worldMin": [
-                            514.2217407226563,
-                            45.27635955810547,
+                            152.36785888671876,
+                            334.0340270996094,
                             -100.0
                         ],
                         "worldMax": [
-                            614.2217407226563,
-                            145.2763671875,
+                            252.36785888671876,
+                            434.0340270996094,
                             70.0
                         ],
                         "shouldRotate": false
+                    }
+                },
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            50.0,
+                            -125.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            100.0,
+                            125.0,
+                            10.0
+                        ],
+                        "worldMin": [
+                            138.27639770507813,
+                            227.2086181640625,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            362.4158935546875,
+                            425.5670471191406,
+                            -90.0
+                        ],
+                        "shouldRotate": true
                     }
                 },
                 {
@@ -23403,15 +23430,15 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    59.024993896484378,
-                    116.86454772949219,
+                    266.86279296875,
+                    304.57659912109377,
                     -100.0
                 ],
                 "rotation": [
                     0.0,
                     0.0,
-                    0.9821515679359436,
-                    0.1880960762500763
+                    0.9429487586021423,
+                    0.3329368233680725
                 ],
                 "scale": 1.0,
                 "moving": true
@@ -23432,9 +23459,9 @@
                         "updateOrder": 100,
                         "meshFile": "Assets/Object/Player.gpmesh",
                         "textureIndex": 0,
-                        "visible": true,
+                        "visible": false,
                         "isSkeletal": true,
-                        "skelFile": "Assets/Skel/Player.gpskel",
+                        "skelFile": "Assets/Object/Player.gpskel",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }
@@ -23454,13 +23481,13 @@
                             170.0
                         ],
                         "worldMin": [
-                            34.024993896484378,
-                            91.86454772949219,
+                            241.86279296875,
+                            279.57659912109377,
                             -100.0
                         ],
                         "worldMax": [
-                            84.02499389648438,
-                            141.8645477294922,
+                            291.86279296875,
+                            329.57659912109377,
                             70.0
                         ],
                         "shouldRotate": false
@@ -23517,36 +23544,6 @@
                     "properties": {
                         "updateOrder": 100,
                         "meshFile": "Assets/Object/SkyBox.gpmesh",
-                        "textureIndex": 0,
-                        "visible": true,
-                        "isSkeletal": false
-                    }
-                }
-            ]
-        },
-        {
-            "type": "Actor",
-            "properties": {
-                "state": "active",
-                "position": [
-                    -145.47354125976563,
-                    345.244873046875,
-                    150.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scale": 10.0
-            },
-            "components": [
-                {
-                    "type": "MeshComponent",
-                    "properties": {
-                        "updateOrder": 100,
-                        "meshFile": "Assets/Object/!.gpmesh",
                         "textureIndex": 0,
                         "visible": true,
                         "isSkeletal": false
