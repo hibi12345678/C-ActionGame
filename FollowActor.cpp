@@ -80,7 +80,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 	{
 		strafeSpeed += 400.0f;
 	}
-	if (keys[SDL_SCANCODE_SPACE] && mState == EGrounded && mStamina > 0.1f && mHealth > 0.0f && mAttackBoxComp == nullptr)
+	if (keys[SDL_SCANCODE_SPACE] && mState == EGrounded && mStamina > 0.1f && mHealth > 0.0f && mAttackBoxComp == nullptr )
 	{
 		delete mBlockBoxComp;  // メモリの解放
 		mBlockBoxComp = nullptr;  // ポインタをクリア
@@ -220,8 +220,8 @@ void FollowActor::UpdateActor(float deltaTime) {
 			mStamina += 0.005f;
 		}
 	}
-	mState = EFall;
-	FixCollisions();
+	
+	
 
 	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
 
@@ -245,7 +245,8 @@ void FollowActor::UpdateActor(float deltaTime) {
 			mAttackBoxComp = nullptr;  // ポインタをクリア
 		}
 	}
-
+	mState = EFall;
+	FixCollisions();
 	// タイマーが進行している場合
 	if (mDamageTimer > 0.0f) {
 		mDamageTimer -= deltaTime;

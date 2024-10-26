@@ -11,10 +11,11 @@
 #include "MeshComponent.h"
 #include "Mesh.h"
 #include "ReactActor.h"
+#include "SmokeActor.h"
 #include "FollowActor.h"
 #include <cmath>
-#include <cstdlib>  // rand(), srand()
-#include <ctime>    // time()
+#include <cstdlib>  
+#include <ctime>   
 #include "Random.h"
 #include "TargetComponent.h"
 
@@ -36,6 +37,7 @@ BossActor::BossActor(Game* game)
 	, mMoveState(EPatrol)
 	, mBoxTimer(0.0f)
 	, mReactFlag(true)
+	, groundFlag(false)
 {
 	SetScale(2.0f);
 	mMeshComp = new SkeletalMeshComponent(this);
@@ -162,6 +164,8 @@ void BossActor::UpdateActor(float deltaTime) {
 			}
 			else if (randomValue == 3 && mAttackTimer <= 0.0f) {
 				AttackGround();
+				mState = EJump;
+				jumpSpeed += -250000.0f;
 			}
 
 			if (mMoveTimer <= 0.0f) {
@@ -187,14 +191,21 @@ void BossActor::UpdateActor(float deltaTime) {
 		mMoving = false;
 		//mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/CatActionIdle.gpanim"));
 	}
-	if (mState == EFall) {
-		jumpSpeed += 100000.0f * deltaTime; // 重力の影響を受ける
+	if (mState == EJump) {
+
+		jumpSpeed += 50000.0f * deltaTime; // 重力の影響を受ける
+		if (jumpSpeed >= 0.0f) {
+			mState = EFall;
+		}
+	}
+	else if (mState == EFall) {
+		jumpSpeed += 15000.0f * deltaTime; // 重力の影響を受ける
 	}
 	else if (mState == EGrounded) {
 		jumpSpeed = 0.0f;
 
 	}
-	mState = EFall;
+	
 
 	if (mAttackBoxComp != nullptr) {
 		forwardSpeed = 0.0f;
@@ -202,6 +213,7 @@ void BossActor::UpdateActor(float deltaTime) {
 	}
 	mMoveComp->SetForwardSpeed(forwardSpeed);
 	mMoveComp->SetStrafeSpeed(strafeSpeed);
+	mState = EFall;
 	FixCollisions();
 	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
 	// タイマーが進行している場合
@@ -247,6 +259,17 @@ void BossActor::UpdateActor(float deltaTime) {
 			delete mAttackBoxComp;  // メモリの解放
 			mAttackBoxComp = nullptr;  // ポインタをクリア
 		}
+		if (mBoxTimer <= 0.3f && groundFlag == false) {
+			// 攻撃判定用のBoxComponentを追加
+			mAttackBoxComp = new BoxComponent(this);
+			AABB myBox(Vector3(-125.0f, -125.0f, 0.0f),
+				Vector3(125.0f, 125.0f, 10.0f));
+			mAttackBoxComp->SetObjectBox(myBox);
+			mAttackBoxComp->SetShouldRotate(true);
+			SmokeActor* smoke = new SmokeActor(GetGame());
+			smoke->SetPosition(GetPosition() + Vector3(0.0f, 0.0f, 0.0f));
+			groundFlag = true;
+		}
 	}
 	if (mHealth <= 0.0f) {
 		mHealth = 0.0f;
@@ -270,22 +293,21 @@ void BossActor::Attack() {
 	mBoxTimer = 0.5f;  // 0.5秒後に削除する
 	// タイマーをリセット
 	mAttackTimer = 4.0f;
+	groundFlag = true;
 	mAudioComp->PlayEvent("event:/EnemyAttack");
 }
 
 void BossActor::AttackGround() {
-	// 攻撃判定用のBoxComponentを追加
-	mAttackBoxComp = new BoxComponent(this);
-	AABB myBox(Vector3(50.0f, -125.0f, 0.0f),
-		Vector3(75.0f, 125.0f, 5.0f));
-	mAttackBoxComp->SetObjectBox(myBox);
-	mAttackBoxComp->SetShouldRotate(true);
+	// タイマーをリセット
+	mBoxTimer = 1.1f;
 
 	// タイマーをリセット
-	mBoxTimer = 0.5f;  // 0.5秒後に削除する
-	// タイマーをリセット
 	mAttackTimer = 4.0f;
-	mAudioComp->PlayEvent("event:/EnemyAttack");
+
+	groundFlag = false;
+
+
+	mAudioComp->PlayEvent("event:/EnemyAttack2");
 }
 
 void BossActor::LoadProperties(const rapidjson::Value& inObj)
@@ -351,7 +373,7 @@ void BossActor::FixCollisions()
 			else
 			{
 				pos.z += dz;
-				mState = EGrounded;
+				
 			}
 
 			// Need to set position and update box component

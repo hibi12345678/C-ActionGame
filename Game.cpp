@@ -202,12 +202,6 @@ void Game::HandleKeyPress(int key)
 		mAudioSystem->SetBusVolume("bus:/", volume);
 		break;
 	}
-	case 'r':
-	{
-		// Save level
-		LevelLoader::SaveLevel(this, "Assets/Saved.gplevel");
-		break;
-	}
 	default:
 		break;
 	}
@@ -403,10 +397,10 @@ void Game::LoadData()
 		mHUD = new HUD(this);
 		// Load the level from file
 		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");	
-		// Load the level from file
+		
 		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");	
 		
-		
+		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
 		
 		
 		gameOverFlag = false;
@@ -432,6 +426,7 @@ void Game::LoadData()
 		mHUD = new HUD(this);
 		// Load the level from file
 		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");
+		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
 		new MainmenuUI(this);
 				
 		// Disable relative mouse mode to show the cursor
