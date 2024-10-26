@@ -62,6 +62,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SkeletalMeshComponent.cpp" />
     <ClCompile Include="Skeleton.cpp" />
+    <ClCompile Include="SmokeActor.cpp" />
     <ClCompile Include="SoundEvent.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TargetComponent.cpp" />
@@ -107,6 +108,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SkeletalMeshComponent.h" />
     <ClInclude Include="Skeleton.h" />
+    <ClInclude Include="SmokeActor.h" />
     <ClInclude Include="SoundEvent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TargetComponent.h" />

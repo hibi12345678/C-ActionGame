@@ -69,6 +69,7 @@ private:
 	Vector3 delta;
 	int randomValue;
 	bool mReactFlag;
+	bool groundFlag;
 protected:
 	void SetViewMatrix(const Matrix4& view);
 };

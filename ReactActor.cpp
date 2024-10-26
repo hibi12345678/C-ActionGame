@@ -17,7 +17,7 @@ ReactActor::ReactActor(Game* game)
 	:Actor(game)
 	, mLifeSpan(0.4f)
 {
-	SetScale(10.0f);
+	SetScale(15.0f);
 	MeshComponent* mc = new MeshComponent(this);
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/!.gpmesh");
 	mc->SetMesh(mesh);
