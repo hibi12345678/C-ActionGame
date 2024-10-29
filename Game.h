@@ -40,6 +40,7 @@ public:
 		EMainMenu,
 		EGameplay,
 		EPaused,
+		EItem,
 		EQuit
 	};
 	

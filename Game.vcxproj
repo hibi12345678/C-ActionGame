@@ -44,6 +44,7 @@
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="GBuffer.cpp" />
     <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="ItemMenu.cpp" />
     <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainmenuUI.cpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="GBuffer.h" />
     <ClInclude Include="HUD.h" />
+    <ClInclude Include="ItemMenu.h" />
     <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="MainmenuUI.h" />
     <ClInclude Include="Math.h" />

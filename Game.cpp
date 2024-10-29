@@ -30,6 +30,7 @@
 #include "LevelLoader.h"
 #include "DialogBox.h"
 #include "MainmenuUI.h"
+#include "ItemMenu.h"
 #include "GameOver.h"
 #include "GameClear.h"
 #include <iostream>
@@ -185,6 +186,15 @@ void Game::HandleKeyPress(int key)
 		// Create pause menu
 		new PauseMenu(this);
 		mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
+		break;
+	case SDLK_TAB:
+		if (mGameState == EGameplay) {
+			// Create pause menu
+			new ItemMenu(this);
+			mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
+			
+		}
+		
 		break;
 	case '-':
 	{

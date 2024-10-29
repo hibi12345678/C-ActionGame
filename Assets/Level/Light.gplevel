@@ -26,8 +26,8 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    0.0,
-                    1200.0,
+                    250.0,
+                    1100.0,
                     100.0
                 ],
                 "rotation": [
@@ -36,7 +36,7 @@
                     0.0,
                     10.0
                 ],
-                "scale": 100.0
+                "scale": 1.0
             },
             "components": [
                 {
@@ -89,7 +89,7 @@
                 "state": "active",
                 "position": [
                     1200.0,
-                    0.0,
+                    250.0,
                     100.0
                 ],
                 "rotation": [
@@ -120,7 +120,69 @@
                 "state": "active",
                 "position": [
                     -1200.0,
+                    -250.0,
+                    100.0
+                ],
+                "rotation": [
                     0.0,
+                    0.0,
+                    0.0,
+                    10.0
+                ],
+                "scale": 1.0
+            },
+            "components": [
+                {
+                    "type": "PointLightComponent",
+                    "properties": {
+                        "color": [
+                            1.0,
+                            0.6,
+                            0.0
+                        ],
+                        "innerRadius": 0.0,
+                        "outerRadius": 700.0
+                    }
+                }
+            ]
+        },{
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1200.0,
+                    -250.0,
+                    100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    10.0
+                ],
+                "scale": 1.0
+            },
+            "components": [
+                {
+                    "type": "PointLightComponent",
+                    "properties": {
+                        "color": [
+                            1.0,
+                            0.6,
+                            0.0
+                        ],
+                        "innerRadius": 0.0,
+                        "outerRadius": 700.0
+                    }
+                }
+            ]
+        },        {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1200.0,
+                    250.0,
                     100.0
                 ],
                 "rotation": [
@@ -220,7 +282,7 @@
                     0.0,
                     0.0,
                     0.0,
-                    10.0
+                    100.0
                 ],
                 "scale": 1.0
             },
@@ -251,7 +313,7 @@
                     0.0,
                     0.0,
                     0.0,
-                    10.0
+                    100.0
                 ],
                 "scale": 1.0
             },
@@ -274,17 +336,17 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    0.0,
-                    1200.0,
-                    100.0
+                    250.0,
+                    1470.0,
+                    -30.0
                 ],
                 "rotation": [
+                    0.4,
                     0.0,
                     0.0,
-                    0.0,
-                    10.0
+                    1.0
                 ],
-                "scale": 100.0
+                "scale": 25.0
             },
             "components": [
                 {
@@ -298,22 +360,51 @@
                     }
                 }
             ]
+        },{
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    250.0,
+                    1470.0,
+                    -30.0
+                ],
+                "rotation": [
+                    0.4,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
+            },
+            "components": [
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
         },        {
             "type": "Actor",
             "properties": {
                 "state": "active",
                 "position": [
-                    0.0,
-                    -1200.0,
-                    100.0
+                    -250.0,
+                    -1470.0,
+                     -30.0
                 ],
                 "rotation": [
+                    -0.3,
                     0.0,
                     0.0,
-                    0.0,
-                    10.0
+                    1.0
                 ],
-                "scale": 1.0
+                "scale": 25.0
             },
             "components": [
                 {
@@ -321,6 +412,35 @@
                     "properties": {
                         "updateOrder": 100,
                         "meshFile": "Assets/Object/Torch.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },   {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -250.0,
+                    -1470.0,
+                     -30.0
+                ],
+                "rotation": [
+                    -0.3,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
+            },
+            "components": [
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
                         "textureIndex": 0,
                         "visible": true,
                         "isSkeletal": false
@@ -332,17 +452,17 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    1200.0,
-                    0.0,
-                    100.0
+                    1470.0,
+                    250.0,
+                    -30.0
                 ],
                 "rotation": [
                     0.0,
+                    -0.3,
                     0.0,
-                    0.0,
-                    10.0
+                    1.0
                 ],
-                "scale": 1.0
+                "scale": 25.0
             },
             "components": [
                 {
@@ -356,22 +476,51 @@
                     }
                 }
             ]
-        },        {
+        }, {
             "type": "Actor",
             "properties": {
                 "state": "active",
                 "position": [
-                    -1200.0,
-                    0.0,
-                    100.0
+                    1470.0,
+                    250.0,
+                    -30.0
                 ],
                 "rotation": [
                     0.0,
+                    -0.3,
                     0.0,
-                    0.0,
-                    10.0
+                    1.0
                 ],
-                "scale": 1.0
+                "scale": 25.0
+            },
+            "components": [
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },           {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1470.0,
+                    -250.0,
+                    -30.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.3,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
             },
             "components": [
                 {
@@ -385,22 +534,167 @@
                     }
                 }
             ]
+        },  {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1470.0,
+                    -250.0,
+                    -30.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.3,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
+            },
+            "components": [
+                {
+                                        "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
         },{
             "type": "Actor",
             "properties": {
                 "state": "active",
                 "position": [
-                    -1200.0,
-                    1200.0,
-                    100.0
+                    1470.0,
+                    -250.0,
+                    -30.0
                 ],
                 "rotation": [
                     0.0,
+                    -0.3,
                     0.0,
-                    0.0,
-                    10.0
+                    1.0
                 ],
-                "scale": 100.0
+                "scale": 25.0
+            },
+            "components": [
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Torch.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        }, {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1470.0,
+                    -250.0,
+                    -30.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.3,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
+            },
+            "components": [
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },           {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1470.0,
+                    250.0,
+                    -30.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.3,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
+            },
+            "components": [
+                {
+                                        "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Torch.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },  {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1470.0,
+                    250.0,
+                    -30.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.3,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
+            },
+            "components": [
+                {
+                                        "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },{
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1250.0,
+                    1470.0,
+                    -30.0
+                ],
+                "rotation": [
+                    0.3,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
             },
             "components": [
                 {
@@ -414,22 +708,51 @@
                     }
                 }
             ]
-        },        {
+        }, {
             "type": "Actor",
             "properties": {
                 "state": "active",
                 "position": [
-                    1200.0,
-                    -1200.0,
-                    100.0
+                    -1250.0,
+                    1470.0,
+                    -30.0
                 ],
                 "rotation": [
+                    0.3,
                     0.0,
                     0.0,
-                    0.0,
-                    10.0
+                    1.0
                 ],
-                "scale": 1.0
+                "scale": 25.0
+            },
+            "components": [
+                {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },          {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1250.0,
+                    -1470.0,
+                    -30.0
+                ],
+                "rotation": [
+                    -0.3,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
             },
             "components": [
                 {
@@ -443,22 +766,51 @@
                     }
                 }
             ]
+        },         {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1250.0,
+                    -1470.0,
+                    -30.0
+                ],
+                "rotation": [
+                    -0.3,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
+            },
+            "components": [
+                {
+                                       "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
         },{
             "type": "Actor",
             "properties": {
                 "state": "active",
                 "position": [
-                    1200.0,
-                    1200.0,
-                    100.0
+                    1250.0,
+                    1470.0,
+                    -30.0
                 ],
                 "rotation": [
+                    0.3,
                     0.0,
                     0.0,
-                    0.0,
-                    10.0
+                    1.0
                 ],
-                "scale": 1.0
+                "scale": 25.0
             },
             "components": [
                 {
@@ -472,22 +824,51 @@
                     }
                 }
             ]
-        },        {
+        }, {
             "type": "Actor",
             "properties": {
                 "state": "active",
                 "position": [
-                    -1200.0,
-                    -1200.0,
-                    100.0
+                    1250.0,
+                    1470.0,
+                    -30.0
                 ],
                 "rotation": [
+                    0.3,
                     0.0,
                     0.0,
-                    0.0,
-                    10.0
+                    1.0
                 ],
-                "scale": 1.0
+                "scale": 25.0
+            },
+            "components": [
+                {
+                                        "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },          {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1250.0,
+                    -1470.0,
+                    -30.0
+                ],
+                "rotation": [
+                    -0.3,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
             },
             "components": [
                 {
@@ -501,7 +882,36 @@
                     }
                 }
             ]
-        },{
+        }, {
+            "type": "Actor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -1250.0,
+                    -1470.0,
+                    -30.0
+                ],
+                "rotation": [
+                    -0.3,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 25.0
+            },
+            "components": [
+                {
+                                        "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/Fire.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },  {
             "type": "PlaneActor",
             "properties": {
                 "state": "active",
