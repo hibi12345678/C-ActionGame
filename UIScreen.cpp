@@ -20,6 +20,7 @@ UIScreen::UIScreen(Game* game)
 	,mBackground(nullptr)
 	,mTitlePos(0.0f, 200.0f)
 	,mNextButtonPos(0.0f, 100.0f)
+	, mNextItemButtonPos(-200.0f, 100.0f)
 	,mNextTextPos(0.0f, -100.0f)
 	,mBGPos(0.0f, 150.0f)
 	,mUIState(EActive)
@@ -29,9 +30,13 @@ UIScreen::UIScreen(Game* game)
 	mFont = mGame->GetFont("Assets/Carlito-Regular.ttf");
 	mButtonOn = mGame->GetRenderer()->GetTexture("Assets/Texture/ButtonUIRed.png");
 	mButtonOff = mGame->GetRenderer()->GetTexture("Assets/Texture/ButtonUI.png");
-	
-	
-
+	mItemButtonOn = mGame->GetRenderer()->GetTexture("Assets/Texture/ItemButtonYellow.png");
+	mItemButtonOff = mGame->GetRenderer()->GetTexture("Assets/Texture/ItemButtonWhite.png");
+	mSword = mGame->GetRenderer()->GetTexture("Assets/Texture/SwordTex.png");
+	mBow = mGame->GetRenderer()->GetTexture("Assets/Texture/BowTex.png");
+	mBomb = mGame->GetRenderer()->GetTexture("Assets/Texture/BombTex.png");
+	mTorch = mGame->GetRenderer()->GetTexture("Assets/Texture/TorchTex.png");
+	mArrow = mGame->GetRenderer()->GetTexture("Assets/Texture/ItemArrow.png");
 }
 
 UIScreen::~UIScreen()
@@ -55,9 +60,20 @@ UIScreen::~UIScreen()
 	{
 		delete b;
 	}
+	for (auto b : mItemButton)
+	{
+		delete b;
+	}
+	if (mItemText)
+	{
+		mItemText->Unload();
+		delete mItemText;
+	}
+	mItemButton.clear();
 	mButtons.clear();
 	mStartButton.clear();
 	mText.clear();
+	
 }
 
 void UIScreen::Update(float deltaTime)
@@ -102,8 +118,7 @@ void UIScreen::Draw(Shader* shader)
 		DrawTexture(shader, tex, b->GetPosition());
 		// Draw text of button
 		DrawTexture(shader,b->GetNameTex(), b->GetPosition());
-		//b->SetName("Title");
-		//DrawTexture(shader,b->GetNameTex(), b->GetPosition() + Vector2(0,100.0f));
+
 		
 		
 	}
@@ -114,9 +129,54 @@ void UIScreen::Draw(Shader* shader)
 		DrawTexture(shader, tex, tex->GetPos());
 		
 	}
+	
+	// Draw buttons
+	for (auto b : mItemButton)
+	{
+		// Draw background of button
+		Texture* tex = b->GetHighlighted() ? mItemButtonOn : mItemButtonOff;
+
+		DrawTexture(shader, tex, b->GetPosition());
+		
+		if (b->GetTexNum() == 0) {
+			DrawTexture(shader, mSword, b->GetPosition());
+			
+		}
+		else if (b->GetTexNum() == 1) {
+			DrawTexture(shader, mTorch, b->GetPosition());
+			
+		}
+		else if (b->GetTexNum() == 2) {
+			DrawTexture(shader, mBow, b->GetPosition());
+
+			
+		}
+		else if (b->GetTexNum() == 3) {
+			DrawTexture(shader, mBomb, b->GetPosition());
+
+		}
+		
+		
+		
+		
 
 
-	// Override in subclasses to draw any textures
+	}
+	// Draw title (if exists)
+	if (mItemText)
+	{
+	
+		if (mArrowFlag == true) {
+			DrawTexture(shader, mArrow, Vector2(0.0f, -70.0f),0.5f);
+		}
+		DrawTexture(shader, mItemText, mItemText->GetPos());
+
+	}
+	if (Game::EItem == mGame->GetState()) {
+		Texture* mEquipped = new Texture();
+		mEquipped = mFont->RenderText("Equipped", Color::White, 30);
+		DrawTexture(shader, mEquipped, Vector2(-250.0f, -80.0f));
+	}
 }
 
 void UIScreen::ProcessInput(const uint8_t* keys)
@@ -147,7 +207,56 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 		}
 
 	}
+	// Do we have buttons?
+	if (!mItemButton.empty())
+	{
+		// Get position of mouse
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		// Convert to (0,0) center coordinates
+		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
+		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
+		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
+		mArrowFlag = false;
+		// Highlight any buttons
+		for (auto b : mItemButton)
+		{
 
+			if (b->ContainsPoint(mousePos))
+			{
+				b->SetHighlighted(true);
+				
+				if (b->GetTexNum() == 0) {
+					
+					SetItemText("SwordText", Vector2(0.0f, 10.0f), 30);
+					mArrowFlag = true;
+				}
+				else if (b->GetTexNum() == 1) {
+					
+					SetItemText("TorchText", Vector2(0.0f, 10.0f), 30);
+					mArrowFlag = true;
+				}
+				else if (b->GetTexNum() == 2) {
+					
+					SetItemText("BowText", Vector2(0.0f, 10.0f), 30);
+					mArrowFlag = true;
+				}
+				else if (b->GetTexNum() == 3) {
+					
+					SetItemText("BombText", Vector2(0.0f, 10.0f), 30);
+					mArrowFlag = true;
+				}
+				
+				
+			}
+			else
+			{
+				b->SetHighlighted(false);
+				
+			}
+		}
+
+	}
 }
 
 void UIScreen::StartInput(const uint8_t* keys)
@@ -186,35 +295,6 @@ void UIScreen::StartInput(const uint8_t* keys)
 void UIScreen::HandleKeyPress(int key)
 {
 
-
-	//if (currentState == EMainMenu ) 
-	{
-		
-		switch (key)
-		{
-		case SDL_BUTTON_LEFT:
-			
-			if (!mStartButton.empty())
-			{
-				
-				for (auto b : mStartButton)
-				{
-					
-					if (b->GetHighlighted())
-					{
-						
-						b->OnClick();
-						
-						break;
-					}
-				}
-
-			}
-			break;
-		default:
-			break;
-		}
-	}
 	switch (key)
 	{
 	case SDL_BUTTON_LEFT:
@@ -229,13 +309,41 @@ void UIScreen::HandleKeyPress(int key)
 				}
 			}
 		}
+		if (!mItemButton.empty())
+		{
+			for (auto b : mItemButton)
+			{
+				if (b->GetHighlighted())
+				{
+					b->OnClick();
+					break;
+				}
+			}
+		}
+		if (!mStartButton.empty())
+		{
+
+			for (auto b : mStartButton)
+			{
+
+				if (b->GetHighlighted())
+				{
+
+					b->OnClick();
+
+					break;
+				}
+			}
+
+		}
 		break;
 	default:
 		break;
 	}
-
+	
 
 }
+
 
 void UIScreen::Close()
 {
@@ -272,16 +380,47 @@ void UIScreen::AddText(const std::string& text, Vector2 pos, int pointSize,
 	
 	
 }
+
+void UIScreen::CloseText()
+{
+	for (auto b : mText) {
+		delete b;
+	}
+
+	mText.clear();
+}
+
+void UIScreen::SetItemText(const std::string& text, Vector2 pos, int pointSize,
+	const Vector3& color
+)
+{
+
+
+	// Clear out previous title texture if it exists
+	if (mItemText)
+	{
+		mItemText->Unload();
+		delete mItemText;
+		mItemText = nullptr;
+	}
+
+	mItemText = mFont->RenderText(text, color, pointSize);
+	//mItemText->SetTexNum(itemNum);
+	mItemText->SetPos(pos);
+	
+
+
+}
 void UIScreen::AddButton(const std::string& name, std::function<void()> onClick)
 {
 	Vector2 dims(static_cast<float>(mButtonOn->GetWidth()), 
 		static_cast<float>(mButtonOn->GetHeight()));
-	Button* b = new Button(name, mFont, onClick, mNextButtonPos, dims);
+	Button* b = new Button(name, mFont, onClick, mNextButtonPos, dims,0);
 	mButtons.emplace_back(b);
 	
 	// Update position of next button
 	// Move down by height of button plus padding
-	mNextButtonPos.y -= mButtonOff->GetHeight() +20.0f;
+	mNextButtonPos.y -= mButtonOff->GetHeight() + 20.0f;
 	
 }
 
@@ -289,13 +428,28 @@ void UIScreen::StartButton(const std::string& name, std::function<void()> onClic
 {
 	Vector2 dims(static_cast<float>(mButtonOn->GetWidth()),
 		static_cast<float>(mButtonOn->GetHeight()));
-	Button* b = new Button(name, mFont, onClick, Vector2(0.0f, 0.0f), dims);
+	Button* b = new Button(name, mFont, onClick, Vector2(0.0f, 0.0f), dims,0);
 	
 	mStartButton.emplace_back(b);
 	
 	
+}
+	
+
+
+
+void UIScreen::ItemButton(const std::string& name,int texNumber ,std::function<void()> onClick)
+{
+	Vector2 dims(static_cast<float>(mItemButtonOn->GetWidth()),
+		static_cast<float>(mItemButtonOn->GetHeight()));
+	Button* b = new Button(name, mFont, onClick, mNextItemButtonPos, dims, texNumber);
+	mItemButton.emplace_back(b);
+	// Update position of next button
+	// Move down by height of button plus padding
+	mNextItemButtonPos.x += mItemButtonOff->GetWidth()+ 30.0f;
 
 }
+
 void UIScreen::DrawTexture(class Shader* shader, class Texture* texture,
 				 const Vector2& offset, float scale, bool flipY , int a)
 {
@@ -361,16 +515,17 @@ void UIScreen::SetRelativeMouseMode(bool relative)
 
 Button::Button(const std::string& name, Font* font,
 	std::function<void()> onClick,
-	const Vector2& pos, const Vector2& dims)
+	const Vector2& pos, const Vector2& dims, int TexNum)
 	:mOnClick(onClick)
 	,mNameTex(nullptr)
 	,mFont(font)
 	,mPosition(pos)
 	,mDimensions(dims)
 	,mHighlighted(false)
+	,mTexNum(TexNum)
 {
 	SetName(name);
-
+	
 }
 
 Button::~Button()

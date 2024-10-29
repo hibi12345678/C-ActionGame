@@ -15,6 +15,7 @@ Texture::Texture()
 :mTextureID(0)
 ,mWidth(0)
 ,mHeight(0)
+
 {
 	
 }

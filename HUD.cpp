@@ -22,10 +22,11 @@
 #include "FollowActor.h"
 HUD::HUD(Game* game)
 	:UIScreen(game)
-	,mRadarRange(2000.0f)
-	,mRadarRadius(92.0f)
-	,mTargetEnemy(false)
-	,mGame(game)
+	, mRadarRange(2000.0f)
+	, mRadarRadius(92.0f)
+	, mTargetEnemy(false)
+	, mGame(game)
+	, itemNum(0)
 
 	
 {
@@ -38,6 +39,13 @@ HUD::HUD(Game* game)
 	mStaminaBar= r->GetTexture("Assets/Texture/Stamina.png");
 	mHealthBar= r->GetTexture("Assets/Texture/Health.png");
 	mFont = mGame->GetFont("Assets/Carlito-Regular.ttf");
+	mHighlight = mGame->GetRenderer()->GetTexture("Assets/Texture/ItemButtonOrange.png");
+	mSword = mGame->GetRenderer()->GetTexture("Assets/Texture/SwordTex.png");
+	mBow = mGame->GetRenderer()->GetTexture("Assets/Texture/BowTex.png");
+	mBomb = mGame->GetRenderer()->GetTexture("Assets/Texture/BombTex.png");
+	mTorch = mGame->GetRenderer()->GetTexture("Assets/Texture/TorchTex.png");
+	mFrame = mGame->GetRenderer()->GetTexture("Assets/Texture/Frame.png");
+	mFrame2 = mGame->GetRenderer()->GetTexture("Assets/Texture/Frame2.png");
 }
 
 HUD::~HUD()
@@ -52,10 +60,9 @@ void HUD::Update(float deltaTime)
 
 void HUD::Draw(Shader* shader)
 {
-	// currentState を game の状態で更新
-	currentState = static_cast<HUD::State>(mGame->GetState());
 	
-	if (currentState == EGameplay) {
+	
+	if (Game::EGameplay == mGame->GetState() || Game::EItem == mGame->GetState()) {
 		// Radar
 		const Vector2 cRadarPos(-390.0f, 275.0f);
 		DrawTexture(shader, mRadar, cRadarPos, 1.0f);
@@ -125,7 +132,30 @@ void HUD::Draw(Shader* shader)
 		}
 		
 	}
-
+	if (Game::EItem == mGame->GetState()) {
+		
+		
+		DrawTexture(shader, mFrame, Vector2(0.0f, -160.0f), 0.7f);
+		DrawTexture(shader, mFrame2, Vector2(0.0f, 120.0f), 0.7f);
+		DrawTexture(shader, mHighlight, Vector2(-270.0f, -160.0f), 0.7f);
+		if (itemNum == 0) {
+			DrawTexture(shader, mSword, Vector2(-270.0f, -160.0f), 0.7f);		
+			
+		}
+		else if (itemNum == 1) {
+			DrawTexture(shader, mTorch, Vector2(-270.0f, -160.0f), 0.7f);
+			
+		}
+		else if (itemNum == 2) {
+			DrawTexture(shader, mBow, Vector2(-270.0f, -160.0f), 0.7f);
+			
+			
+		}
+		else if (itemNum == 3) {
+			DrawTexture(shader, mBomb, Vector2(-270.0f, -160.0f), 0.7f);
+			
+		}
+	}
 }
 
 void HUD::AddTargetComponent(TargetComponent* tc)
@@ -144,9 +174,8 @@ void HUD::RemoveTargetComponent(TargetComponent* tc)
 
 void HUD::UpdateRadar(float deltaTime)
 {
-	// currentState を game の状態で更新
-	currentState = static_cast<HUD::State>(mGame->GetState());
-	if (currentState == EGameplay) {
+	
+	if (Game::EGameplay == mGame->GetState()) {
 		// Clear blip positions from last frame
 		mBlips.clear();
 

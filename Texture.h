@@ -22,6 +22,8 @@ public:
 	void SetPos(Vector2 pos) { texPos = pos; }
 	void SetActive(int index = 0);
 	Vector2 GetPos() { return texPos; }
+	void SetTexNum(int texNumber) { mTexNum = texNumber; }
+	int GetTexNum() const { return mTexNum; }
 	int GetWidth() const { return mWidth; }
 	int GetHeight() const { return mHeight; }
 	unsigned int GetTextureID() const { return mTextureID; }
@@ -30,6 +32,7 @@ public:
 private:
 	std::string mFileName;
 	unsigned int mTextureID;
+	int mTexNum;
 	int mWidth;
 	int mHeight;
 	Vector2 texPos;

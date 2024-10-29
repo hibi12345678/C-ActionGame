@@ -180,6 +180,9 @@
     <ClCompile Include="SmokeActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ItemMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -312,6 +315,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="SmokeActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemMenu.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

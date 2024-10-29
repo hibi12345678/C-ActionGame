@@ -18,7 +18,7 @@ class Button
 public:
 	Button(const std::string& name, class Font* font,
 		std::function<void()> onClick,
-		const Vector2& pos, const Vector2& dims);
+		const Vector2& pos, const Vector2& dims,int texNumber);
 	~Button();
 
 	// Set the name of the button
@@ -29,7 +29,7 @@ public:
 	const Vector2& GetPosition() const { return mPosition; }
 	void SetHighlighted(bool sel) { mHighlighted = sel; }
 	bool GetHighlighted() const { return mHighlighted; }
-
+	const int  GetTexNum() { return mTexNum; }
 	// Returns true if the point is within the button's bounds
 	bool ContainsPoint(const Vector2& pt) const;
 	// Called when button is clicked
@@ -41,9 +41,11 @@ private:
 	class Font* mFont;
 	Vector2 mPosition;
 	Vector2 mDimensions;
+	int mTexNum;
 	bool mHighlighted;
 	class AudioSystem* mAudioSystem;
 	SoundEvent mMusicEvent;
+
 	
 };
 
@@ -68,10 +70,13 @@ public:
 		EMainMenu,
 		EGameplay,
 		EPaused,
+		EItem,
 		EQuit
 	};
 	State currentState;
+	
 	// Set state to closing
+
 	void Close();
 	// Get state of UI screen
 	UIState GetState() const { return mUIState; }
@@ -82,11 +87,16 @@ public:
 	void AddText(const std::string& text,Vector2 pos, int pointSize,
 		const Vector3& color = Color::White
 		);
+	void CloseText();
+	void SetItemText(const std::string& text, Vector2 pos, int pointSize,
+		const Vector3& color = Color::White
+	);
 	// Add a button to this screen
 	void AddButton(const std::string& name, std::function<void()> onClick);
 	// Add a button to this screen
 	void StartButton(const std::string& name, std::function<void()> onClick);
-	
+	void ItemButton(const std::string& name, int texNumber ,std::function<void()> onClick);
+
 protected:
 	// Helper to draw a texture
 	void DrawTexture(class Shader* shader, class Texture* texture,
@@ -103,19 +113,29 @@ protected:
 	class Texture* mBackground;
 	class Texture* mButtonOn;
 	class Texture* mButtonOff;
-
+	class Texture* mItemButtonOn;
+	class Texture* mItemButtonOff;
+	class Texture* mSword;
+	class Texture* mBow;
+	class Texture* mBomb;
+	class Texture* mTorch;
+	class Texture* mArrow;
+	bool mArrowFlag;
 	// Configure positions
 	Vector2 mTitlePos;
 	Vector2 mNextButtonPos;
+	Vector2 mNextItemButtonPos;
 	Vector2 mNextTextPos;
 	Vector2 mBGPos;
-
+	int texNum;
 	// State
 	UIState mUIState;
 	
 	std::vector<Texture*> mText;
-	// List of buttons
+	class Texture* mItemText;
 	std::vector<Button*> mButtons;
-	// List of buttons
+
 	std::vector<Button*> mStartButton;
+
+	std::vector<Button*> mItemButton;
 };

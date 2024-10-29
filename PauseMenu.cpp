@@ -33,7 +33,7 @@ PauseMenu::PauseMenu(Game* game)
 		AddButton("StartButton", [this]() {
 			new DialogBox(mGame, "StartText",
 				[this]() {
-					flag = true; mGame->SetState(Game::EMainMenu), Close();
+					flag = true; mGame->SetState(Game::EMainMenu); Close();
 				});
 			});
 	}
