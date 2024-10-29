@@ -19,12 +19,14 @@
 #include "AudioComponent.h"
 #include "AudioSystem.h"
 #include "BossActor.h"
+#include "DropItemActor.h"
 
 
 FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
 	, mState(EGrounded)
+	, mItemState(ESword)
 	, jumpSpeed(0.0f)
 	, mStamina(1.0f)
 	, mHealth(1.0f)
@@ -39,7 +41,8 @@ FollowActor::FollowActor(Game* game)
 	, isVisible(true)
 	, blockPressed(false)
 	, mBlockTimer(0.0f)
-
+	, mBombCount(9)
+	, mArrowCount(0)
 	
 {
 	mMeshComp = new SkeletalMeshComponent(this);
@@ -344,11 +347,13 @@ void FollowActor::FixCollisions()
 	const AABB& playerBox = mBoxComp->GetWorldBox();
 	const AABB& attackBox = mAttackBoxComp->GetWorldBox();
 	const AABB& blockBox = mBlockBoxComp->GetWorldBox();
+
 	Vector3 pos = GetPosition();
 
 	auto& planes = GetGame()->GetPlanes();
 	auto& enemy = GetGame()->GetEnemys();
 	auto* boss = GetGame()->GetBoss();
+	auto& item = GetGame()->GetDropItem();
 	for (auto pa : planes)
 	{
 		// Do we collide with this PlaneActor?
@@ -557,5 +562,30 @@ void FollowActor::FixCollisions()
 				mDamageTimer = 4.0f;
 			}
 		}
+	}
+
+
+	for (auto it : item)
+	{
+		if (it != nullptr) {
+
+			const AABB& itemBox = it->GetBox()->GetWorldBox();
+			if (Intersect(playerBox, itemBox))
+			{
+				mAudioComp->PlayEvent("event:/ItemGet");
+				if (it->GetItemNum() == 0) {
+					
+					mArrowCount += 5;
+				}
+				else if (it->GetItemNum() == 1) {
+					mBombCount += 1;
+				}
+
+			}
+
+
+		}
+
+
 	}
 }

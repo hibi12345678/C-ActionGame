@@ -60,15 +60,18 @@ public:
 	const std::vector<class Actor*>& GetActors() const { return mActors; }
 	void SetFollowActor(class FollowActor* actor) { mFollowActor = actor; }
 	void SetBossActor(class BossActor* actor) { mBossActor = actor; }
+
 	class FollowActor* GetPlayer() { return mFollowActor; }
 	class BossActor* GetBoss() { return mBossActor; }
 	void AddPlane(class PlaneActor* plane);
 	void RemovePlane(class PlaneActor* plane);
 	void AddEnemy(class EnemyActor* enemy);
 	void RemoveEnemy(class EnemyActor* enemy);
+	void AddDropItem(class DropItemActor* dropItem);
+	void RemoveDropItem(class DropItemActor* dropItem);
 	std::vector<class PlaneActor*>& GetPlanes() { return mPlanes; }
 	std::vector<class EnemyActor*>& GetEnemys() { return mEnemys; }
-	
+	std::vector<class DropItemActor*>& GetDropItem() { return mDropItems; }
 
 private:
 	void ProcessInput();
@@ -107,6 +110,7 @@ private:
 	// Game-specific code
 	std::vector<class PlaneActor*> mPlanes;
 	std::vector<class EnemyActor*> mEnemys;
+	std::vector<class DropItemActor*> mDropItems;
 	class FollowActor* mFollowActor;
 	class BossActor* mBossActor;
 	class SpriteComponent* mCrosshair;
