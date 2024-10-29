@@ -28,6 +28,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AudioComponent.cpp" />
     <ClCompile Include="AudioSystem.cpp" />
+    <ClCompile Include="DropItemActor.cpp" />
     <ClCompile Include="BoneTransform.cpp" />
     <ClCompile Include="BossActor.cpp" />
     <ClCompile Include="BoxComponent.cpp" />
@@ -68,6 +69,7 @@
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TargetComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TorchItemActor.cpp" />
     <ClCompile Include="UIScreen.cpp" />
     <ClCompile Include="VertexArray.cpp" />
   </ItemGroup>
@@ -76,6 +78,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AudioComponent.h" />
     <ClInclude Include="AudioSystem.h" />
+    <ClInclude Include="DropItemActor.h" />
     <ClInclude Include="BoneTransform.h" />
     <ClInclude Include="BossActor.h" />
     <ClInclude Include="BoxComponent.h" />
@@ -115,6 +118,7 @@
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TargetComponent.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TorchItemActor.h" />
     <ClInclude Include="UIScreen.h" />
     <ClInclude Include="VertexArray.h" />
   </ItemGroup>

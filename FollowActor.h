@@ -21,6 +21,13 @@ public:
 		EGrounded,
 		EDead
 	};
+	enum ItemState
+	{
+		ESword,
+		ETorch,
+		EBow,
+		EBomb
+	};
 	void ActorInput(const uint8_t* keys) override;
 
 	void SetVisible(bool visible);
@@ -31,6 +38,8 @@ public:
 	void Attack();
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
+	ItemState GetItemState() const { return mItemState; }
+	void SetItemState(ItemState state) { mItemState = state; }
 	TypeID GetType() const override { return TFollowActor; }
 	float GetStamina()  { return  mStamina; }
 	float GetHealth()  { return  mHealth; }
@@ -59,6 +68,7 @@ private:
 	bool mMoving;
 	// Actor's state
 	State mState;
+	ItemState mItemState;
 	float mStamina;
 	float mHealth;
 	float jumpSpeed;
@@ -66,4 +76,6 @@ private:
 	bool isShiftPressed;
 	bool blockPressed;
 	float mLastFootstep;
+	int mArrowCount;
+	int mBombCount;
 };

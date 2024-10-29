@@ -6,7 +6,8 @@
 #include "HUD.h"
 #include "Renderer.h"
 #include "AudioSystem.h"
-
+#include "FollowActor.h"
+#include "TorchItemActor.h"
 ItemMenu::ItemMenu(Game* game)
 	:UIScreen(game)
 	
@@ -39,24 +40,29 @@ ItemMenu::ItemMenu(Game* game)
 		AddText("SwordText", Vector2(0.0f, -160.0f), 30);
 		hudInstance->SetItemNum(0);
 		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Equipped");
+		mGame->GetPlayer()->SetItemState(FollowActor::ESword);
+		
 		});
 	ItemButton("TorchText", 1, [this, hudInstance]() {
 		CloseText();
 		AddText("TorchText", Vector2(0.0f, -160.0f),30);
 		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Equipped");
 		hudInstance->SetItemNum(1);
+		mGame->GetPlayer()->SetItemState(FollowActor::ETorch);
 		});
 	ItemButton("BowText", 2, [this, hudInstance]() {
 		CloseText();
 		AddText("BowText", Vector2(0.0f, -160.0f),30);
 		hudInstance->SetItemNum(2); 
 		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Equipped");
+		mGame->GetPlayer()->SetItemState(FollowActor::EBow);
 		});
 	ItemButton("BombText", 3, [this, hudInstance]() {
 		CloseText();
 		AddText("BombText", Vector2(0.0f, -160.0f),30);
 		hudInstance->SetItemNum(3);
 		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Equipped");
+		mGame->GetPlayer()->SetItemState(FollowActor::EBomb);
 		});
 }
 
@@ -73,7 +79,22 @@ ItemMenu::~ItemMenu()
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	// Make an initial call to get relative to clear out
 	SDL_GetRelativeMouseState(nullptr, nullptr);
+	if (mGame->GetPlayer()->GetItemState() == FollowActor::ESword) {
+		TorchItemActor* torch = new TorchItemActor(mGame);
 
+	}
+	else if (mGame->GetPlayer()->GetItemState() == FollowActor::ETorch) {
+		TorchItemActor* torch = new TorchItemActor(mGame);
+
+	}
+    else if (mGame->GetPlayer()->GetItemState() == FollowActor::EBow) {
+		TorchItemActor* torch = new TorchItemActor(mGame);
+
+	}
+	else if (mGame->GetPlayer()->GetItemState() == FollowActor::EBomb) {
+		TorchItemActor* torch = new TorchItemActor(mGame);
+
+	}
 }
 
 void ItemMenu::HandleKeyPress(int key)

@@ -12,6 +12,7 @@
 #include "Mesh.h"
 #include "ReactActor.h"
 #include "SmokeActor.h"
+#include "DropItemActor.h"
 #include "FollowActor.h"
 #include <cmath>
 #include <cstdlib> 
@@ -272,6 +273,8 @@ void EnemyActor::UpdateActor(float deltaTime) {
 	}
 	if (mHealth <= 0.0f) {
 
+		DropItemActor* dropitem = new DropItemActor(GetGame());
+		dropitem->SetPosition(GetPosition() + Vector3(0.0f, 0.0f, 0.0f));
 		mState = EDead;
 	}
 }

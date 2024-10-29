@@ -183,6 +183,12 @@
     <ClCompile Include="ItemMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DropItemActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TorchItemActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -318,6 +324,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ItemMenu.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DropItemActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TorchItemActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
