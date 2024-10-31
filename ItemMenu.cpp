@@ -81,11 +81,11 @@ ItemMenu::~ItemMenu()
 	SDL_GetRelativeMouseState(nullptr, nullptr);
 	if (mGame->GetPlayer()->GetItemState() == FollowActor::ESword) {
 		TorchItemActor* torch = new TorchItemActor(mGame);
-
+		
 	}
 	else if (mGame->GetPlayer()->GetItemState() == FollowActor::ETorch) {
 		TorchItemActor* torch = new TorchItemActor(mGame);
-
+		
 	}
     else if (mGame->GetPlayer()->GetItemState() == FollowActor::EBow) {
 		TorchItemActor* torch = new TorchItemActor(mGame);

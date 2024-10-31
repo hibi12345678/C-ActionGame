@@ -29,13 +29,14 @@ public:
 		EBomb
 	};
 	void ActorInput(const uint8_t* keys) override;
-
+	class FollowCamera* GetCameraComponent() { return mCameraComp; }
 	void SetVisible(bool visible);
 	void UpdateActor(float deltaTime) override;
 	void LoadProperties(const rapidjson::Value& inObj) override;
 	void SaveProperties(rapidjson::Document::AllocatorType& alloc,
 		rapidjson::Value& inObj) const override;
 	void Attack();
+	void Shoot();
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
 	ItemState GetItemState() const { return mItemState; }
@@ -52,6 +53,7 @@ private:
 	class MoveComponent* mMoveComp;
 	class AudioComponent* mAudioComp;
 	class FollowCamera* mCameraComp;
+	class FPSCamera* mFPSCamera;
 	class SkeletalMeshComponent* mMeshComp;
 	class BoxComponent* mBoxComp;
 	SoundEvent mFootstep;
@@ -62,6 +64,7 @@ private:
 	float mBlockTimer;  // 攻撃判定用のタイマー
 	float mBoxTimer;  // 攻撃判定用のタイマー
 	float mDamageTimer;
+	float changeTimer;
 	float blinkTime;
 	float blinkInterval; // 0.5秒ごとに点滅
 	bool isVisible;

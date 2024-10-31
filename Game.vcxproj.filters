@@ -189,6 +189,15 @@
     <ClCompile Include="TorchItemActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FPSCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -330,6 +339,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="TorchItemActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowMove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -63,6 +63,7 @@ void HUD::Draw(Shader* shader)
 	
 	
 	if (Game::EGameplay == mGame->GetState() || Game::EItem == mGame->GetState()) {
+
 		// Radar
 		const Vector2 cRadarPos(-390.0f, 275.0f);
 		DrawTexture(shader, mRadar, cRadarPos, 1.0f);
@@ -74,9 +75,7 @@ void HUD::Draw(Shader* shader)
 		// Radar arrow
 		DrawTexture(shader, mRadarArrow, cRadarPos);
 
-		// Crosshair
-		Texture* cross = mCrosshair;
-		DrawTexture(shader, cross, Vector2::Zero, 0.5f);
+	
 		// Šù‘¶‚Ì FollowActor ‚ðŽæ“¾
 		FollowActor* followActor = mGame->GetPlayer();;
 		if (followActor != nullptr) {
@@ -86,13 +85,17 @@ void HUD::Draw(Shader* shader)
 			float health = followActor->GetHealth();
 			//// Health bar
 			DrawTexture(shader, mHealthBar, Vector2(-275.0f, 350.0f), health * 6, false, 1);
-
+			if (mGame->GetPlayer()->GetItemState() == FollowActor::EBow) {
+				// Crosshair
+				Texture* cross = mCrosshair;
+				DrawTexture(shader, cross, Vector2::Zero, 0.5f);
+			}
 			
 		}
 		else {
 			
 		}
-
+		
 		
 		if (mGame->GetScore() == 0) {
 
@@ -156,6 +159,7 @@ void HUD::Draw(Shader* shader)
 			
 		}
 	}
+	
 }
 
 void HUD::AddTargetComponent(TargetComponent* tc)

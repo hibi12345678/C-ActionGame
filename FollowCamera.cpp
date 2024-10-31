@@ -13,16 +13,22 @@
 #include "Game.h"
 #include "AudioComponent.h"
 #include <vector>
+#include "FollowActor.h"
 FollowCamera::FollowCamera(Actor* owner)
 	:CameraComponent(owner)
 	, mPitchSpeed(0.0f)
 	, mMaxPitch(Math::Pi / 3.0f)
 	, mPitch(0.0f)
+	, mSpringConstant(128.0)
+	, mTargetDist(100.0)
+	, mVelocity(Vector3(0.0,0.0,0.0))
+	, mActualPos(Vector3(-350.0,0.0,150.0))
 {
 }
 
 void FollowCamera::Update(float deltaTime)
 {
+
 	// Call parent update (doesn't do anything right now)
 	CameraComponent::Update(deltaTime);
 	// Camera position is owner position
@@ -52,6 +58,9 @@ void FollowCamera::Update(float deltaTime)
 	Game* game = mOwner->GetGame();
 	Vector3 playerPosition = mOwner-> GetPosition();
 	game->GetAudioSystem()->SetListener(view,Vector3::Zero,1.0f,playerPosition);
+	if (game->GetPlayer()->GetItemState()==FollowActor::EBow) {
+
+	}
 }
 
 
@@ -84,7 +93,7 @@ Vector3 FollowCamera::ComputeCameraPos() const
 {
 	// Set camera position behind and above owner
 	Vector3 cameraPos = mOwner->GetPosition();
-	cameraPos -= mOwner->GetForward() * mHorzDist;
-	cameraPos += Vector3::UnitZ * mVertDist;
+	cameraPos -= mOwner->GetForward() *350;
+	cameraPos += Vector3::UnitZ * 250;
 	return cameraPos;
 }

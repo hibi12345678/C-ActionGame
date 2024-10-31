@@ -19,6 +19,7 @@ public:
 	// Draw this point light as geometry
 	void Draw(class Shader* shader, class Mesh* mesh);
 	Vector3 mPosition;
+	
 	// Diffuse color
 	Vector3 mDiffuseColor;
 	// Radius of light

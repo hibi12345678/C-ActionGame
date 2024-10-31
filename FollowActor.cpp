@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "FollowCamera.h"
+#include "FPSCamera.h"
 #include "MoveComponent.h"
 #include "LevelLoader.h"
 #include "BoxComponent.h"
@@ -20,8 +21,8 @@
 #include "AudioSystem.h"
 #include "BossActor.h"
 #include "DropItemActor.h"
-
-
+#include "PointLightComponent.h"
+#include "ArrowActor.h"
 FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -43,7 +44,8 @@ FollowActor::FollowActor(Game* game)
 	, mBlockTimer(0.0f)
 	, mBombCount(9)
 	, mArrowCount(0)
-	
+	, mFPSCamera(nullptr)
+	, changeTimer(0.0f)
 {
 	mMeshComp = new SkeletalMeshComponent(this);
 	mAudioComp = new AudioComponent(this);
@@ -58,6 +60,8 @@ FollowActor::FollowActor(Game* game)
 	mBoxComp->SetShouldRotate(false);
 	
 	blockPressed = false;
+
+
 }
 
 void FollowActor::ActorInput(const uint8_t* keys)
@@ -95,7 +99,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		mStamina -= 0.1f;
 	}
 
-	if (keys[SDL_SCANCODE_R] && mState == EGrounded && mStamina > 0.1f && mHealth > 0.0f && mAttackBoxComp == nullptr)
+	if (keys[SDL_SCANCODE_R] && mState == EGrounded && mStamina > 0.1f && mHealth > 0.0f && mAttackBoxComp == nullptr && mItemState == ESword)
 	{
 		Block();
 		mStamina += 0.007f;
@@ -103,7 +107,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		strafeSpeed = 0.0f;
 		
 	}
-	else {
+	else if(mItemState == ESword){
 		
 		if (mBlockBoxComp != nullptr) {
 			delete mBlockBoxComp;  // メモリの解放
@@ -111,7 +115,36 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		}
 		
 	}
+	if (keys[SDL_SCANCODE_R] && mHealth > 0.0f && mItemState == ETorch) {
 
+		
+	}
+	
+
+	if (keys[SDL_SCANCODE_R] && mHealth > 0.0f && mItemState == EBow && changeTimer >0.5f) {
+		changeTimer = 0.0f;
+		if (!mCameraComp && mFPSCamera) {
+			mMeshComp->SetVisible(true);
+			mCameraComp = new FollowCamera(this);
+			delete mFPSCamera;
+			mFPSCamera = nullptr; 
+		}
+		else if (!mFPSCamera && mCameraComp) {
+			mMeshComp->SetVisible(false);
+			mFPSCamera = new FPSCamera(this);
+			delete mCameraComp;
+			mCameraComp = nullptr; 
+		}
+	}
+	
+	if (mItemState != EBow) {
+		if (!mCameraComp && mFPSCamera) {
+			mMeshComp->SetVisible(true);
+			mCameraComp = new FollowCamera(this);
+			delete mFPSCamera;
+			mFPSCamera = nullptr;
+		}
+	}
 	// Did we just start moving?
 	if (!mMoving && !Math::NearZero(forwardSpeed))
 	{
@@ -174,14 +207,25 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		delete mBlockBoxComp;  // メモリの解放
 		mBlockBoxComp = nullptr;  // ポインタをクリア
 		blockPressed = false;
-		Attack();
-		mStamina -= 0.2f;
 		
+		mStamina -= 0.2f;
+		if (mItemState == ESword) {
+			Attack();
+		}
+		if (mItemState == EBow) {
+			Shoot();
+		}
 	}
 
 	if (mHealth > 0.0f) {
 		mMoveComp->SetAngularSpeed(angularSpeed);
-		mCameraComp->SetPitchSpeed(pitchSpeed);
+		if (mCameraComp) {
+			mCameraComp->SetPitchSpeed(pitchSpeed);
+		}
+		else if (mFPSCamera) {
+			mFPSCamera->SetPitchSpeed(pitchSpeed);
+		}
+		
 
 		mMoveComp->SetForwardSpeed(forwardSpeed);
 		mMoveComp->SetStrafeSpeed(strafeSpeed);
@@ -191,7 +235,12 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		mMeshComp->SetVisible(true);
 		mMoveComp->SetAngularSpeed(0.0f);
 		mCameraComp->SetPitchSpeed(0.0f);
-
+		if (mCameraComp) {
+			mCameraComp->SetPitchSpeed(0.0f);
+		}
+		else if (mFPSCamera) {
+			mFPSCamera->SetPitchSpeed(0.0f);
+		}
 		mMoveComp->SetForwardSpeed(0.0f);
 		mMoveComp->SetStrafeSpeed(0.0f);
 	}
@@ -200,7 +249,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 void FollowActor::UpdateActor(float deltaTime) {
 
 
-	
+	changeTimer += deltaTime;
 	if (mStamina >= 1.0f) {
 		mStamina = 1.0f;
 	}
@@ -253,10 +302,10 @@ void FollowActor::UpdateActor(float deltaTime) {
 	// タイマーが進行している場合
 	if (mDamageTimer > 0.0f) {
 		mDamageTimer -= deltaTime;
-		if(mDamageTimer >= 3.75) {
-			mHealth -= 0.0168;
+		if (mDamageTimer >= 3.0) {
+			mHealth -= 0.25f * deltaTime;
+
 		}
-		
 		// 経過時間を増加させる
 		blinkTime += deltaTime;
 
@@ -272,7 +321,7 @@ void FollowActor::UpdateActor(float deltaTime) {
 		}
 	}
 
-	else {
+	else if(mItemState != EBow && mFPSCamera){
 
 		mMeshComp->SetVisible(true);
 		blinkTime = 0.0f;
@@ -308,7 +357,22 @@ void FollowActor::Attack() {
 	mAttackTimer = 2.0f;  // 0.5秒後に削除する
 	mAudioComp->PlayEvent("event:/SwordAttack");
 }
-
+void FollowActor::Shoot()
+{
+	// Get direction vector
+	Vector3 start, dir;
+	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
+	// Spawn a ball
+	ArrowActor* arrow = new ArrowActor(GetGame());
+	arrow->SetPlayer(this);
+	arrow->SetPosition(start + dir * 20.0f);
+	// Rotate the ball to face new direction
+	arrow->RotateToNewForward(dir);
+	// タイマーをリセット
+	mAttackTimer = 2.0f;  
+	// Play shooting sound
+	mAudioComp->PlayEvent("event:/Shot");
+}
 void FollowActor::Block() {
 
 
