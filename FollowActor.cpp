@@ -23,6 +23,7 @@
 #include "DropItemActor.h"
 #include "PointLightComponent.h"
 #include "ArrowActor.h"
+#include "BombActor.h"
 FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -43,7 +44,7 @@ FollowActor::FollowActor(Game* game)
 	, blockPressed(false)
 	, mBlockTimer(0.0f)
 	, mBombCount(9)
-	, mArrowCount(0)
+	, mArrowCount(9)
 	, mFPSCamera(nullptr)
 	, changeTimer(0.0f)
 {
@@ -145,6 +146,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 			mFPSCamera = nullptr;
 		}
 	}
+
 	// Did we just start moving?
 	if (!mMoving && !Math::NearZero(forwardSpeed))
 	{
@@ -215,6 +217,9 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		if (mItemState == EBow) {
 			Shoot();
 		}
+		if (mItemState == EBomb) {
+			Bomb();
+		}
 	}
 
 	if (mHealth > 0.0f) {
@@ -248,7 +253,20 @@ void FollowActor::ActorInput(const uint8_t* keys)
 
 void FollowActor::UpdateActor(float deltaTime) {
 
+	if (mItemState == EBow ) {
+		if (mArrowCount <= 0) {
+			mItemState = ESword;
+			mAudioComp->PlayEvent("event:/Equipped");
+		}
+		
+	}
+	if (mItemState == EBomb) {
+		if (mBombCount <= 0) {
+			mItemState = ESword;
+			mAudioComp->PlayEvent("event:/Equipped");
+		}
 
+	}
 	changeTimer += deltaTime;
 	if (mStamina >= 1.0f) {
 		mStamina = 1.0f;
@@ -321,13 +339,16 @@ void FollowActor::UpdateActor(float deltaTime) {
 		}
 	}
 
-	else if(mItemState != EBow && mFPSCamera){
+	else  {
+		if (!mFPSCamera) {
+			mMeshComp->SetVisible(true);
 
-		mMeshComp->SetVisible(true);
+		}
+		
 		blinkTime = 0.0f;
 
 	}
-
+	
 	if (mHealth <= 0.0f) {
 
 		mState = EDead;
@@ -343,7 +364,7 @@ void FollowActor::SetVisible(bool visible)
 }
 
 void FollowActor::Attack() {
-	
+	mArrowCount--;
 	// 攻撃判定用のBoxComponentを追加
 	mAttackBoxComp = new BoxComponent(this);
 	AABB myBox(Vector3(25.0f, -25.0f, 100.0f),
@@ -359,17 +380,40 @@ void FollowActor::Attack() {
 }
 void FollowActor::Shoot()
 {
+	mBombCount--;
 	// Get direction vector
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
-	// Spawn a ball
+	
 	ArrowActor* arrow = new ArrowActor(GetGame());
+	if (mCameraComp) {
+		arrow->SetPosition(this->GetPosition() + Vector3(0.0, 60.0, 120.0) + dir * 500.0f);
+	}
+	else {
+		arrow->SetPosition(start + dir * 100.0f);
+	}
 	arrow->SetPlayer(this);
-	arrow->SetPosition(start + dir * 20.0f);
-	// Rotate the ball to face new direction
+	
 	arrow->RotateToNewForward(dir);
 	// タイマーをリセット
 	mAttackTimer = 2.0f;  
+	// Play shooting sound
+	mAudioComp->PlayEvent("event:/Shot");
+}
+
+void FollowActor::Bomb()
+{
+
+	// Get direction vector
+	Vector3 start, dir;
+	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
+
+	BombActor* bomb = new BombActor(GetGame());
+	bomb->SetPlayer(this);
+	bomb->SetPosition(this->GetPosition()+Vector3(0.0,0.0,200.0) + dir * 100.0f);
+	bomb->RotateToNewForward(dir);
+	// タイマーをリセット
+	mAttackTimer = 4.0f;
 	// Play shooting sound
 	mAudioComp->PlayEvent("event:/Shot");
 }

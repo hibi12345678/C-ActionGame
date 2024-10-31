@@ -152,6 +152,7 @@ void Game::ProcessInput()
 	if (mGameState == EGameplay)
 	{
 		if (gameOverFlag == false && gameClearFlag == false) {
+
 			for (auto actor : mActors)
 			{
 				if (actor->GetState() == Actor::EActive)
@@ -159,6 +160,7 @@ void Game::ProcessInput()
 					actor->ProcessInput(state);
 				}
 			}
+			
 		}
 		else {
 			mUIStack.back()->ProcessInput(state);

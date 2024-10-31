@@ -37,6 +37,7 @@ public:
 		rapidjson::Value& inObj) const override;
 	void Attack();
 	void Shoot();
+	void Bomb();
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
 	ItemState GetItemState() const { return mItemState; }

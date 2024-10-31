@@ -7,21 +7,17 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "Actor.h"
+#include "MoveComponent.h"
 
-class ArrowActor : public Actor
+class BombMove : public MoveComponent
 {
 public:
-	ArrowActor(class Game* game);
+	BombMove(class Actor* owner);
 
-	void UpdateActor(float deltaTime) override;
-	void SetPlayer(Actor* player);
-
-	void HitTarget();
-
-private:
-	class AudioComponent* mAudioComp;
-	class ArrowMove* mMyMove;
-	float mLifeSpan;
+	void SetPlayer(Actor* player) { mPlayer = player; }
+	void Update(float deltaTime) override;
 	
+protected:
+	class Actor* mPlayer;
+	Vector3 start;
 };

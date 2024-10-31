@@ -30,6 +30,8 @@
     <ClCompile Include="ArrowMove.cpp" />
     <ClCompile Include="AudioComponent.cpp" />
     <ClCompile Include="AudioSystem.cpp" />
+    <ClCompile Include="BombActor.cpp" />
+    <ClCompile Include="BombMove.cpp" />
     <ClCompile Include="DropItemActor.cpp" />
     <ClCompile Include="BoneTransform.cpp" />
     <ClCompile Include="BossActor.cpp" />
@@ -83,6 +85,8 @@
     <ClInclude Include="ArrowMove.h" />
     <ClInclude Include="AudioComponent.h" />
     <ClInclude Include="AudioSystem.h" />
+    <ClInclude Include="BombActor.h" />
+    <ClInclude Include="BombMove.h" />
     <ClInclude Include="DropItemActor.h" />
     <ClInclude Include="BoneTransform.h" />
     <ClInclude Include="BossActor.h" />

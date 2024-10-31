@@ -16,14 +16,14 @@
 
 ArrowActor::ArrowActor(Game* game)
 	:Actor(game)
-	, mLifeSpan(5.0f)
+	, mLifeSpan(2.0f)
 {
-	SetScale(30.0f);
+	SetScale(80.0f);
 	MeshComponent* mc = new MeshComponent(this);
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Arrow3D.gpmesh");
 	mc->SetMesh(mesh);
 	mMyMove = new ArrowMove(this);
-	mMyMove->SetForwardSpeed(800.0f);
+	mMyMove->SetForwardSpeed(1500.0f);
 	mAudioComp = new AudioComponent(this);
 }
 
