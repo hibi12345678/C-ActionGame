@@ -8,6 +8,7 @@
 #include "AudioSystem.h"
 #include "FollowActor.h"
 #include "TorchItemActor.h"
+
 ItemMenu::ItemMenu(Game* game)
 	:UIScreen(game)
 	
@@ -92,7 +93,7 @@ ItemMenu::~ItemMenu()
 
 	}
 	else if (mGame->GetPlayer()->GetItemState() == FollowActor::EBomb) {
-		TorchItemActor* torch = new TorchItemActor(mGame);
+		//BombActor* torch = new BombActor(mGame);
 
 	}
 }
