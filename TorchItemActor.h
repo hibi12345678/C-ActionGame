@@ -18,7 +18,7 @@ public:
 private:
 	class MeshComponent* mc;
 	class BoxComponent* mBox;
-	class PointLightComponent* pointLight;
+	std::vector<class PointLightComponent*> mPointLights;
 	float mLifeSpan;
 	float blinkTime;
 	float blinkInterval; // 0.5•b‚²‚Æ‚É“_–Å

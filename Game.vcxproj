@@ -26,6 +26,8 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="ArrowActor.cpp" />
+    <ClCompile Include="ArrowMove.cpp" />
     <ClCompile Include="AudioComponent.cpp" />
     <ClCompile Include="AudioSystem.cpp" />
     <ClCompile Include="DropItemActor.cpp" />
@@ -40,6 +42,7 @@
     <ClCompile Include="FollowActor.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="FPSCamera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
@@ -76,6 +79,8 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="ArrowActor.h" />
+    <ClInclude Include="ArrowMove.h" />
     <ClInclude Include="AudioComponent.h" />
     <ClInclude Include="AudioSystem.h" />
     <ClInclude Include="DropItemActor.h" />
@@ -90,6 +95,7 @@
     <ClInclude Include="FollowActor.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="FPSCamera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />

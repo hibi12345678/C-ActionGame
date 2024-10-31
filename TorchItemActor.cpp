@@ -23,31 +23,41 @@ TorchItemActor::TorchItemActor(Game* game)
 	, randomValue(0)
 	, mState(EActive)
 {
-	SetScale(100.0f);
+	SetScale(30.0f);
 	mc = new MeshComponent(this);
 
-	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Torch3D.gpmesh");
+	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Arrow3D.gpmesh");
 	mc->SetMesh(mesh);
-	pointLight = new PointLightComponent(this);
-	pointLight->SetCol(Vector3(0.0,
-		1.0,
-		0.0));
-	pointLight->SetInRad(0.0);
-	pointLight->SetOutRad(500.0);
+	for (int i = 0; i <= 2; i++) {
+		PointLightComponent* pointLight = new PointLightComponent(game->GetPlayer());
+		pointLight->SetCol(Vector3(1.0, 0.6, 0.0));
+		pointLight->SetInRad(100.0);
+		pointLight->SetOutRad(400.0);
+		pointLight->SetPosition(Vector3(200.0f, 0.0f, 200.0f));
+		mPointLights.emplace_back(pointLight);
+	}
 	
+
 }
 
 void TorchItemActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
-
 	Game* game = GetGame();
-	Vector3 playerPosition = game->GetPlayer()->GetPosition();
-	playerPosition += Vector3(0.0f,400.0f,100.0f);
-	SetPosition(playerPosition);
-	pointLight->SetPosition(playerPosition + Vector3(0.0f, 0.0f, 100.0f));
+;
+    Vector3 playerPosition = game->GetPlayer()->GetPosition();
+    playerPosition += Vector3(70.0f, 0.0f, 100.0f);
+    playerPosition += game->GetPlayer()->GetForward() * 70.0;
+    SetPosition(playerPosition);
+
 	if (game->GetPlayer()->GetItemState() != FollowActor::ETorch) {
+
+		for (auto b : mPointLights) {
+			delete b;
+		}
+		mPointLights.clear();
 		delete this;
+		
 	}
 
 }
