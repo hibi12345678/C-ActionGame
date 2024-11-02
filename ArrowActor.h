@@ -13,14 +13,16 @@ class ArrowActor : public Actor
 {
 public:
 	ArrowActor(class Game* game);
-
+	~ArrowActor();
+	class BoxComponent* GetBox() { return mBoxComp; }
 	void UpdateActor(float deltaTime) override;
 	void SetPlayer(Actor* player);
-
+	void FixCollisions();
 	void HitTarget();
 
 private:
 	class AudioComponent* mAudioComp;
+	class BoxComponent* mBoxComp;
 	class ArrowMove* mMyMove;
 	float mLifeSpan;
 	

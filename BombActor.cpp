@@ -15,16 +15,23 @@
 #include "AudioComponent.h"
 #include "BoxComponent.h"
 #include "PlaneActor.h"
+#include "ExplosionActor.h"
+
 BombActor::BombActor(Game* game)
 	:Actor(game)
 	, mLifeSpan(6.0f)
+	, blinkTime(0.0f)
+	, blinkInterval(0.4f)
+	
 {
 	SetScale(20.0f);
 	MeshComponent* mc = new MeshComponent(this);
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Bomb3D.gpmesh");
 	mc->SetMesh(mesh);
 	mMyMove = new BombMove(this);
-	mMyMove->SetForwardSpeed(400.0f);
+	mMyMove->SetForwardSpeed(600.0f);
+	mMyMove->SetStrafeSpeed(0.0f);
+	mMyMove->SetJumpSpeed(600.0f);
 	mAudioComp = new AudioComponent(this);
 	// Add a box component
 	mBoxComp = new BoxComponent(this);
@@ -37,12 +44,35 @@ BombActor::BombActor(Game* game)
 void BombActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
-	FixCollisions();
+	
 	mLifeSpan -= deltaTime;
-	if (mLifeSpan < 0.0f)
+	if (mLifeSpan < 3.0f)
 	{
-		SetState(EDead);
+
+		if (mLifeSpan < 0.0f) {
+			ExplosionActor* ex = new ExplosionActor(GetGame());
+			ex->SetPosition(this->GetPosition());
+			
+			SetState(EDead);
+			
+		}
+		// 経過時間を増加させる
+		blinkTime += deltaTime;
+
+		// 一定間隔を超えたら可視状態を切り替え
+		if (blinkTime >= blinkInterval)
+		{
+			
+		    
+			mAudioComp->PlayEvent("event:/Alert");
+			// タイマーをリセット
+			blinkTime = 0.0f;
+		}
 	}
+	mMyMove->SetForwardSpeed(600.0f);
+	mMyMove->SetStrafeSpeed(0.0f);
+	mMyMove->SetJumpSpeed(600.0f);
+	FixCollisions();
 }
 
 void BombActor::SetPlayer(Actor* player)
@@ -73,7 +103,8 @@ void BombActor::FixCollisions()
 		const AABB& planeBox = pa->GetBox()->GetWorldBox();
 		if (Intersect(bombBox, planeBox))
 		{
-			// Calculate all our differences
+			/**
+			/// Calculate all our differences
 			float dx1 = planeBox.mMax.x - bombBox.mMin.x;
 			float dx2 = planeBox.mMin.x - bombBox.mMax.x;
 			float dy1 = planeBox.mMax.y - bombBox.mMin.y;
@@ -95,22 +126,35 @@ void BombActor::FixCollisions()
 			if (Math::Abs(dx) <= Math::Abs(dy) && Math::Abs(dx) <= Math::Abs(dz))
 			{
 				pos.x += dx;
+				mMyMove->SetForwardSpeed(0.0f);
+
+				mMyMove->SetStrafeSpeed(0.0f);
+
 
 			}
 			else if (Math::Abs(dy) <= Math::Abs(dx) && Math::Abs(dy) <= Math::Abs(dz))
 			{
 				pos.y += dy;
+				mMyMove->SetForwardSpeed(0.0f);
+
+				mMyMove->SetStrafeSpeed(0.0f);
+
 
 			}
 			else
 			{
 				pos.z += dz;
 
-			}
-
-			// Need to set position and update box component
+			}// Need to set position and update box component
 			SetPosition(pos);
-			mBoxComp->OnUpdateWorldTransform();
+			mBoxComp->OnUpdateWorldTransform(); */
+			
+			mMyMove->SetForwardSpeed(0.0f);
+
+			mMyMove->SetStrafeSpeed(0.0f);
+
+			mMyMove->SetJumpSpeed(0.0f);
+			
 		}
 	}
 

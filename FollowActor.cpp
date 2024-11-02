@@ -24,6 +24,7 @@
 #include "PointLightComponent.h"
 #include "ArrowActor.h"
 #include "BombActor.h"
+#include "ExplosionActor.h"
 FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -56,7 +57,7 @@ FollowActor::FollowActor(Game* game)
 	// Add a box component
 	mBoxComp = new BoxComponent(this);
 	AABB myBox(Vector3(-25.0f, -25.0f, 0.0f),
-		Vector3(25.0f, 25.0f, 170.0f));
+		Vector3(25.0f, 25.0f, 240.0f));
 	mBoxComp->SetObjectBox(myBox);
 	mBoxComp->SetShouldRotate(false);
 	
@@ -209,10 +210,11 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		delete mBlockBoxComp;  // メモリの解放
 		mBlockBoxComp = nullptr;  // ポインタをクリア
 		blockPressed = false;
+		mStamina -= 0.3f;
 		
-		mStamina -= 0.2f;
 		if (mItemState == ESword) {
 			Attack();
+			
 		}
 		if (mItemState == EBow) {
 			Shoot();
@@ -398,7 +400,7 @@ void FollowActor::Shoot()
 	// タイマーをリセット
 	mAttackTimer = 2.0f;  
 	// Play shooting sound
-	mAudioComp->PlayEvent("event:/Shot");
+	mAudioComp->PlayEvent("event:/Arrow");
 }
 
 void FollowActor::Bomb()
@@ -415,7 +417,7 @@ void FollowActor::Bomb()
 	// タイマーをリセット
 	mAttackTimer = 4.0f;
 	// Play shooting sound
-	mAudioComp->PlayEvent("event:/Shot");
+	mAudioComp->PlayEvent("event:/Throw");
 }
 void FollowActor::Block() {
 
@@ -462,6 +464,8 @@ void FollowActor::FixCollisions()
 	auto& enemy = GetGame()->GetEnemys();
 	auto* boss = GetGame()->GetBoss();
 	auto& item = GetGame()->GetDropItem();
+	
+	auto& explosion = GetGame()->GetExplosion();
 	for (auto pa : planes)
 	{
 		// Do we collide with this PlaneActor?
@@ -688,6 +692,27 @@ void FollowActor::FixCollisions()
 				else if (it->GetItemNum() == 1) {
 					mBombCount += 1;
 				}
+
+			}
+
+
+		}
+
+
+	}
+
+
+
+	for (auto ex : explosion)
+	{
+		if (ex != nullptr) {
+
+			const AABB& exBox = ex->GetBox()->GetWorldBox();
+			if (Intersect(playerBox, exBox) && mDamageTimer <= 0.0f)
+			{
+				mAudioComp->PlayEvent("event:/Hit");
+
+				mDamageTimer = 5.0f;
 
 			}
 

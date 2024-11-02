@@ -13,7 +13,10 @@
 #include "Mesh.h"
 #include "ArrowMove.h"
 #include "AudioComponent.h"
-
+#include "BoxComponent.h"
+#include "PlaneActor.h"
+#include "FollowActor.h"
+#include "EnemyActor.h"
 ArrowActor::ArrowActor(Game* game)
 	:Actor(game)
 	, mLifeSpan(2.0f)
@@ -25,8 +28,17 @@ ArrowActor::ArrowActor(Game* game)
 	mMyMove = new ArrowMove(this);
 	mMyMove->SetForwardSpeed(1500.0f);
 	mAudioComp = new AudioComponent(this);
+	mBoxComp = new BoxComponent(this);
+	AABB myBox(Vector3(-1.0f, -1.00f, -1.00f),
+		Vector3(1.0f, 1.0f, 1.0f));
+	mBoxComp->SetObjectBox(myBox);
+	mBoxComp->SetShouldRotate(false);
+	game->AddArrow(this);
 }
 
+ArrowActor::~ArrowActor() {
+	GetGame()->RemoveArrow(this);
+}
 void ArrowActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
@@ -47,3 +59,5 @@ void ArrowActor::HitTarget()
 {
 	mAudioComp->PlayEvent("event:/Ding");
 }
+
+

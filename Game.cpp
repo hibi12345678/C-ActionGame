@@ -383,7 +383,7 @@ void Game::UpdateGame()
 		mBossTime -= deltaTime;
 		if (mBossTime < 0.0f) {
 			BossActor* boss = new BossActor(this);
-			boss->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+			boss->SetPosition(Vector3(0.0f, 0.0f, -100.0f));
 			mBossTime = 0.0f;
 			scoreNumber++;
 			SetScore(scoreNumber);
@@ -699,3 +699,35 @@ void Game::RemoveDropItem(DropItemActor* dropItem)
 	mDropItems.erase(iter);
 }
 
+void Game::AddArrow(ArrowActor* arrow)
+{
+	mArrows.emplace_back(arrow);
+}
+
+void Game::RemoveArrow(ArrowActor* arrow)
+{
+	auto iter = std::find(mArrows.begin(), mArrows.end(), arrow);
+	mArrows.erase(iter);
+}
+
+void Game::AddBomb(BombActor* bomb)
+{
+	mBombs.emplace_back(bomb);
+}
+
+void Game::RemoveBomb(BombActor* bomb)
+{
+	auto iter = std::find(mBombs.begin(), mBombs.end(), bomb);
+	mBombs.erase(iter);
+}
+
+void Game::AddExplosion(ExplosionActor* explosion)
+{
+	mExplosions.emplace_back(explosion);
+}
+
+void Game::RemoveExplosion(ExplosionActor* explosion)
+{
+	auto iter = std::find(mExplosions.begin(), mExplosions.end(), explosion);
+	mExplosions.erase(iter);
+}
