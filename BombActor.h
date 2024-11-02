@@ -25,5 +25,6 @@ private:
 	class AudioComponent* mAudioComp;
 	class BombMove* mMyMove;
 	float mLifeSpan;
-
+	float blinkTime;
+	float blinkInterval; 
 };

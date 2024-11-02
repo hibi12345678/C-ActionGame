@@ -16,8 +16,8 @@ public:
 
 	void SetPlayer(Actor* player) { mPlayer = player; }
 	void Update(float deltaTime) override;
-	
+
 protected:
 	class Actor* mPlayer;
-	Vector3 start;
+
 };

@@ -69,9 +69,18 @@ public:
 	void RemoveEnemy(class EnemyActor* enemy);
 	void AddDropItem(class DropItemActor* dropItem);
 	void RemoveDropItem(class DropItemActor* dropItem);
+	void AddArrow(class  ArrowActor* arrow);
+	void RemoveArrow(class ArrowActor* arrow);
+	void AddBomb(class BombActor* bomb);
+	void RemoveBomb(class BombActor* bomb);
+	void AddExplosion(class ExplosionActor* explosion);
+	void RemoveExplosion(class ExplosionActor* explosion);
 	std::vector<class PlaneActor*>& GetPlanes() { return mPlanes; }
 	std::vector<class EnemyActor*>& GetEnemys() { return mEnemys; }
 	std::vector<class DropItemActor*>& GetDropItem() { return mDropItems; }
+	std::vector<class ArrowActor*>& GetArrow() { return mArrows; }
+	std::vector<class BombActor*>& GetBomb() { return mBombs; }
+	std::vector<class ExplosionActor*>& GetExplosion() { return mExplosions; }
 
 private:
 	void ProcessInput();
@@ -111,6 +120,9 @@ private:
 	std::vector<class PlaneActor*> mPlanes;
 	std::vector<class EnemyActor*> mEnemys;
 	std::vector<class DropItemActor*> mDropItems;
+	std::vector<class ArrowActor*> mArrows;
+	std::vector<class BombActor*> mBombs;
+	std::vector<class ExplosionActor*> mExplosions;
 	class FollowActor* mFollowActor;
 	class BossActor* mBossActor;
 	class SpriteComponent* mCrosshair;

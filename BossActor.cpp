@@ -18,7 +18,9 @@
 #include <ctime>   
 #include "Random.h"
 #include "TargetComponent.h"
-
+#include "ArrowActor.h"
+#include "BombActor.h"
+#include "ExplosionActor.h"
 BossActor::BossActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -334,6 +336,9 @@ void BossActor::FixCollisions()
 	auto& planes = GetGame()->GetPlanes();
 	// ポインタを受け取る場合
 	auto* player = GetGame()->GetPlayer();
+	auto& enemy = GetGame()->GetEnemys();
+	auto& arrow = GetGame()->GetArrow();
+	auto& explosion = GetGame()->GetExplosion();
 	if (player != nullptr) {
 
 		// デリファレンスしてメンバにアクセス
@@ -442,6 +447,42 @@ void BossActor::FixCollisions()
 		}
 	}
 
+	for (auto ar : arrow)
+	{
+		if (ar != nullptr) {
 
+			const AABB& arBox = ar->GetBox()->GetWorldBox();
+			if (Intersect(playerBox, arBox) && mDamageTimer <= 0.0f)
+			{
+				mAudioComp->PlayEvent("event:/Hit");
+				mHealth -= 0.5f;
+				mDamageTimer = 4.0f;
+
+			}
+
+
+		}
+
+
+	}
+
+	for (auto ex : explosion)
+	{
+		if (ex != nullptr) {
+
+			const AABB& exBox = ex->GetBox()->GetWorldBox();
+			if (Intersect(playerBox, exBox) && mDamageTimer <= 0.0f)
+			{
+				mAudioComp->PlayEvent("event:/Hit");
+				mHealth -= 1.0f;
+				mDamageTimer = 5.0f;
+
+			}
+
+
+		}
+
+	}
+	
 }
 

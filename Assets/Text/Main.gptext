@@ -10,7 +10,7 @@
 		"OKButton": "OK",
                 "Item" : "Item Select",
                 "Equipped" : "Equipped",
-                "SwordText" : "You can guard with a shield : Atk 30",
+                "SwordText" : "You can guard with a shield : Atk 25",
                 "TorchText" : "Light up surroundings",
                 "BowText" : "Press R to zoom in : Atk 25",
                 "BombText" : "Hold and throw a bomb : Atk 50",

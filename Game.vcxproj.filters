@@ -204,6 +204,9 @@
     <ClCompile Include="BombMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ExplosionActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -360,6 +363,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="BombMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,7 +19,9 @@
 #include <ctime>   
 #include "Random.h"
 #include "TargetComponent.h"
-
+#include "ArrowActor.h"
+#include "BombActor.h"
+#include "ExplosionActor.h"
 EnemyActor::EnemyActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -47,7 +49,7 @@ EnemyActor::EnemyActor(Game* game)
 	// Add a box component\	
 	mBox = new BoxComponent(this);
 	AABB myBox(Vector3(-50.0f, -50.0f, 0.0f),
-		Vector3(50.0f, 50.0f, 170.0f));
+		Vector3(50.0f, 50.0f, 240.0f));
 	mBox->SetObjectBox(myBox);
 	mBox->SetShouldRotate(false);
 	
@@ -341,6 +343,8 @@ void EnemyActor::FixCollisions()
 	auto* player = GetGame()->GetPlayer();
 
 	auto& enemy = GetGame()->GetEnemys();
+	auto& arrow = GetGame()->GetArrow();
+	auto& explosion = GetGame()->GetExplosion();
 	if (player != nullptr) {
 		
 		// デリファレンスしてメンバにアクセス
@@ -496,6 +500,43 @@ void EnemyActor::FixCollisions()
 			
 		}
 
+
+	}
+
+	for (auto ar : arrow)
+	{
+		if (ar != nullptr) {
+
+			const AABB& arBox = ar->GetBox()->GetWorldBox();
+			if (Intersect(playerBox, arBox) && mDamageTimer <= 0.0f)
+			{
+				mAudioComp->PlayEvent("event:/Hit");
+				mHealth -= 0.5f;
+				mDamageTimer = 4.0f;
+
+			}
+
+
+		}
+
+
+	}
+
+	for (auto ex : explosion)
+	{
+		if (ex != nullptr) {
+
+			const AABB& exBox = ex->GetBox()->GetWorldBox();
+			if (Intersect(playerBox, exBox) && mDamageTimer <= 0.0f )
+			{
+				mAudioComp->PlayEvent("event:/Hit");
+				mHealth -= 1.0f;
+				mDamageTimer = 5.0f;
+
+			}
+
+
+		}
 
 	}
 }
