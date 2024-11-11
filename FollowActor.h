@@ -82,4 +82,5 @@ private:
 	float mLastFootstep;
 	int mArrowCount;
 	int mBombCount;
+	bool deathFlag;
 };

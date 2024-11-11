@@ -92,7 +92,26 @@ bool Game::Initialize()
 	LoadData();
 	
 	mTicksCount = SDL_GetTicks();
-	
+	GetSkeleton("Assets/Skel/EnemyBoss.gpskel");
+	GetAnimation("Assets/Anim/Player_idle.gpanim");
+	GetAnimation("Assets/Anim/Player_walk.gpanim");
+	GetAnimation("Assets/Anim/Player_attack.gpanim");
+	GetAnimation("Assets/Anim/Player_block.gpanim");
+	GetAnimation("Assets/Anim/Player_jump.gpanim");
+	GetAnimation("Assets/Anim/Player_bow.gpanim");
+	GetAnimation("Assets/Anim/Player_bowidle.gpanim");
+	GetAnimation("Assets/Anim/Player_bomb.gpanim");
+	GetAnimation("Assets/Anim/Enemy_idle.gpanim");
+	GetAnimation("Assets/Anim/Enemy_walk.gpanim");
+	GetAnimation("Assets/Anim/Enemy_attack.gpanim");
+	GetAnimation("Assets/Anim/Enemy_jump_attack.gpanim");
+	GetAnimation("Assets/Anim/Enemy_dying.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_idle.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_walk.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_attack.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_jump_attack.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_dying.gpanim");
+
 	return true;
 }
 
@@ -423,7 +442,7 @@ void Game::LoadData()
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 		// Make an initial call to get relative to clear out
 		SDL_GetRelativeMouseState(nullptr, nullptr);
-		printf("a");
+		
 	}
 
 	else if (mGameState == EMainMenu) {
