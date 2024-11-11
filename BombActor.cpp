@@ -103,51 +103,7 @@ void BombActor::FixCollisions()
 		const AABB& planeBox = pa->GetBox()->GetWorldBox();
 		if (Intersect(bombBox, planeBox))
 		{
-			/**
-			/// Calculate all our differences
-			float dx1 = planeBox.mMax.x - bombBox.mMin.x;
-			float dx2 = planeBox.mMin.x - bombBox.mMax.x;
-			float dy1 = planeBox.mMax.y - bombBox.mMin.y;
-			float dy2 = planeBox.mMin.y - bombBox.mMax.y;
-			float dz1 = planeBox.mMax.z - bombBox.mMin.z;
-			float dz2 = planeBox.mMin.z - bombBox.mMax.z;
 
-			// Set dx to whichever of dx1/dx2 have a lower abs
-			float dx = Math::Abs(dx1) < Math::Abs(dx2) ?
-				dx1 : dx2;
-			// Ditto for dy
-			float dy = Math::Abs(dy1) < Math::Abs(dy2) ?
-				dy1 : dy2;
-			// Ditto for dz
-			float dz = Math::Abs(dz1) < Math::Abs(dz2) ?
-				dz1 : dz2;
-
-			// Whichever is closest, adjust x/y position
-			if (Math::Abs(dx) <= Math::Abs(dy) && Math::Abs(dx) <= Math::Abs(dz))
-			{
-				pos.x += dx;
-				mMyMove->SetForwardSpeed(0.0f);
-
-				mMyMove->SetStrafeSpeed(0.0f);
-
-
-			}
-			else if (Math::Abs(dy) <= Math::Abs(dx) && Math::Abs(dy) <= Math::Abs(dz))
-			{
-				pos.y += dy;
-				mMyMove->SetForwardSpeed(0.0f);
-
-				mMyMove->SetStrafeSpeed(0.0f);
-
-
-			}
-			else
-			{
-				pos.z += dz;
-
-			}// Need to set position and update box component
-			SetPosition(pos);
-			mBoxComp->OnUpdateWorldTransform(); */
 			
 			mMyMove->SetForwardSpeed(0.0f);
 

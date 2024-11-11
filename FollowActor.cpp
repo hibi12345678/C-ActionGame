@@ -48,6 +48,8 @@ FollowActor::FollowActor(Game* game)
 	, mArrowCount(9)
 	, mFPSCamera(nullptr)
 	, changeTimer(0.0f)
+	, deathFlag(true)
+	
 {
 	mMeshComp = new SkeletalMeshComponent(this);
 	mAudioComp = new AudioComponent(this);
@@ -63,7 +65,6 @@ FollowActor::FollowActor(Game* game)
 	
 	blockPressed = false;
 
-
 }
 
 void FollowActor::ActorInput(const uint8_t* keys)
@@ -75,19 +76,20 @@ void FollowActor::ActorInput(const uint8_t* keys)
 	// wasd movement
 	if (keys[SDL_SCANCODE_W])
 	{
-		forwardSpeed += 400.0f;
+		forwardSpeed += 200.0f;
+		
 	}
 	else if (keys[SDL_SCANCODE_S])
 	{
-		forwardSpeed -= 400.0f;
+		forwardSpeed -= 200.0f;
 	}
 	if (keys[SDL_SCANCODE_A])
 	{
-		strafeSpeed -= 400.0f;
+		strafeSpeed -= 200.0f;
 	}
 	else if (keys[SDL_SCANCODE_D])
 	{
-		strafeSpeed += 400.0f;
+		strafeSpeed += 200.0f;
 	}
 	if (keys[SDL_SCANCODE_SPACE] && mState == EGrounded && mStamina > 0.1f && mHealth > 0.0f && mAttackBoxComp == nullptr )
 	{
@@ -96,11 +98,18 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		blockPressed = false;
 		mState = EJump;
 		
-		
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_jump.gpanim"), 0.9f);
 		jumpSpeed += -20000.0f;
 		mStamina -= 0.1f;
 	}
-
+	else if(keys[SDL_SCANCODE_SPACE] && mState == EGrounded && mStamina <= 0.1f && mHealth > 0.0f && mAttackBoxComp == nullptr) {
+		if (mItemState == EBow) {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bowidle.gpanim"), 1.0f);
+		}
+		else {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
+		}
+	}
 	if (keys[SDL_SCANCODE_R] && mState == EGrounded && mStamina > 0.1f && mHealth > 0.0f && mAttackBoxComp == nullptr && mItemState == ESword)
 	{
 		Block();
@@ -112,6 +121,14 @@ void FollowActor::ActorInput(const uint8_t* keys)
 	else if(mItemState == ESword){
 		
 		if (mBlockBoxComp != nullptr) {
+			mMoving = false;
+
+			if (mItemState == EBow) {
+				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bowidle.gpanim"), 1.0f);
+			}
+			else {
+				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
+			}
 			delete mBlockBoxComp;  // メモリの解放
 			mBlockBoxComp = nullptr;  // ポインタをクリア
 		}
@@ -148,19 +165,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		}
 	}
 
-	// Did we just start moving?
-	if (!mMoving && !Math::NearZero(forwardSpeed))
-	{
-		mMoving = true;
 
-		//mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/CatRunSprint.gpanim"), 1.25f);
-	}
-	// Or did we just stop moving?
-	else if (mMoving && Math::NearZero(forwardSpeed))
-	{
-		mMoving = false;
-		//mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/CatActionIdle.gpanim"));
-	}
 
 	if (mAttackBoxComp != nullptr || mBlockBoxComp != nullptr) {
 		forwardSpeed = 0.0f;
@@ -223,7 +228,31 @@ void FollowActor::ActorInput(const uint8_t* keys)
 			Bomb();
 		}
 	}
+	// Did we just start moving?
+	if (!mMoving && (!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)) && !mAttackBoxComp && mState == EGrounded)
+	{
+		mMoving = true;
 
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_walk.gpanim"));
+
+
+
+	}
+
+	// Or did we just stop moving?
+	else if (mMoving && Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && !mAttackBoxComp  &&  !mBlockBoxComp && mState == EGrounded)
+	{
+		mMoving = false;
+
+		if (mItemState == EBow) {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bowidle.gpanim"), 1.0f);
+		}
+		else {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
+		}
+
+
+	}
 	if (mHealth > 0.0f) {
 		mMoveComp->SetAngularSpeed(angularSpeed);
 		if (mCameraComp) {
@@ -285,6 +314,7 @@ void FollowActor::UpdateActor(float deltaTime) {
 	}
 	else if (mState == EFall) {
 		jumpSpeed += 100000.0f * deltaTime; // 重力の影響を受ける
+		
 	}
 	else if(mState == EGrounded) {
 		jumpSpeed = 0.0f;
@@ -300,8 +330,27 @@ void FollowActor::UpdateActor(float deltaTime) {
 	// タイマーが進行している場合
 	if (mAttackTimer > 0.0f) {
 		mAttackTimer -= deltaTime;
+		
+			if (mItemState == EBow) {
+				
+				if (mAttackTimer <= 0.6f) { 
+					mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bowidle.gpanim"), 1.0f);
+					mMoving = false; 
+				}
 
+			}
+			else{
+				
+				if (mAttackTimer <= 0.0f) { 
+					mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
+					mMoving = false; 
+				}
+			}
+			
+			
+		
 	}
+
 	// タイマーが進行している場合
 	if (mBlockTimer > 0.0f) {
 		mBlockTimer -= deltaTime;
@@ -315,8 +364,10 @@ void FollowActor::UpdateActor(float deltaTime) {
 
 			delete mAttackBoxComp;  // メモリの解放
 			mAttackBoxComp = nullptr;  // ポインタをクリア
+			
 		}
 	}
+
 	mState = EFall;
 	FixCollisions();
 	// タイマーが進行している場合
@@ -332,12 +383,26 @@ void FollowActor::UpdateActor(float deltaTime) {
 		// 一定間隔を超えたら可視状態を切り替え
 		if (blinkTime >= blinkInterval)
 		{
+
 			// 可視状態を反転させる
 			isVisible = !isVisible;
 			mMeshComp->SetVisible(isVisible);
 
 			// タイマーをリセット
 			blinkTime = 0.0f;
+		}
+		if (mHealth <= 0.0f) {
+			if (deathFlag) {
+				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_dying.gpanim"), 1.0f);
+				deathFlag = false;
+			}
+			
+			if (mDamageTimer <= 0.0f) {
+				mState = EDead;
+				deathFlag = true;
+			}
+			
+			mHealth = 0.0f;
 		}
 	}
 
@@ -351,11 +416,7 @@ void FollowActor::UpdateActor(float deltaTime) {
 
 	}
 	
-	if (mHealth <= 0.0f) {
 
-		mState = EDead;
-		mHealth = 0.0f;
-	}
 	
 
 
@@ -366,7 +427,8 @@ void FollowActor::SetVisible(bool visible)
 }
 
 void FollowActor::Attack() {
-	mArrowCount--;
+	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_attack.gpanim"),1.2f);
+	
 	// 攻撃判定用のBoxComponentを追加
 	mAttackBoxComp = new BoxComponent(this);
 	AABB myBox(Vector3(25.0f, -25.0f, 100.0f),
@@ -382,7 +444,8 @@ void FollowActor::Attack() {
 }
 void FollowActor::Shoot()
 {
-	mBombCount--;
+	mArrowCount--;
+	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bow.gpanim"), 1.0f);
 	// Get direction vector
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
@@ -405,7 +468,8 @@ void FollowActor::Shoot()
 
 void FollowActor::Bomb()
 {
-
+	mBombCount--;
+	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bomb.gpanim"), 1.0f);
 	// Get direction vector
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
@@ -423,10 +487,11 @@ void FollowActor::Block() {
 
 
 	if(mBlockBoxComp == nullptr){
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_block.gpanim"), 1.0f);
 		// 防御判定用のBoxComponentを追加
 		mBlockBoxComp = new BoxComponent(this);
-		AABB myBox(Vector3(25.0f, -1.0f, 0.0f),
-			Vector3(30.0f, 1.0f, 20.0f));
+		AABB myBox(Vector3(25.0f, -1.0f, 50.0f),
+			Vector3(30.0f, 1.0f, 170.0f));
 
 		mBlockBoxComp->SetObjectBox(myBox);
 		mBlockBoxComp->SetShouldRotate(true);

@@ -56,7 +56,7 @@
                         "visible": true,
                         "isSkeletal": true,
                         "skelFile": "Assets/Skel/Enemy.gpskel",
-                        "animFile": "Assets/Anim/EnemyWalke.gpanim",
+                        "animFile": "Assets/Anim/Enemy_idle.gpanim",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }
@@ -106,7 +106,7 @@
                         "visible": true,
                         "isSkeletal": true,
                         "skelFile": "Assets/Skel/Enemy.gpskel",
-                        "animFile": "Assets/Anim/EnemyWalke.gpanim",
+                        "animFile": "Assets/Anim/Enemy_idle.gpanim",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }
@@ -156,7 +156,7 @@
                         "visible": true,
                         "isSkeletal": true,
                         "skelFile": "Assets/Skel/Enemy.gpskel",
-                        "animFile": "Assets/Anim/EnemyWalke.gpanim",
+                        "animFile": "Assets/Anim/Enemy_idle.gpanim",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }
@@ -207,7 +207,7 @@
                         "visible": true,
                         "isSkeletal": true,
                         "skelFile": "Assets/Skel/Player.gpskel",
-                        "animFile": "Assets/Anim/PlayerIdle.gpanim",
+                        "animFile": "Assets/Anim/Player_idle.gpanim",
                         "animPlayRate": 1.0,
                         "animTime": 0.0
                     }

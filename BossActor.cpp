@@ -39,14 +39,14 @@ BossActor::BossActor(Game* game)
 	, mMoveState(EPatrol)
 	, mBoxTimer(0.0f)
 	, mReactFlag(true)
-	, groundFlag(false)
+	, groundFlag(true)
+	, deathFlag(true)
 {
 	SetScale(2.0f);
 	mMeshComp = new SkeletalMeshComponent(this);
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/EnemyBoss.gpmesh");
 	mMeshComp->SetMesh(mesh);
-    mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Object/EnemyBoss.gpskel"));
-	//mMeshComp->PlayAnimation(game->GetAnimation("Assets/Object/EnemyBossWalk.gpanim"));
+    mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Skel/EnemyBoss.gpskel"));
 	game->SetBossActor(this);
 	mMoveComp = new MoveComponent(this);
 	mAudioComp = new AudioComponent(this);
@@ -58,7 +58,6 @@ BossActor::BossActor(Game* game)
 	mBox->SetObjectBox(myBox);
 	mBox->SetShouldRotate(false);
 	srand(static_cast<unsigned int>(time(0)));
-	
 
 }
 
@@ -76,18 +75,18 @@ void BossActor::UpdateActor(float deltaTime) {
 	Vector3 pos = GetPosition();
 	Vector3 diff = playerPosition - pos;
 
-	if (diff.LengthSq() <= 200000.0f && diff.LengthSq() > 100000.0f) {
+	if (diff.LengthSq() <= 200000.0f && diff.LengthSq() > 100000.0f && mHealth > 0.0f) {
 
 		mMoveState = EBattle;
 
 
 	}
 
-	else if (diff.LengthSq() <= 5000000.0f ) {
+	else if (diff.LengthSq() <= 5000000.0f && mHealth > 0.0f) {
 		mMoveState = EAttack;
 	}
 
-	else if (diff.LengthSq() > 5000000.0f) {
+	else if (diff.LengthSq() > 5000000.0f && mHealth > 0.0f) {
 		mMoveState = EPatrol;
 	}
 	if (mMoveState == EPatrol) {
@@ -111,7 +110,7 @@ void BossActor::UpdateActor(float deltaTime) {
 		}
 	}
 
-	else if (mMoveState == EBattle) {
+	else if (mMoveState == EBattle && mHealth > 0.0f ) {
 
 		if (mReactFlag == false) {
 			mReactFlag = true;
@@ -143,7 +142,7 @@ void BossActor::UpdateActor(float deltaTime) {
 		}
 	}
 
-	else if (mMoveState == EAttack) {
+	else if (mMoveState == EAttack && mHealth > 0.0f ) {
 
 		forwardSpeed += 100.0f;
 		float angle = atan2(diff.y, diff.x);
@@ -166,8 +165,8 @@ void BossActor::UpdateActor(float deltaTime) {
 			}
 			else if (randomValue == 3 && mAttackTimer <= 0.0f) {
 				AttackGround();
-				mState = EJump;
-				jumpSpeed += -250000.0f;
+				//mState = EJump;
+				//jumpSpeed += -250000.0f;
 			}
 
 			if (mMoveTimer <= 0.0f) {
@@ -182,16 +181,16 @@ void BossActor::UpdateActor(float deltaTime) {
 
 
 	// Did we just start moving?
-	if (!mMoving && !Math::NearZero(forwardSpeed))
+	if (!mMoving && (!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)) && groundFlag == true)
 	{
 		mMoving = true;
-		//mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/CatRunSprint.gpanim"), 1.25f);
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/EnemyBoss_walk.gpanim"), 1.0f);
 	}
 	// Or did we just stop moving?
-	else if (mMoving && Math::NearZero(forwardSpeed))
+	else if (mMoving && Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && groundFlag == true && !mAttackBoxComp)
 	{
 		mMoving = false;
-		//mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/CatActionIdle.gpanim"));
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/EnemyBoss_idle.gpanim"), 1.0f);
 	}
 	if (mState == EJump) {
 
@@ -242,6 +241,20 @@ void BossActor::UpdateActor(float deltaTime) {
 			// タイマーをリセット
 			blinkTime = 0.0f;
 		}
+
+		if (mHealth <= 0.0f) {
+			if (deathFlag) {
+				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/EnemyBoss_dying.gpanim"), 1.0f);
+				deathFlag = false;
+			}
+			
+			if (mDamageTimer <= 0.0f) {
+				mState = EDead;
+
+
+			}
+			mHealth = 0.0f;
+		}
 	}
 
 	else {
@@ -260,12 +273,14 @@ void BossActor::UpdateActor(float deltaTime) {
 
 			delete mAttackBoxComp;  // メモリの解放
 			mAttackBoxComp = nullptr;  // ポインタをクリア
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/EnemyBoss_idle.gpanim"), 1.0f);
 		}
 		if (mBoxTimer <= 0.3f && groundFlag == false) {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/EnemyBoss_idle.gpanim"), 1.0f);
 			// 攻撃判定用のBoxComponentを追加
 			mAttackBoxComp = new BoxComponent(this);
-			AABB myBox(Vector3(-125.0f, -125.0f, 0.0f),
-				Vector3(125.0f, 125.0f, 10.0f));
+			AABB myBox(Vector3(-150.0f, -125.0f, 0.0f),
+				Vector3(150.0f, 125.0f, 10.0f));
 			mAttackBoxComp->SetObjectBox(myBox);
 			mAttackBoxComp->SetShouldRotate(true);
 			SmokeActor* smoke = new SmokeActor(GetGame());
@@ -273,10 +288,7 @@ void BossActor::UpdateActor(float deltaTime) {
 			groundFlag = true;
 		}
 	}
-	if (mHealth <= 0.0f) {
-		mHealth = 0.0f;
-		mState = EDead;
-	}
+
 }
 void BossActor::SetVisible(bool visible)
 {
@@ -287,10 +299,10 @@ void BossActor::Attack() {
 	// 攻撃判定用のBoxComponentを追加
 	mAttackBoxComp = new BoxComponent(this);
 	AABB myBox(Vector3(50.0f, -75.0f, 25.0f),
-		Vector3(750.0f, 75.0f, 170.0f));
+		Vector3(125.0f, 75.0f, 170.0f));
 	mAttackBoxComp->SetObjectBox(myBox);
 	mAttackBoxComp->SetShouldRotate(true);
-
+	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/EnemyBoss_attack.gpanim"), 1.0f);
 	// タイマーをリセット
 	mBoxTimer = 0.5f;  // 0.5秒後に削除する
 	// タイマーをリセット
@@ -301,14 +313,14 @@ void BossActor::Attack() {
 
 void BossActor::AttackGround() {
 	// タイマーをリセット
-	mBoxTimer = 1.1f;
+	mBoxTimer = 2.1f;
 
 	// タイマーをリセット
 	mAttackTimer = 4.0f;
 
 	groundFlag = false;
 
-
+	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/EnemyBoss_jump_attack.gpanim"), 1.0f);
 	mAudioComp->PlayEvent("event:/EnemyAttack2");
 }
 

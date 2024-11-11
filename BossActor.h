@@ -70,6 +70,7 @@ private:
 	int randomValue;
 	bool mReactFlag;
 	bool groundFlag;
+	bool deathFlag;
 protected:
 	void SetViewMatrix(const Matrix4& view);
 };

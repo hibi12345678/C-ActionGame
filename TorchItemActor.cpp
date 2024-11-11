@@ -23,10 +23,10 @@ TorchItemActor::TorchItemActor(Game* game)
 	, randomValue(0)
 	, mState(EActive)
 {
-	SetScale(30.0f);
+	SetScale(50.0f);
 	mc = new MeshComponent(this);
 
-	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Arrow3D.gpmesh");
+	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Torch3D.gpmesh");
 	mc->SetMesh(mesh);
 	for (int i = 0; i <= 2; i++) {
 		PointLightComponent* pointLight = new PointLightComponent(game->GetPlayer());
