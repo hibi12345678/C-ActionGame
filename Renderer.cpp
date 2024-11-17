@@ -12,6 +12,7 @@
 #include <algorithm>
 #include "Shader.h"
 #include "VertexArray.h"
+#include "FollowActor.h"
 #include "SpriteComponent.h"
 #include "MeshComponent.h"
 #include "UIScreen.h"
@@ -22,6 +23,14 @@
 #include "PointLightComponent.h"
 #include <SOIL/SOIL.h>
 #include<iostream>
+#include "ImGuiLayer.h"
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
+#include "MoveComponent.h"
+#include "TorchItemActor.h"
+
+
 Renderer::Renderer(Game* game)
 	:mGame(game)
 	,mSpriteShader(nullptr)
@@ -32,12 +41,15 @@ Renderer::Renderer(Game* game)
 	,mGBuffer(nullptr)
 	,mGGlobalShader(nullptr)
 	,mGPointLightShader(nullptr)
+	,angle(0.0f)
 {
 }
 
 Renderer::~Renderer()
 {
 }
+
+
 
 bool Renderer::Initialize(float screenWidth, float screenHeight)
 {
@@ -61,8 +73,13 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 	// Force OpenGL to use hardware acceleration
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 14)", 100, 100,
+	mWindow = SDL_CreateWindow("Game", 100, 100,
 		static_cast<int>(mScreenWidth), static_cast<int>(mScreenHeight), SDL_WINDOW_OPENGL);
+	mImGuiWindow = SDL_CreateWindow("ImGui Window", 1250,150,
+		480, 800, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
+	mImGuiContext = SDL_GL_CreateContext(mImGuiWindow);
+	
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -94,12 +111,6 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 	// Create quad for drawing sprites
 	CreateSpriteVerts();
 
-	// Create render target for mirror
-	//if (!CreateMirrorTarget())
-	//{
-	//	SDL_Log("Failed to create render target for mirror.");
-	//	return false;
-	//}
 	
 	// Create G-buffer
 	mGBuffer = new GBuffer();
@@ -113,19 +124,14 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 
 	// Load point light mesh
 	mPointLightMesh = GetMesh("Assets/Object/PointLight.gpmesh");
+	InitializeImGui(mImGuiWindow, mImGuiContext);
 
 	return true;
 }
 
 void Renderer::Shutdown()
 {
-	// Get rid of any render target textures, if they exist
-	if (mMirrorTexture != nullptr)
-	{
-		glDeleteFramebuffers(1, &mMirrorBuffer);
-		mMirrorTexture->Unload();
-		delete mMirrorTexture;
-	}
+
 	// Get rid of G-buffer
 	if (mGBuffer != nullptr)
 	{
@@ -142,8 +148,13 @@ void Renderer::Shutdown()
 	delete mSpriteShader;
 	mMeshShader->Unload();
 	delete mMeshShader;
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
+
+
 }
 
 void Renderer::UnloadData()
@@ -202,9 +213,107 @@ void Renderer::Draw()
 	}
 
 	
-	// Swap the buffers
-	SDL_GL_SwapWindow(mWindow);
 
+	// ---- ImGui描画のための準備 ----
+	
+	// ImGuiウィンドウのコンテキストをアクティブにする
+	SDL_GL_MakeCurrent(mImGuiWindow, mImGuiContext);
+	// バックバッファをクリア
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // 背景色を黒に設定
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // バッファをクリア
+	// ImGuiフレームの開始
+	ImGui_ImplSDL2_NewFrame();
+	ImGui_ImplOpenGL3_NewFrame();
+	
+	ImGui::NewFrame();
+	ImGui::SetWindowSize(ImVec2(400.0f, 760.0f), ImGuiCond_Always);
+	// ImGuiのUI要素
+	ImGui::Begin("Hello, ImGui!");
+
+
+	// Ambient LightのVector3
+	static float bgColor[3] = { 0.7f, 0.7f, 0.7f }; // 初期値設定定
+
+   // RGBのみを操作するカラーピッカー
+	if (ImGui::ColorPicker3("BG color", bgColor, ImGuiColorEditFlags_PickerHueWheel)) {
+		// カラーピッカーで変更されたRGB値をglClearColorに設定する
+		glClearColor(bgColor[0], bgColor[1], bgColor[2], 1.0f);  // アルファ値は1.0fに固定
+
+	}
+	SetAmbientLight(Vector3(bgColor[0],
+		bgColor[1],
+		bgColor[2]));
+	if (mGame->GetPlayer() != nullptr && mGame->GetState()== Game::GameState::EGameplay) {
+		float health = mGame->GetPlayer()->GetHealth();
+		Vector3 pos = mGame->GetPlayer()->Actor::GetPosition();
+		//Vector3 pos2 = mGame->GetPlayer()->GetSekltalMesh()->GetBonePosition("Sword_joint");
+		Quaternion Rotation = mGame->GetPlayer()->Actor::GetRotation();
+		//angle += mGame->GetPlayer()->GetMoveComponent()->GetAngularSpeed();
+		static float values[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		
+
+		if (angle >= 360.0f) {
+			angle -= 360.0f;
+		}
+		else if (angle < 0.0f) {
+			angle += 360.0f;
+		}
+		// 正しいスコープを指定して初期化
+		FollowActor::State mState = mGame->GetPlayer()->GetState();
+
+		// ヘルスの表示
+		ImGui::Text("Health: %.2f", health);
+
+		// 位置（座標）の表示
+		ImGui::Text("Position: (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
+		// 位置（座標）の表示
+		//\ImGui::Text("Sword Rotation: (%.2f)", angle);
+		// 位置（座標）の表示
+		ImGui::Text("Sword Rotation: (%.2f, %.2f, %.2f ,%.2f)", Rotation.x, Rotation.y, Rotation.z, Rotation.w);
+
+
+		// 状態の表示（enum値を数値として表示する場合）
+		ImGui::Text("State: %d", static_cast<int>(mState));
+
+		// 各要素を編集
+		for (int i = 0; i < 4; ++i)
+		{
+			ImGui::SliderFloat(("Value " + std::to_string(i)).c_str(), &values[i], -10.0f, 10.0f);
+			
+		}
+		// 状態の名前を文字列で表示する場合
+		const char* stateName = "";
+		switch (mState) {
+		case FollowActor::State::EJump:
+			stateName = "Jump";
+			break;
+		case FollowActor::State::EFall:
+			stateName = "Fall";
+			break;
+		case FollowActor::State::EGrounded:
+			stateName = "Grounded";
+			break;
+		case FollowActor::State::EDead:
+			stateName = "Dead";
+			break;
+		}
+		ImGui::Text("State (Name): %s", stateName);
+
+	}
+
+
+	ImGui::End();
+
+	// ImGui描画
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	// ImGuiウィンドウのバッファを入れ替え
+	SDL_GL_SwapWindow(mImGuiWindow);
+
+	// メインウィンドウを描画（必要に応じて追加）
+	SDL_GL_MakeCurrent(mWindow, mContext);
+	SDL_GL_SwapWindow(mWindow);
 }
 
 void Renderer::AddSprite(SpriteComponent* sprite)
@@ -369,47 +478,6 @@ void Renderer::Draw3DScene(unsigned int framebuffer, const Matrix4& view, const 
 }
 
 
-
-bool Renderer::CreateMirrorTarget()
-{
-	// Generate a frame buffer for the mirror texture
-	glGenFramebuffers(1, &mMirrorBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, mMirrorBuffer);
-
-	// Create the texture we'll use for rendering
-	int width = static_cast<int>(mScreenWidth);
-	int height = static_cast<int>(mScreenHeight);
-	mMirrorTexture = new Texture();
-	mMirrorTexture->CreateForRendering(width, height, GL_RGB);
-
-	// Add a depth buffer to this target
-	GLuint depthBuffer;
-	glGenRenderbuffers(1, &depthBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-
-	// Attach mirror texture as the output target for the frame buffer
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, mMirrorTexture->GetTextureID(), 0);
-
-	// Set the list of buffers to draw to for this frame buffer
-	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, drawBuffers);
-
-	// Make sure everything worked
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		// If it didn't work, delete the framebuffer,
-		// unload/delete the texture and return false
-		glDeleteFramebuffers(1, &mMirrorBuffer);
-		mMirrorTexture->Unload();
-		delete mMirrorTexture;
-		mMirrorTexture = nullptr;
-		return false;
-	}
-	return true;
-}
-
 void Renderer::DrawFromGBuffer()
 {
 	// Clear the current framebuffer
@@ -532,6 +600,13 @@ bool Renderer::LoadShaders()
 	mGPointLightShader->SetVector2Uniform("uScreenDimensions",
 		Vector2(mScreenWidth, mScreenHeight));
 
+	mSkyboxShader = new Shader();
+	if (!mSkyboxShader->Load("Shaders/BasicMesh.vert",
+		"Shaders/GBufferPointLight.frag"))
+	{
+		return false;
+	}
+	mSkyboxShader->SetActive();
 	return true;
 }
 
@@ -594,3 +669,12 @@ void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
 	outDir = end - outStart;
 	outDir.Normalize();
 }
+
+void Renderer::InitializeImGui(SDL_Window* window, SDL_GLContext context) {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+	ImGui_ImplSDL2_InitForOpenGL(window, context);
+	ImGui_ImplOpenGL3_Init("#version 330");
+}
+

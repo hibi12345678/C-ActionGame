@@ -12,7 +12,8 @@
 #include <unordered_map>
 #include <SDL/SDL.h>
 #include "Math.h"
-#include <GL/glew.h>  // GLEWÇégÇ¡ÇƒÇ¢ÇÈèÍçá
+#include <GL/glew.h> 
+
 struct DirectionalLight
 {
 	// Direction of light
@@ -70,10 +71,24 @@ public:
 	void SetMirrorView(const Matrix4& view) { mMirrorView = view; }
 	class Texture* GetMirrorTexture() { return mMirrorTexture; }
 	class GBuffer* GetGBuffer() { return mGBuffer; }
+
+	void InitializeImGui(SDL_Window* window, SDL_GLContext context);
+
+	void SkyBoxTexture(const std::string& Directory,
+		const std::string& PosXFilename,
+		const std::string& NegXFilename,
+		const std::string& PosYFilename,
+		const std::string& NegYFilename,
+		const std::string& PosZFilename,
+		const std::string& NegZFilename);
+
+	GLenum LoadSkyBox(std::vector<std::string> faces);
+
+	void BindSkyBox(GLenum TextureUnit);
 private:
 	// Chapter 14 additions
 	void Draw3DScene(unsigned int framebuffer, const Matrix4& view, const Matrix4& proj, bool lit = true);
-	bool CreateMirrorTarget();
+	
 	void DrawFromGBuffer();
 	//void DrawFromGBuffer();
 	// End chapter 14 additions
@@ -120,6 +135,12 @@ private:
 	SDL_Window* mWindow;
 	// OpenGL context
 	SDL_GLContext mContext;
+
+	// ImGuiWindow
+	SDL_Window* mImGuiWindow;
+	// OpenGL ImGuicontext
+	SDL_GLContext mImGuiContext;
+
 	// Width/height
 	float mScreenWidth;
 	float mScreenHeight;
@@ -134,5 +155,7 @@ private:
 	class Shader* mGPointLightShader;
 	std::vector<class PointLightComponent*> mPointLights;
 	class Mesh* mPointLightMesh;
+	float angle;
+
 
 };

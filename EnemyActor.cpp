@@ -211,7 +211,9 @@ void EnemyActor::UpdateActor(float deltaTime) {
 	{
 		mMoving = false;
 		
-		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_idle.gpanim"), 1.0f);
+		if (deathFlag) {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_idle.gpanim"), 1.0f);
+		}
 	
 		
 	}
@@ -300,10 +302,15 @@ void EnemyActor::UpdateActor(float deltaTime) {
 
 			delete mAttackBoxComp;  // メモリの解放
 			mAttackBoxComp = nullptr;  // ポインタをクリア
-			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_idle.gpanim"),1.0f);
+			if (deathFlag) {
+				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_idle.gpanim"), 1.0f);
+			}
+			
 		}
 		if (mBoxTimer <= 0.3f && groundFlag == false) {
-			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_idle.gpanim"),1.0f);
+			if (deathFlag) {
+				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_idle.gpanim"), 1.0f);
+			}
 			// 攻撃判定用のBoxComponentを追加
 			mAttackBoxComp = new BoxComponent(this);
 			AABB myBox(Vector3(-150.0f, -125.0f, 0.0f),

@@ -17,6 +17,7 @@ public:
 	void Update(float deltaTime) override;
 	
 	float GetAngularSpeed() const { return mAngularSpeed; }
+	float GetAngle() const { return angle; }
 	float GetForwardSpeed() const { return mForwardSpeed; }
 	float GetStrafeSpeed() const { return mStrafeSpeed; }
 	float GetJumpSpeed() const {return  mJumpSpeed; }
@@ -34,4 +35,5 @@ protected:
 	float mForwardSpeed;
 	float mStrafeSpeed;
 	float mJumpSpeed;
+	float angle;
 };

@@ -30,6 +30,8 @@ public:
 	};
 	void ActorInput(const uint8_t* keys) override;
 	class FollowCamera* GetCameraComponent() { return mCameraComp; }
+	class SkeletalMeshComponent* GetSekltalMesh() { return mMeshComp; }
+	class  MoveComponent* GetMoveComponent() { return mMoveComp; }
 	void SetVisible(bool visible);
 	void UpdateActor(float deltaTime) override;
 	void LoadProperties(const rapidjson::Value& inObj) override;
@@ -45,7 +47,7 @@ public:
 	TypeID GetType() const override { return TFollowActor; }
 	float GetStamina()  { return  mStamina; }
 	float GetHealth()  { return  mHealth; }
-	Vector3 GetPos() { return pos; }
+	Vector3 GetPos() const { return pos; }
 	class BoxComponent* GetBox() { return mBoxComp; }
 	class BoxComponent* GetAttackBox() { return mAttackBoxComp; }
 	void FixCollisions();
@@ -61,6 +63,7 @@ private:
 	class BoxComponent* mAttackBoxComp;
 	class BoxComponent* mBlockBoxComp;
 	class AudioSystem* mAudioSystem;
+	
 	float mAttackTimer;  // 攻撃判定用のタイマー
 	float mBlockTimer;  // 攻撃判定用のタイマー
 	float mBoxTimer;  // 攻撃判定用のタイマー
@@ -83,4 +86,5 @@ private:
 	int mArrowCount;
 	int mBombCount;
 	bool deathFlag;
+	bool jumpFlag;
 };

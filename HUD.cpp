@@ -62,7 +62,7 @@ void HUD::Draw(Shader* shader)
 {
 	
 	
-	if (Game::EGameplay == mGame->GetState() || Game::EItem == mGame->GetState()) {
+	if (Game::GameState::EGameplay == mGame->GetState() || Game::GameState::EItem == mGame->GetState()) {
 
 		// Radar
 		const Vector2 cRadarPos(-390.0f, 275.0f);
@@ -135,7 +135,7 @@ void HUD::Draw(Shader* shader)
 		}
 		
 	}
-	if (Game::EItem == mGame->GetState()) {
+	if (Game::GameState::EItem == mGame->GetState()) {
 		
 		
 		DrawTexture(shader, mFrame, Vector2(0.0f, -160.0f), 0.7f);
@@ -179,7 +179,7 @@ void HUD::RemoveTargetComponent(TargetComponent* tc)
 void HUD::UpdateRadar(float deltaTime)
 {
 	
-	if (Game::EGameplay == mGame->GetState()) {
+	if (Game::GameState::EGameplay == mGame->GetState()) {
 		// Clear blip positions from last frame
 		mBlips.clear();
 

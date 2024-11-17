@@ -16,63 +16,97 @@
 #include "BoxComponent.h"
 #include "PlaneActor.h"
 #include "ExplosionActor.h"
+#include "FollowActor.h"
+#include "SkeletalMeshComponent.h"
 
-BombActor::BombActor(Game* game)
+BombActor::BombActor(Game* game ,int num)
 	:Actor(game)
 	, mLifeSpan(6.0f)
 	, blinkTime(0.0f)
 	, blinkInterval(0.4f)
-	
+	, mNum(num)
 {
-	SetScale(20.0f);
+	SetScale(15.0f);
 	MeshComponent* mc = new MeshComponent(this);
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Bomb3D.gpmesh");
 	mc->SetMesh(mesh);
-	mMyMove = new BombMove(this);
-	mMyMove->SetForwardSpeed(600.0f);
-	mMyMove->SetStrafeSpeed(0.0f);
-	mMyMove->SetJumpSpeed(600.0f);
-	mAudioComp = new AudioComponent(this);
-	// Add a box component
-	mBoxComp = new BoxComponent(this);
-	AABB myBox(Vector3(-25.0f, -25.0f, 0.0f),
-		Vector3(25.0f, 25.0f, 50.0f));
-	mBoxComp->SetObjectBox(myBox);
-	mBoxComp->SetShouldRotate(false);
+
+	if (mNum == 1) {
+
+		mMyMove = new BombMove(this);
+		mMyMove->SetForwardSpeed(600.0f);
+		mMyMove->SetStrafeSpeed(0.0f);
+		mMyMove->SetJumpSpeed(600.0f);
+		mAudioComp = new AudioComponent(this);
+		// Add a box component
+		mBoxComp = new BoxComponent(this);
+		AABB myBox(Vector3(-25.0f, -25.0f, 0.0f),
+			Vector3(25.0f, 25.0f, 25.0f));
+		mBoxComp->SetObjectBox(myBox);
+		mBoxComp->SetShouldRotate(false);
+	}
+
 }
 
 void BombActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
-	
-	mLifeSpan -= deltaTime;
-	if (mLifeSpan < 3.0f)
-	{
+	Game* game = GetGame();
 
-		if (mLifeSpan < 0.0f) {
-			ExplosionActor* ex = new ExplosionActor(GetGame());
-			ex->SetPosition(this->GetPosition());
-			
-			SetState(EDead);
-			
-		}
-		// 経過時間を増加させる
-		blinkTime += deltaTime;
+	if (mNum == 0) {
 
-		// 一定間隔を超えたら可視状態を切り替え
-		if (blinkTime >= blinkInterval)
-		{
-			
-		    
-			mAudioComp->PlayEvent("event:/Alert");
-			// タイマーをリセット
-			blinkTime = 0.0f;
+
+		Position = game->GetPlayer()->GetSekltalMesh()->GetBonePosition("Sword_joint");
+		Rotation = game->GetPlayer()->GetSekltalMesh()->GetBoneRotation("Sword_joint");
+
+		Quaternion playerRotation = game->GetPlayer()->GetRotation();
+		Rotation = Quaternion::Concatenate(Rotation, playerRotation);
+
+		SetRotation(Rotation);
+		Vector3 playerPosition = game->GetPlayer()->GetPosition();
+		Matrix4 playerTransform = Matrix4::CreateFromQuaternion(playerRotation); // 回転行列を取得
+		Vector3 globalWeaponPos = Vector3::Transform(Position, playerTransform); // ローカル座標を変換
+		globalWeaponPos += playerPosition; // プレイヤーの位置を加算
+		SetPosition(globalWeaponPos);
+
+		if (FollowActor::EBomb != game->GetPlayer()->GetItemState()) {
+
+
+			delete this;
+
 		}
 	}
-	mMyMove->SetForwardSpeed(600.0f);
-	mMyMove->SetStrafeSpeed(0.0f);
-	mMyMove->SetJumpSpeed(600.0f);
-	FixCollisions();
+	else if (mNum == 1) {
+		mLifeSpan -= deltaTime;
+		if (mLifeSpan < 3.0f)
+		{
+
+			if (mLifeSpan < 0.0f) {
+				ExplosionActor* ex = new ExplosionActor(GetGame());
+				ex->SetPosition(this->GetPosition());
+
+				SetState(EDead);
+
+			}
+			// 経過時間を増加させる
+			blinkTime += deltaTime;
+
+			// 一定間隔を超えたら可視状態を切り替え
+			if (blinkTime >= blinkInterval)
+			{
+
+
+				mAudioComp->PlayEvent("event:/Alert");
+				// タイマーをリセット
+				blinkTime = 0.0f;
+			}
+		}
+		mMyMove->SetForwardSpeed(600.0f);
+		mMyMove->SetStrafeSpeed(0.0f);
+		mMyMove->SetJumpSpeed(600.0f);
+		FixCollisions();
+	}
+
 }
 
 void BombActor::SetPlayer(Actor* player)

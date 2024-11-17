@@ -17,7 +17,7 @@
 #include "Animation.h"
 #include "Skeleton.h"
 #include "LevelLoader.h"
-
+#include "Math.h"
 SkeletalMeshComponent::SkeletalMeshComponent(Actor* owner)
 	:MeshComponent(owner, true)
 	,mSkeleton(nullptr)
@@ -120,13 +120,44 @@ void SkeletalMeshComponent::SaveProperties(rapidjson::Document::AllocatorType& a
 void SkeletalMeshComponent::ComputeMatrixPalette()
 {
 	const std::vector<Matrix4>& globalInvBindPoses = mSkeleton->GetGlobalInvBindPoses();
-	std::vector<Matrix4> currentPoses;
-	mAnimation->GetGlobalPoseAtTime(currentPoses, mSkeleton, mAnimTime);
+	
+	mAnimation->GetGlobalPoseAtTime(mCurrentPoses, mSkeleton, mAnimTime);
 
 	// Setup the palette for each bone
 	for (size_t i = 0; i < mSkeleton->GetNumBones(); i++)
 	{
 		// Global inverse bind pose matrix times current pose matrix
-		mPalette.mEntry[i] = globalInvBindPoses[i] * currentPoses[i];
+		mPalette.mEntry[i] = globalInvBindPoses[i] * mCurrentPoses[i];
 	}
+}
+
+Vector3 SkeletalMeshComponent::GetBonePosition(const std::string& boneName) const
+{
+	int boneIndex = mSkeleton->GetBoneIndex(boneName);
+	if (boneIndex < 0 || boneIndex >= mCurrentPoses.size())
+	{
+		
+		return Vector3::Zero; // ボーンが見つからない場合はゼロベクトルを返す
+	}
+
+	// ゼロベクトルに現在のポーズ行列をかけてオブジェクト空間の位置を取得
+	return mCurrentPoses[boneIndex].TransformPoint(Vector3::Zero);
+
+}
+
+Quaternion SkeletalMeshComponent::GetBoneRotation(const std::string& boneName) const
+{
+	int boneIndex = mSkeleton->GetBoneIndex(boneName);
+	if (boneIndex < 0 || boneIndex >= mCurrentPoses.size())
+	{
+
+		return Quaternion::Identity; // ボーンが見つからない場合はゼロベクトルを返す
+	}
+
+	// ゼロベクトルに現在のポーズ行列をかけてオブジェクト空間の位置を取得
+	mCurrentPoses[boneIndex].TransformPoint(Vector3::Zero);
+
+	// 行列の回転部分をクォータニオンに変換
+	Quaternion rot = Quaternion::FromMatrix(mCurrentPoses[boneIndex]);
+	return rot;
 }

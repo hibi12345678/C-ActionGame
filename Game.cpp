@@ -34,11 +34,12 @@
 #include "GameOver.h"
 #include "GameClear.h"
 #include <iostream>
+#include "imgui_impl_sdl2.h"
 Game::Game()
 	:mRenderer(nullptr)
 	, mAudioSystem(nullptr)
 	, mPhysWorld(nullptr)
-	, mGameState(EMainMenu)  // 初期状態をメインメニューに設定)
+	, mGameState(GameState::EMainMenu)  // 初期状態をメインメニューに設定)
 	, mUpdatingActors(false)
 	, mainFlag(true)
 	, playFlag(false)
@@ -92,32 +93,15 @@ bool Game::Initialize()
 	LoadData();
 	
 	mTicksCount = SDL_GetTicks();
-	GetSkeleton("Assets/Skel/EnemyBoss.gpskel");
-	GetAnimation("Assets/Anim/Player_idle.gpanim");
-	GetAnimation("Assets/Anim/Player_walk.gpanim");
-	GetAnimation("Assets/Anim/Player_attack.gpanim");
-	GetAnimation("Assets/Anim/Player_block.gpanim");
-	GetAnimation("Assets/Anim/Player_jump.gpanim");
-	GetAnimation("Assets/Anim/Player_bow.gpanim");
-	GetAnimation("Assets/Anim/Player_bowidle.gpanim");
-	GetAnimation("Assets/Anim/Player_bomb.gpanim");
-	GetAnimation("Assets/Anim/Enemy_idle.gpanim");
-	GetAnimation("Assets/Anim/Enemy_walk.gpanim");
-	GetAnimation("Assets/Anim/Enemy_attack.gpanim");
-	GetAnimation("Assets/Anim/Enemy_jump_attack.gpanim");
-	GetAnimation("Assets/Anim/Enemy_dying.gpanim");
-	GetAnimation("Assets/Anim/EnemyBoss_idle.gpanim");
-	GetAnimation("Assets/Anim/EnemyBoss_walk.gpanim");
-	GetAnimation("Assets/Anim/EnemyBoss_attack.gpanim");
-	GetAnimation("Assets/Anim/EnemyBoss_jump_attack.gpanim");
-	GetAnimation("Assets/Anim/EnemyBoss_dying.gpanim");
+	GetData();
+
 
 	return true;
 }
 
 void Game::RunLoop()
 {
-	while (mGameState != EQuit)
+	while (mGameState != GameState::EQuit)
 	{		
 		ProcessInput();
 		UpdateGame();
@@ -131,16 +115,18 @@ void Game::ProcessInput()
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
+		// ImGuiにSDLイベントを処理させる
+		ImGui_ImplSDL2_ProcessEvent(&event);
 		switch (event.type)
 		{
 			case SDL_QUIT:
-				mGameState = EQuit;
+				mGameState = GameState::EQuit;
 				break;
 			// This fires when a key's initially pressed
 			case SDL_KEYDOWN:
 				if (!event.key.repeat)
 				{
-					if (mGameState == EGameplay || mGameState == EMainMenu)
+					if (mGameState == GameState::EGameplay || mGameState == GameState::EMainMenu)
 					{
 						HandleKeyPress(event.key.keysym.sym);
 					}
@@ -152,7 +138,7 @@ void Game::ProcessInput()
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				if (mGameState == EGameplay && gameOverFlag == false && gameClearFlag == false)
+				if (mGameState == GameState::EGameplay && gameOverFlag == false && gameClearFlag == false)
 				{
 					HandleKeyPress(event.button.button);
 				}
@@ -168,7 +154,7 @@ void Game::ProcessInput()
 	}
 	
 	const Uint8* state = SDL_GetKeyboardState(NULL);
-	if (mGameState == EGameplay)
+	if (mGameState == GameState::EGameplay)
 	{
 		if (gameOverFlag == false && gameClearFlag == false) {
 
@@ -188,12 +174,12 @@ void Game::ProcessInput()
 		
 	}
 
-	else if (!mUIStack.empty() && mGameState != EMainMenu)
+	else if (!mUIStack.empty() && mGameState != GameState::EMainMenu)
 	{
 		
 		mUIStack.back()->ProcessInput(state);
 	}
-	else if (mGameState == EMainMenu) {
+	else if (mGameState == GameState::EMainMenu) {
 
 		mUIStack.back()->StartInput(state);
 	}
@@ -209,7 +195,7 @@ void Game::HandleKeyPress(int key)
 		mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
 		break;
 	case SDLK_TAB:
-		if (mGameState == EGameplay) {
+		if (mGameState == GameState::EGameplay) {
 			// Create pause menu
 			new ItemMenu(this);
 			mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
@@ -282,7 +268,7 @@ void Game::UpdateGame()
 	mTicksCount = SDL_GetTicks();
 	float mStamina;
 	
-	if (mGameState == EGameplay)
+	if (mGameState == GameState::EGameplay)
 	{
 
 		if (playFlag == false) {
@@ -334,7 +320,7 @@ void Game::UpdateGame()
 	// Update audio system
 	mAudioSystem->Update(deltaTime);
 
-	if (mGameState == EMainMenu) {
+	if (mGameState == GameState::EMainMenu) {
 		
 		if (mainFlag == false) {
 
@@ -421,7 +407,7 @@ void Game::LoadData()
 {
 
 
-	if (mGameState == EGameplay) {
+	if (mGameState == GameState::EGameplay) {
 		scoreNumber = 0;
 		// Load English text
 		LoadText("Assets/Text/Main.gptext");
@@ -445,7 +431,7 @@ void Game::LoadData()
 		
 	}
 
-	else if (mGameState == EMainMenu) {
+	else if (mGameState == GameState::EMainMenu) {
 		
 		
 		// Load English text
@@ -749,4 +735,27 @@ void Game::RemoveExplosion(ExplosionActor* explosion)
 {
 	auto iter = std::find(mExplosions.begin(), mExplosions.end(), explosion);
 	mExplosions.erase(iter);
+}
+
+void Game::GetData() {
+
+	GetSkeleton("Assets/Skel/EnemyBoss.gpskel");
+	GetAnimation("Assets/Anim/Player_idle.gpanim");
+	GetAnimation("Assets/Anim/Player_walk.gpanim");
+	GetAnimation("Assets/Anim/Player_attack.gpanim");
+	GetAnimation("Assets/Anim/Player_block.gpanim");
+	GetAnimation("Assets/Anim/Player_jump.gpanim");
+	GetAnimation("Assets/Anim/Player_bow.gpanim");
+	GetAnimation("Assets/Anim/Player_bowidle.gpanim");
+	GetAnimation("Assets/Anim/Player_bomb.gpanim");
+	GetAnimation("Assets/Anim/Enemy_idle.gpanim");
+	GetAnimation("Assets/Anim/Enemy_walk.gpanim");
+	GetAnimation("Assets/Anim/Enemy_attack.gpanim");
+	GetAnimation("Assets/Anim/Enemy_jump_attack.gpanim");
+	GetAnimation("Assets/Anim/Enemy_dying.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_idle.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_walk.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_attack.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_jump_attack.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_dying.gpanim");
 }

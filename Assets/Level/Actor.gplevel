@@ -175,7 +175,7 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    1000.0,
+                    0.0,
                     0.0,
                     0.0
                 ],

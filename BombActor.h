@@ -12,7 +12,7 @@
 class BombActor : public Actor
 {
 public:
-	BombActor(class Game* game);
+	BombActor(class Game* game,int num);
 
 	void UpdateActor(float deltaTime) override;
 	void SetPlayer(Actor* player);
@@ -27,4 +27,8 @@ private:
 	float mLifeSpan;
 	float blinkTime;
 	float blinkInterval; 
+	int mNum;
+	Vector3 Position;
+
+	Quaternion Rotation;
 };

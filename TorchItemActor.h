@@ -1,11 +1,12 @@
 #pragma once
 #include "Actor.h"
 #include "MeshComponent.h"
-
+#include <cmath>
 class TorchItemActor : public Actor
 {
 public:
 	TorchItemActor(class Game* game);
+
 	void UpdateActor(float deltaTime) override;
 	int GetItemNum() { return itemValue; }
 	enum State
@@ -14,6 +15,7 @@ public:
 		EPaused,
 		EDead
 	};
+
 
 private:
 	class MeshComponent* mc;
@@ -26,4 +28,7 @@ private:
 	int randomValue;
 	int itemValue;
 	State mState;
+	Vector3 Position;
+
+	Quaternion Rotation;
 };
