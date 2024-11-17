@@ -25,6 +25,7 @@
 #include "ArrowActor.h"
 #include "BombActor.h"
 #include "ExplosionActor.h"
+#include "SwordActor.h"
 FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -49,7 +50,8 @@ FollowActor::FollowActor(Game* game)
 	, mFPSCamera(nullptr)
 	, changeTimer(0.0f)
 	, deathFlag(true)
-	
+	, jumpFlag(false)
+
 {
 	mMeshComp = new SkeletalMeshComponent(this);
 	mAudioComp = new AudioComponent(this);
@@ -62,9 +64,10 @@ FollowActor::FollowActor(Game* game)
 		Vector3(25.0f, 25.0f, 240.0f));
 	mBoxComp->SetObjectBox(myBox);
 	mBoxComp->SetShouldRotate(false);
-	
-	blockPressed = false;
 
+	blockPressed = false;
+	SwordActor* sword1 = new SwordActor(game,0);
+	SwordActor* sword2 = new SwordActor(game,1);
 }
 
 void FollowActor::ActorInput(const uint8_t* keys)
@@ -101,6 +104,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_jump.gpanim"), 0.9f);
 		jumpSpeed += -20000.0f;
 		mStamina -= 0.1f;
+		jumpFlag = true;
 	}
 	else if(keys[SDL_SCANCODE_SPACE] && mState == EGrounded && mStamina <= 0.1f && mHealth > 0.0f && mAttackBoxComp == nullptr) {
 		if (mItemState == EBow) {
@@ -287,6 +291,8 @@ void FollowActor::UpdateActor(float deltaTime) {
 	if (mItemState == EBow ) {
 		if (mArrowCount <= 0) {
 			mItemState = ESword;
+			SwordActor* sword1 = new SwordActor(GetGame(), 0);
+			SwordActor* sword2 = new SwordActor(GetGame(), 1);
 			mAudioComp->PlayEvent("event:/Equipped");
 		}
 		
@@ -294,6 +300,8 @@ void FollowActor::UpdateActor(float deltaTime) {
 	if (mItemState == EBomb) {
 		if (mBombCount <= 0) {
 			mItemState = ESword;
+			SwordActor* sword1 = new SwordActor(GetGame(), 0);
+			SwordActor* sword2 = new SwordActor(GetGame(), 1);
 			mAudioComp->PlayEvent("event:/Equipped");
 		}
 
@@ -474,7 +482,7 @@ void FollowActor::Bomb()
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
 
-	BombActor* bomb = new BombActor(GetGame());
+	BombActor* bomb = new BombActor(GetGame(),1);
 	bomb->SetPlayer(this);
 	bomb->SetPosition(this->GetPosition()+Vector3(0.0,0.0,200.0) + dir * 100.0f);
 	bomb->RotateToNewForward(dir);
@@ -570,6 +578,11 @@ void FollowActor::FixCollisions()
 			{
 				pos.z += dz;
 				mState = EGrounded;
+				if (jumpFlag == true) {
+					jumpFlag = false;
+					mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
+				}
+				
 			}
 			
 			// Need to set position and update box component

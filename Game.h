@@ -34,16 +34,14 @@ public:
 	const std::vector<class UIScreen*>& GetUIStack() { return mUIStack; }
 	void PushUI(class UIScreen* screen);
 	
-	
-	enum GameState
-	{
+	enum class GameState {
 		EMainMenu,
 		EGameplay,
 		EPaused,
 		EItem,
 		EQuit
 	};
-	
+
 	GameState GetState() const { return mGameState; }
 	void SetState(GameState state) { mGameState = state; }
 	int GetScore() const { return scoreNumber; }
@@ -63,6 +61,7 @@ public:
 
 	class FollowActor* GetPlayer() { return mFollowActor; }
 	class BossActor* GetBoss() { return mBossActor; }
+
 	void AddPlane(class PlaneActor* plane);
 	void RemovePlane(class PlaneActor* plane);
 	void AddEnemy(class EnemyActor* enemy);
@@ -81,7 +80,8 @@ public:
 	std::vector<class ArrowActor*>& GetArrow() { return mArrows; }
 	std::vector<class BombActor*>& GetBomb() { return mBombs; }
 	std::vector<class ExplosionActor*>& GetExplosion() { return mExplosions; }
-
+	
+	void GetData();
 private:
 	void ProcessInput();
 	void HandleKeyPress(int key);
@@ -125,6 +125,7 @@ private:
 	std::vector<class ExplosionActor*> mExplosions;
 	class FollowActor* mFollowActor;
 	class BossActor* mBossActor;
+
 	class SpriteComponent* mCrosshair;
 	
 	bool mainFlag;

@@ -19,7 +19,7 @@ PauseMenu::PauseMenu(Game* game)
 	// currentState ‚ğ game ‚Ìó‘Ô‚ÅXV
 	currentState = static_cast<PauseMenu::State>(mGame->GetState());
 	flag = false;
-	mGame->SetState(Game::EPaused);
+	mGame->SetState(Game::GameState::EPaused);
 	SDL_ShowCursor(SDL_ENABLE);
 	SetRelativeMouseMode(false);
 	mBGPos = Vector2(0.0f, 50.0f);
@@ -33,7 +33,7 @@ PauseMenu::PauseMenu(Game* game)
 		AddButton("StartButton", [this]() {
 			new DialogBox(mGame, "StartText",
 				[this]() {
-					flag = true; mGame->SetState(Game::EMainMenu); Close();
+					flag = true; mGame->SetState(Game::GameState::EMainMenu); Close();
 				});
 			});
 	}
@@ -41,7 +41,7 @@ PauseMenu::PauseMenu(Game* game)
 	AddButton("QuitButton", [this]() { 
 		new DialogBox(mGame, "QuitText",
 			[this]() {
-				mGame->SetState(Game::EQuit);
+				mGame->SetState(Game::GameState::EQuit);
 		});
 	});
 
@@ -51,15 +51,15 @@ PauseMenu::~PauseMenu()
 {
 	
 	if(currentState == EMainMenu)
-	  mGame->SetState(Game::EMainMenu);
+	  mGame->SetState(Game::GameState::EMainMenu);
 
 	else if (currentState == EGameplay)
 	{
 		if (flag == true) {
-			mGame->SetState(Game::EMainMenu);
+			mGame->SetState(Game::GameState::EMainMenu);
 		}
 		else {
-			mGame->SetState(Game::EGameplay);
+			mGame->SetState(Game::GameState::EGameplay);
 			// Optionally, ensure the cursor is explicitly disabled
 			SDL_ShowCursor(SDL_DISABLE);
 			// Enable relative mouse mode for camera look

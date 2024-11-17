@@ -20,7 +20,7 @@ MainmenuUI::MainmenuUI(Game* game)
 
 MainmenuUI::~MainmenuUI()
 {
-	mGame->SetState(Game::EGameplay);
+	mGame->SetState(Game::GameState::EGameplay);
 }
 
 void MainmenuUI::HandleKeyPress(int key)

@@ -8,20 +8,22 @@
 #include "AudioSystem.h"
 #include "FollowActor.h"
 #include "TorchItemActor.h"
-
+#include "SwordActor.h"
+#include "BombActor.h"
+#include "BowActor.h"
 ItemMenu::ItemMenu(Game* game)
 	:UIScreen(game)
 	
 {
-	mGame->SetState(Game::EItem);
+	mGame->SetState(Game::GameState::EItem);
 	SDL_ShowCursor(SDL_ENABLE);
 	SetRelativeMouseMode(false);
 	SetTitle("Item");
 	HUD* hudInstance = mGame->GetHUD();
 	Renderer* r = mGame->GetRenderer();
 	r->SetAmbientLight(Vector3(0.2, 0.2, 0.2));
-	
-	
+	FollowActor* player = mGame->GetPlayer();
+	menuState = static_cast<ItemMenu::ItemState>(player->GetItemState());
 	
 	if (hudInstance->GetItemNum() == 0) {
 		AddText("SwordText", Vector2(0.0f, -160.0f), 30);
@@ -69,7 +71,7 @@ ItemMenu::ItemMenu(Game* game)
 
 ItemMenu::~ItemMenu()
 {
-	mGame->SetState(Game::EGameplay);
+	mGame->SetState(Game::GameState::EGameplay);
 	Renderer* r = mGame->GetRenderer();
 	r->SetAmbientLight(Vector3(0.4000000059604645,
 		0.4000000059604645,
@@ -81,20 +83,28 @@ ItemMenu::~ItemMenu()
 	// Make an initial call to get relative to clear out
 	SDL_GetRelativeMouseState(nullptr, nullptr);
 	if (mGame->GetPlayer()->GetItemState() == FollowActor::ESword) {
-		//TorchItemActor* torch = new TorchItemActor(mGame);
+		if (menuState != ESword) {
+			SwordActor* sword1 = new SwordActor(mGame, 0);
+			SwordActor* sword2 = new SwordActor(mGame, 1);
+		}
 		
 	}
 	else if (mGame->GetPlayer()->GetItemState() == FollowActor::ETorch) {
-		TorchItemActor* torch = new TorchItemActor(mGame);
+		if (menuState != ETorch) {
+			TorchItemActor* torch = new TorchItemActor(mGame);
+		}
+		
 		
 	}
     else if (mGame->GetPlayer()->GetItemState() == FollowActor::EBow) {
-		//TorchItemActor* torch = new TorchItemActor(mGame);
-
+		if (menuState != EBow) {
+			BowActor* bow = new BowActor(mGame, 0);
+		}
 	}
 	else if (mGame->GetPlayer()->GetItemState() == FollowActor::EBomb) {
-		//BombActor* torch = new BombActor(mGame);
-
+		if (menuState != EBomb) {
+			BombActor* bomb = new BombActor(mGame, 0);
+		}
 	}
 }
 

@@ -172,7 +172,8 @@ void UIScreen::Draw(Shader* shader)
 		DrawTexture(shader, mItemText, mItemText->GetPos());
 
 	}
-	if (Game::EItem == mGame->GetState()) {
+	if (Game::GameState::EItem == mGame->GetState()) {
+
 		Texture* mEquipped = new Texture();
 		mEquipped = mFont->RenderText("Equipped", Color::White, 30);
 		DrawTexture(shader, mEquipped, Vector2(-250.0f, -80.0f));

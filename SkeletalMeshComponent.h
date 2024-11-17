@@ -9,7 +9,9 @@
 #pragma once
 #include "MeshComponent.h"
 #include "MatrixPalette.h"
-
+#include <string>
+#include <vector>
+#include "Math.h"
 class SkeletalMeshComponent : public MeshComponent
 {
 public:
@@ -30,6 +32,11 @@ public:
 	void LoadProperties(const rapidjson::Value& inObj) override;
 	void SaveProperties(rapidjson::Document::AllocatorType& alloc,
 		rapidjson::Value& inObj) const override;
+
+	// ボーン名からそのボーンの現在の位置を取得する関数
+	Vector3 GetBonePosition(const std::string& boneName) const;
+	// ボーン名からそのボーンの現在の回転を取得する関数
+	Quaternion GetBoneRotation(const std::string& boneName) const;
 protected:
 	void ComputeMatrixPalette();
 
@@ -38,4 +45,7 @@ protected:
 	class Animation* mAnimation;
 	float mAnimPlayRate;
 	float mAnimTime;
+
+private:
+	std::vector<Matrix4> mCurrentPoses; 
 };

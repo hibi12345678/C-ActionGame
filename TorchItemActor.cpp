@@ -13,7 +13,9 @@
 #include "Mesh.h"
 #include "PointLightComponent.h"
 #include "FollowActor.h"
-
+#include "SkeletalMeshComponent.h"
+#include "Math.h"
+#include "MoveComponent.h"
 TorchItemActor::TorchItemActor(Game* game)
 	:Actor(game)
 	, mLifeSpan(10.0f)
@@ -22,6 +24,8 @@ TorchItemActor::TorchItemActor(Game* game)
 	, isVisible(true)
 	, randomValue(0)
 	, mState(EActive)
+
+
 {
 	SetScale(50.0f);
 	mc = new MeshComponent(this);
@@ -36,29 +40,38 @@ TorchItemActor::TorchItemActor(Game* game)
 		pointLight->SetPosition(Vector3(200.0f, 0.0f, 200.0f));
 		mPointLights.emplace_back(pointLight);
 	}
-	
 
+	
 }
 
 void TorchItemActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
 	Game* game = GetGame();
-;
-    Vector3 playerPosition = game->GetPlayer()->GetPosition();
-    playerPosition += Vector3(70.0f, 0.0f, 100.0f);
-    playerPosition += game->GetPlayer()->GetForward() * 70.0;
-    SetPosition(playerPosition);
 
-	if (game->GetPlayer()->GetItemState() != FollowActor::ETorch) {
+	Position = game->GetPlayer()->GetSekltalMesh()->GetBonePosition("Sword_joint");
+	Rotation = game->GetPlayer()->GetSekltalMesh()->GetBoneRotation("Sword_joint");
+
+	Quaternion playerRotation = game->GetPlayer()->GetRotation();
+	Rotation = Quaternion::Concatenate(Rotation, playerRotation);
+
+	SetRotation(Rotation);
+	Vector3 playerPosition = game->GetPlayer()->GetPosition();
+	Matrix4 playerTransform = Matrix4::CreateFromQuaternion(playerRotation); // 回転行列を取得
+	Vector3 globalWeaponPos = Vector3::Transform(Position, playerTransform); // ローカル座標を変換
+	globalWeaponPos += playerPosition; // プレイヤーの位置を加算
+	SetPosition(globalWeaponPos);
+
+	if (FollowActor::ETorch != game->GetPlayer()->GetItemState()) {
 
 		for (auto b : mPointLights) {
 			delete b;
 		}
 		mPointLights.clear();
 		delete this;
-		
+
 	}
+
 
 }
 

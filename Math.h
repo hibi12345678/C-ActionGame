@@ -405,7 +405,7 @@ public:
 
 	// Transform a Vector3 by a quaternion
 	static Vector3 Transform(const Vector3& v, const class Quaternion& q);
-
+	
 	static const Vector3 Zero;
 	static const Vector3 UnitX;
 	static const Vector3 UnitY;
@@ -723,6 +723,15 @@ public:
 		return retVal;
 	}
 
+	Vector3 Matrix4::TransformPoint(const Vector3& point) const
+	{
+		// point ‚ðŠg’£‚µ‚Ä4ŽŸŒ³ƒxƒNƒgƒ‹ (x, y, z, 1) ‚É‚·‚é
+		float x = mat[0][0] * point.x + mat[1][0] * point.y + mat[2][0] * point.z + mat[3][0];
+		float y = mat[0][1] * point.x + mat[1][1] * point.y + mat[2][1] * point.z + mat[3][1];
+		float z = mat[0][2] * point.x + mat[1][2] * point.y + mat[2][2] * point.z + mat[3][2];
+
+		return Vector3(x, y, z);
+	}
 	// Create a scale matrix with x, y, and z scales
 	static Matrix4 CreateScale(float xScale, float yScale, float zScale)
 	{
@@ -1027,6 +1036,49 @@ public:
 		return Quaternion(0.0f, 0.0f, s, std::cos(halfAngle));
 	}
 	static const Quaternion Identity;
+
+	Vector3 RotateVector(const Vector3& vec) const;
+
+	static Quaternion FromMatrix(const Matrix4& mat)
+	{
+		Quaternion q;
+
+		float trace = mat.mat[0][0] + mat.mat[1][1] + mat.mat[2][2];
+		if (trace > 0.0f)
+		{
+			float s = sqrt(trace + 1.0f) * 2.0f; // s=4*qw
+			q.w = 0.25f * s;
+			q.x = (mat.mat[2][1] - mat.mat[1][2]) / s;
+			q.y = (mat.mat[0][2] - mat.mat[2][0]) / s;
+			q.z = (mat.mat[1][0] - mat.mat[0][1]) / s;
+		}
+		else if ((mat.mat[0][0] > mat.mat[1][1]) && (mat.mat[0][0] > mat.mat[2][2]))
+		{
+			float s = sqrt(1.0f + mat.mat[0][0] - mat.mat[1][1] - mat.mat[2][2]) * 2.0f; // s=4*qx
+			q.w = (mat.mat[2][1] - mat.mat[1][2]) / s;
+			q.x = 0.25f * s;
+			q.y = (mat.mat[0][1] + mat.mat[1][0]) / s;
+			q.z = (mat.mat[0][2] + mat.mat[2][0]) / s;
+		}
+		else if (mat.mat[1][1] > mat.mat[2][2])
+		{
+			float s = sqrt(1.0f + mat.mat[1][1] - mat.mat[0][0] - mat.mat[2][2]) * 2.0f; // s=4*qy
+			q.w = (mat.mat[0][2] - mat.mat[2][0]) / s;
+			q.x = (mat.mat[0][1] + mat.mat[1][0]) / s;
+			q.y = 0.25f * s;
+			q.z = (mat.mat[1][2] + mat.mat[2][1]) / s;
+		}
+		else
+		{
+			float s = sqrt(1.0f + mat.mat[2][2] - mat.mat[0][0] - mat.mat[1][1]) * 2.0f; // s=4*qz
+			q.w = (mat.mat[1][0] - mat.mat[0][1]) / s;
+			q.x = (mat.mat[0][2] + mat.mat[2][0]) / s;
+			q.y = (mat.mat[1][2] + mat.mat[2][1]) / s;
+			q.z = 0.25f * s;
+		}
+
+		return q;
+	}
 };
 
 namespace Color

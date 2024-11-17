@@ -96,6 +96,24 @@ Vector3 Vector3::Transform(const Vector3& v, const Quaternion& q)
 	return retVal;
 }
 
+// Quaternion と Vector3 のクラスが定義されている前提で
+Vector3 Quaternion::RotateVector(const Vector3& vec) const 
+{
+	// クォータニオンをベクトルに適用するためには
+	// クォータニオンの積を使って回転を適用します。
+
+	// 1. ベクトルをクォータニオン形式に変換（w = 0 のクォータニオンにする）
+	Quaternion qVec(vec.x, vec.y, vec.z, 0);
+	// 2. 回転を適用するためのクォータニオン積を計算
+	qVec.Conjugate(); // クォータニオンの共役を取得
+
+	// qVec * this * Conjugate() で回転が適用される
+	Quaternion result =  Concatenate(  *this , qVec);
+
+	// 3. 回転後のベクトル成分を取り出して返す
+	return Vector3(result.x, result.y, result.z);
+}
+
 void Matrix4::Invert()
 {
 	// Thanks slow math

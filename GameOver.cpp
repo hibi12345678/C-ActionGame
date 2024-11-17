@@ -23,14 +23,14 @@ GameOver::GameOver(Game* game)
 	AddButton("StartButton", [this]() {
 		new DialogBox(mGame, "StartText",
 			[this]() {
-					mGame->SetState(Game::EMainMenu), Close();
+					mGame->SetState(Game::GameState::EMainMenu), Close();
 				});
 	});
 	
 	AddButton("QuitButton", [this]() {
 		new DialogBox(mGame, "QuitText",
 			[this]() {
-				mGame->SetState(Game::EQuit);
+				mGame->SetState(Game::GameState::EQuit);
 			});
 		});
 
@@ -38,7 +38,7 @@ GameOver::GameOver(Game* game)
 
 GameOver::~GameOver()
 {
-	mGame->SetState(Game::EMainMenu);
+	mGame->SetState(Game::GameState::EMainMenu);
 }
 
 void GameOver::HandleKeyPress(int key)
