@@ -1,34 +1,10 @@
 #pragma once
-#include "Actor.h"
-#include "MeshComponent.h"
-#include <cmath>
-class SwordActor : public Actor
+#include "ItemActorBase.h"
+
+class SwordActor : public ItemActorBase
 {
 public:
-	SwordActor(class Game* game, int num);
-	void UpdateActor(float deltaTime) override;
-	int GetItemNum() { return itemValue; }
-	enum State
-	{
-		EActive,
-		EPaused,
-		EDead
-	};
+    SwordActor(class Game* game,  float scale , int num);
 
-
-private:
-	class MeshComponent* mc;
-
-
-	float mLifeSpan;
-	float blinkTime;
-	float blinkInterval; // 0.5•b‚²‚Æ‚É“_–Å
-	bool isVisible;
-	int randomValue;
-	int itemValue;
-	State mState;
-	Vector3 Position;
-
-	int mNum;
-	Quaternion Rotation;
+    void UpdateActor(float deltaTime) override;
 };

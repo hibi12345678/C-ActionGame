@@ -58,9 +58,7 @@ void FollowCamera::Update(float deltaTime)
 	Game* game = mOwner->GetGame();
 	Vector3 playerPosition = mOwner-> GetPosition();
 	game->GetAudioSystem()->SetListener(view,Vector3::Zero,1.0f,playerPosition);
-	if (game->GetPlayer()->GetItemState()==FollowActor::EBow) {
 
-	}
 }
 
 

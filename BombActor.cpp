@@ -18,16 +18,14 @@
 #include "ExplosionActor.h"
 #include "FollowActor.h"
 #include "SkeletalMeshComponent.h"
-
-BombActor::BombActor(Game* game ,int num)
-	:Actor(game)
+#include "Actor.h"
+BombActor::BombActor(Game* game, float scale, int num)
+	: ItemActorBase(game, scale, num)
 	, mLifeSpan(6.0f)
 	, blinkTime(0.0f)
 	, blinkInterval(0.4f)
-	, mNum(num)
+
 {
-	SetScale(15.0f);
-	MeshComponent* mc = new MeshComponent(this);
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Bomb3D.gpmesh");
 	mc->SetMesh(mesh);
 
@@ -45,38 +43,27 @@ BombActor::BombActor(Game* game ,int num)
 		mBoxComp->SetObjectBox(myBox);
 		mBoxComp->SetShouldRotate(false);
 	}
-
 }
 
 void BombActor::UpdateActor(float deltaTime)
 {
-	Actor::UpdateActor(deltaTime);
-	Game* game = GetGame();
+
 
 	if (mNum == 0) {
 
-
-		Position = game->GetPlayer()->GetSekltalMesh()->GetBonePosition("Sword_joint");
-		Rotation = game->GetPlayer()->GetSekltalMesh()->GetBoneRotation("Sword_joint");
-
-		Quaternion playerRotation = game->GetPlayer()->GetRotation();
-		Rotation = Quaternion::Concatenate(Rotation, playerRotation);
-
-		SetRotation(Rotation);
-		Vector3 playerPosition = game->GetPlayer()->GetPosition();
-		Matrix4 playerTransform = Matrix4::CreateFromQuaternion(playerRotation); // 回転行列を取得
-		Vector3 globalWeaponPos = Vector3::Transform(Position, playerTransform); // ローカル座標を変換
-		globalWeaponPos += playerPosition; // プレイヤーの位置を加算
-		SetPosition(globalWeaponPos);
+		// 基底クラスのUpdateActor呼び出し
+		ItemActorBase::UpdateActor(deltaTime);
+		Game* game = GetGame();
 
 		if (FollowActor::EBomb != game->GetPlayer()->GetItemState()) {
 
-
-			delete this;
-
+			SetState(Actor::EDead);
 		}
 	}
 	else if (mNum == 1) {
+		// 基底クラスのUpdateActor呼び出し
+		Actor::UpdateActor(deltaTime);
+		Game* game = GetGame();
 		mLifeSpan -= deltaTime;
 		if (mLifeSpan < 3.0f)
 		{
@@ -85,13 +72,12 @@ void BombActor::UpdateActor(float deltaTime)
 				ExplosionActor* ex = new ExplosionActor(GetGame());
 				ex->SetPosition(this->GetPosition());
 
-				SetState(EDead);
+				SetState(Actor::EDead);
 
 			}
-			// 経過時間を増加させる
+
 			blinkTime += deltaTime;
 
-			// 一定間隔を超えたら可視状態を切り替え
 			if (blinkTime >= blinkInterval)
 			{
 
@@ -138,13 +124,13 @@ void BombActor::FixCollisions()
 		if (Intersect(bombBox, planeBox))
 		{
 
-			
+
 			mMyMove->SetForwardSpeed(0.0f);
 
 			mMyMove->SetStrafeSpeed(0.0f);
 
 			mMyMove->SetJumpSpeed(0.0f);
-			
+
 		}
 	}
 

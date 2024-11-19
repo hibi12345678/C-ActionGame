@@ -68,27 +68,15 @@ public:
 	float GetScreenWidth() const { return mScreenWidth; }
 	float GetScreenHeight() const { return mScreenHeight; }
 
-	void SetMirrorView(const Matrix4& view) { mMirrorView = view; }
-	class Texture* GetMirrorTexture() { return mMirrorTexture; }
 	class GBuffer* GetGBuffer() { return mGBuffer; }
 
 	void InitializeImGui(SDL_Window* window, SDL_GLContext context);
 
-	void SkyBoxTexture(const std::string& Directory,
-		const std::string& PosXFilename,
-		const std::string& NegXFilename,
-		const std::string& PosYFilename,
-		const std::string& NegYFilename,
-		const std::string& PosZFilename,
-		const std::string& NegZFilename);
-
-	GLenum LoadSkyBox(std::vector<std::string> faces);
-
-	void BindSkyBox(GLenum TextureUnit);
+	glm::mat4 Renderer::ConvertToGLM(const Matrix4& matrix);
 private:
 	// Chapter 14 additions
 	void Draw3DScene(unsigned int framebuffer, const Matrix4& view, const Matrix4& proj, bool lit = true);
-	
+	void DrawSkybox();
 	void DrawFromGBuffer();
 	//void DrawFromGBuffer();
 	// End chapter 14 additions
@@ -144,10 +132,6 @@ private:
 	// Width/height
 	float mScreenWidth;
 	float mScreenHeight;
-
-	unsigned int mMirrorBuffer;
-	class Texture* mMirrorTexture;
-	Matrix4 mMirrorView;
 	
 	class GBuffer* mGBuffer;
 	// GBuffer shader
@@ -157,5 +141,9 @@ private:
 	class Mesh* mPointLightMesh;
 	float angle;
 
+	unsigned int cubemapTexture;
 
+
+	// Create VAO, VBO, and EBO for the skybox
+	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
 };

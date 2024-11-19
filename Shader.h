@@ -31,6 +31,7 @@ public:
 	void SetFloatUniform(const char* name, float value);
 	// Sets an integer uniform
 	void SetIntUniform(const char* name, int value);
+	GLuint GetID() { return mShaderProgram; }
 private:
 	// Tries to compile the specified shader
 	bool CompileShader(const std::string& fileName,

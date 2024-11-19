@@ -3,9 +3,8 @@
   "vertexformat": "PosNormTex",
   "shader": "BasicMesh",
   "textures": [
-    "Assets/Texture/Arrow3D.png",
-    "Assets/Texture/Arrow3D.png",
     "Assets/Texture/Arrow3D.png"
+
   ],
   "specularPower": 100.0,
   "vertices": [

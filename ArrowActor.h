@@ -17,7 +17,6 @@ public:
 	class BoxComponent* GetBox() { return mBoxComp; }
 	void UpdateActor(float deltaTime) override;
 	void SetPlayer(Actor* player);
-	void FixCollisions();
 	void HitTarget();
 
 private:

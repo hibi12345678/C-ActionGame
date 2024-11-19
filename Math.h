@@ -11,7 +11,8 @@
 #include <cmath>
 #include <memory.h>
 #include <limits>
-
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
 namespace Math
 {
 	const float Pi = 3.1415926535f;
@@ -566,7 +567,17 @@ public:
 	{
 		memcpy(mat, inMat, 16 * sizeof(float));
 	}
-
+	// GLMのglm::mat4を受け取るコンストラクタ
+	explicit Matrix4(const glm::mat4& glmMat)
+	{
+		for (int row = 0; row < 4; ++row)
+		{
+			for (int col = 0; col < 4; ++col)
+			{
+				mat[row][col] = glmMat[row][col];
+			}
+		}
+	}
 	// Cast to a const float pointer
 	const float* GetAsFloatPtr() const
 	{

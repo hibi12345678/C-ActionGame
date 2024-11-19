@@ -21,6 +21,7 @@
 #include "SkeletalMeshComponent.h"
 #include "GBuffer.h"
 #include "PointLightComponent.h"
+#include "stb_image.h"
 #include <SOIL/SOIL.h>
 #include<iostream>
 #include "ImGuiLayer.h"
@@ -29,15 +30,17 @@
 #include "imgui_impl_opengl3.h"
 #include "MoveComponent.h"
 #include "TorchItemActor.h"
-
-
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+#include "stb_image.h"
 Renderer::Renderer(Game* game)
 	:mGame(game)
 	,mSpriteShader(nullptr)
 	,mMeshShader(nullptr)
 	,mSkinnedShader(nullptr)
-	,mMirrorBuffer(0)
-	,mMirrorTexture(nullptr)
 	,mGBuffer(nullptr)
 	,mGGlobalShader(nullptr)
 	,mGPointLightShader(nullptr)
@@ -49,7 +52,49 @@ Renderer::~Renderer()
 {
 }
 
+float skyboxVertices[] =
+{
+	//   Coordinates
+	-1.0f, -1.0f,  1.0f,//        7--------6
+	 1.0f, -1.0f,  1.0f,//       /|       /|
+	 1.0f, -1.0f, -1.0f,//      4--------5 |
+	-1.0f, -1.0f, -1.0f,//      | |      | |
+	-1.0f,  1.0f,  1.0f,//      | 3------|-2
+	 1.0f,  1.0f,  1.0f,//      |/       |/
+	 1.0f,  1.0f, -1.0f,//      0--------1
+	-1.0f,  1.0f, -1.0f
+};
 
+unsigned int skyboxIndices[] =
+{
+	// Right
+	1, 2, 6,
+	6, 5, 1,
+	// Left
+	0, 4, 7,
+	7, 3, 0,
+	// Top
+	4, 5, 6,
+	6, 7, 4,
+	// Bottom
+	0, 3, 2,
+	2, 1, 0,
+	// Back
+	0, 1, 5,
+	5, 4, 0,
+	// Front
+	3, 7, 6,
+	6, 2, 3
+};
+std::string facesCubemap[6] =
+{ 
+	"Assets/Texture/SkyboxRight.jpg",
+	"Assets/Texture/SkyboxLeft.jpg",
+	"Assets/Texture/SkyboxTop.jpg",
+	"Assets/Texture/SkyboxBottom.jpg",
+	"Assets/Texture/SkyboxFront.jpg",
+	"Assets/Texture/SkyboxBack.jpg"
+};
 
 bool Renderer::Initialize(float screenWidth, float screenHeight)
 {
@@ -75,7 +120,7 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 
 	mWindow = SDL_CreateWindow("Game", 100, 100,
 		static_cast<int>(mScreenWidth), static_cast<int>(mScreenHeight), SDL_WINDOW_OPENGL);
-	mImGuiWindow = SDL_CreateWindow("ImGui Window", 1250,150,
+	mImGuiWindow = SDL_CreateWindow("ImGui Window", 1150,100,
 		480, 800, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
 	mImGuiContext = SDL_GL_CreateContext(mImGuiWindow);
@@ -88,7 +133,12 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 
 	// Create an OpenGL context
 	mContext = SDL_GL_CreateContext(mWindow);
-
+	// SDL_image初期化
+	if (!(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) & (IMG_INIT_JPG | IMG_INIT_PNG))) {
+		std::cerr << "Failed to initialize SDL_image: " << IMG_GetError() << std::endl;
+		SDL_Quit();
+		return -1;
+	}
 	// Initialize GLEW
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
@@ -124,7 +174,62 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 
 	// Load point light mesh
 	mPointLightMesh = GetMesh("Assets/Object/PointLight.gpmesh");
+
 	InitializeImGui(mImGuiWindow, mImGuiContext);
+
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glGenBuffers(1, &skyboxEBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(skyboxIndices), &skyboxIndices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	glGenTextures(1, &cubemapTexture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	// シームを防ぐために非常に重要
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+	// Cycles through all the textures and attaches them to the cubemap object
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load(facesCubemap[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+
+			glTexImage2D
+			(
+				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0,
+				GL_RGB,
+				width,
+				height,
+				0,
+				GL_RGB,
+				GL_UNSIGNED_BYTE,
+				data
+			);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Failed to load texture: " << facesCubemap[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+
 
 	return true;
 }
@@ -148,12 +253,14 @@ void Renderer::Shutdown()
 	delete mSpriteShader;
 	mMeshShader->Unload();
 	delete mMeshShader;
+	delete mSkyboxShader;
+	mSkyboxShader->Unload();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
-
+	
 
 }
 
@@ -179,14 +286,22 @@ void Renderer::UnloadData()
 void Renderer::Draw()
 {
 
+
+	DrawSkybox();
+
+
 	// Draw the 3D scene to the G-buffer
 	Draw3DScene(mGBuffer->GetBufferID(), mView, mProjection, false);
-	
+
+
+
+
 	// Set the frame buffer back to zero (screen's frame buffer)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Draw from the GBuffer
 	DrawFromGBuffer();
 
+	DrawSkybox();
 	// Draw all sprite components
 	// Disable depth buffering
 	glDisable(GL_DEPTH_TEST);
@@ -212,7 +327,6 @@ void Renderer::Draw()
 		ui->Draw(mSpriteShader);
 	}
 
-	
 
 	// ---- ImGui描画のための準備 ----
 	
@@ -226,7 +340,8 @@ void Renderer::Draw()
 	ImGui_ImplOpenGL3_NewFrame();
 	
 	ImGui::NewFrame();
-	ImGui::SetWindowSize(ImVec2(400.0f, 760.0f), ImGuiCond_Always);
+
+	ImGui::SetWindowSize(ImVec2(300.0f,700.0f), ImGuiCond_Always);
 	// ImGuiのUI要素
 	ImGui::Begin("Hello, ImGui!");
 
@@ -246,18 +361,12 @@ void Renderer::Draw()
 	if (mGame->GetPlayer() != nullptr && mGame->GetState()== Game::GameState::EGameplay) {
 		float health = mGame->GetPlayer()->GetHealth();
 		Vector3 pos = mGame->GetPlayer()->Actor::GetPosition();
-		//Vector3 pos2 = mGame->GetPlayer()->GetSekltalMesh()->GetBonePosition("Sword_joint");
+
 		Quaternion Rotation = mGame->GetPlayer()->Actor::GetRotation();
-		//angle += mGame->GetPlayer()->GetMoveComponent()->GetAngularSpeed();
+
 		static float values[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		
 
-		if (angle >= 360.0f) {
-			angle -= 360.0f;
-		}
-		else if (angle < 0.0f) {
-			angle += 360.0f;
-		}
 		// 正しいスコープを指定して初期化
 		FollowActor::State mState = mGame->GetPlayer()->GetState();
 
@@ -267,20 +376,19 @@ void Renderer::Draw()
 		// 位置（座標）の表示
 		ImGui::Text("Position: (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
 		// 位置（座標）の表示
-		//\ImGui::Text("Sword Rotation: (%.2f)", angle);
-		// 位置（座標）の表示
-		ImGui::Text("Sword Rotation: (%.2f, %.2f, %.2f ,%.2f)", Rotation.x, Rotation.y, Rotation.z, Rotation.w);
+		ImGui::Text("Rotation: (%.2f, %.2f, %.2f ,%.2f)", Rotation.x, Rotation.y, Rotation.z, Rotation.w);
 
 
 		// 状態の表示（enum値を数値として表示する場合）
 		ImGui::Text("State: %d", static_cast<int>(mState));
 
-		// 各要素を編集
+		/*		// 各要素を編集
 		for (int i = 0; i < 4; ++i)
 		{
 			ImGui::SliderFloat(("Value " + std::to_string(i)).c_str(), &values[i], -10.0f, 10.0f);
 			
-		}
+		}*/
+
 		// 状態の名前を文字列で表示する場合
 		const char* stateName = "";
 		switch (mState) {
@@ -477,6 +585,38 @@ void Renderer::Draw3DScene(unsigned int framebuffer, const Matrix4& view, const 
 	}
 }
 
+void Renderer::DrawSkybox() {
+
+	// Since the cubemap will always have a depth of 1.0, we need that equal sign so it doesn't get discarded
+	glDepthFunc(GL_LEQUAL);
+
+	mSkyboxShader->SetActive();
+	// We make the mat4 into a mat3 and then a mat4 again in order to get rid of the last row and column
+	// The last row and column affect the translation of the skybox (which we don't want to affect)
+	// Matrix4 -> glm::mat4に変換
+	glm::mat4 glmView = ConvertToGLM(mView);
+	glm::mat4 glmProjection = ConvertToGLM(mProjection);
+
+
+	glm::mat4 swappedView = glm::mat4(glmView[1] , glmView[2] , glmView[0] , glmView[3]);
+	glm::mat4 view = glm::mat4(glm::mat3(swappedView) );
+	glm::mat4 viewProj = glmProjection * view * 0.5f;
+	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(viewProj));
+
+	// Draws the cubemap as the last object so we can save a bit of performance by discarding all fragments
+	// where an object is present (a depth of 1.0f will always fail against any object's depth value)
+	glBindVertexArray(skyboxVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	// Switch back to the normal depth function
+	glDepthFunc(GL_LESS);
+
+}
+
 
 void Renderer::DrawFromGBuffer()
 {
@@ -601,12 +741,12 @@ bool Renderer::LoadShaders()
 		Vector2(mScreenWidth, mScreenHeight));
 
 	mSkyboxShader = new Shader();
-	if (!mSkyboxShader->Load("Shaders/BasicMesh.vert",
-		"Shaders/GBufferPointLight.frag"))
+	if (!mSkyboxShader->Load("Shaders/SkyBox.vert","Shaders/SkyBox.frag"))
 	{
 		return false;
 	}
 	mSkyboxShader->SetActive();
+
 	return true;
 }
 
@@ -678,3 +818,15 @@ void Renderer::InitializeImGui(SDL_Window* window, SDL_GLContext context) {
 	ImGui_ImplOpenGL3_Init("#version 330");
 }
 
+glm::mat4 Renderer::ConvertToGLM(const Matrix4& matrix)
+{
+	glm::mat4 glmMatrix;
+	for (int row = 0; row < 4; ++row)
+	{
+		for (int col = 0; col < 4; ++col)
+		{
+			glmMatrix[row][col] = matrix.mat[row][col];
+		}
+	}
+	return glmMatrix;
+}
