@@ -1,11 +1,11 @@
 #version 330 core
 out vec4 FragColor;
 
-in vec3 TexCoords;  // 頂点シェーダーから渡された座標
+in vec3 texCoords;
 
-uniform samplerCube skybox;  // Cubemap テクスチャ
+uniform samplerCube skybox;
 
 void main()
-{  
-    FragColor = texture(skybox, TexCoords);  // Cubemap テクスチャを使用
+{    
+    FragColor = texture(skybox, texCoords);
 }

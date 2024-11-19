@@ -1,15 +1,10 @@
-#pragma once
-#include "Actor.h"
+#include "EffectActor.h"
 
-class SmokeActor : public Actor
+class SmokeActor : public EffectActor
 {
 public:
-	SmokeActor(class Game* game);
-
-	void UpdateActor(float deltaTime) override;
-
-private:
-
-	float mLifeSpan;
+    SmokeActor(Game* game)
+        : EffectActor(game, "Assets/Object/Smoke.gpmesh", 0.5f, 100.0f)
+    {
+    }
 };
-

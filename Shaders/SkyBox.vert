@@ -1,13 +1,17 @@
 #version 330 core
-layout (location = 0) in vec3 aPos;  // 頂点の位置
+layout (location = 0) in vec3 aPos;
 
-out vec3 TexCoords;  // フラグメントシェーダーに渡す座標
+out vec3 texCoords;
 
 uniform mat4 projection;
 uniform mat4 view;
 
 void main()
 {
-    TexCoords = aPos;  // 頂点の位置をそのまま渡す
-    gl_Position =  projection * view * vec4(aPos, 1.0);  // モデルビュー行列とプロジェクション行列で変換
-}
+    vec4 pos =  projection * view * 0.5 * vec4(aPos, 1.0f);
+    // Having z equal w will always result in a depth of 1.0f
+    gl_Position = vec4(pos.x, pos.y, pos.w, pos.w);
+    // We want to flip the z axis due to the different coordinate systems (left hand vs right hand)
+    texCoords = vec3(aPos.x, aPos.y, -aPos.z);
+
+}    

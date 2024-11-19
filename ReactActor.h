@@ -1,14 +1,11 @@
 #pragma once
-#include "Actor.h"
+#include "EffectActor.h"
 
-class ReactActor : public Actor
+class ReactActor : public EffectActor
 {
 public:
-	ReactActor(class Game* game);
-
-	void UpdateActor(float deltaTime) override;
-	
-private:
-
-	float mLifeSpan;
+    ReactActor(Game* game)
+        : EffectActor(game, "Assets/Object/!.gpmesh", 0.4f, 15.0f)
+    {
+    }
 };

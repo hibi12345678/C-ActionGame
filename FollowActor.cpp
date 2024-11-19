@@ -66,8 +66,8 @@ FollowActor::FollowActor(Game* game)
 	mBoxComp->SetShouldRotate(false);
 
 	blockPressed = false;
-	SwordActor* sword1 = new SwordActor(game,0);
-	SwordActor* sword2 = new SwordActor(game,1);
+	SwordActor* sword1 = new SwordActor(game,1.0f,0);
+	SwordActor* sword2 = new SwordActor(game,1.0f,1);
 }
 
 void FollowActor::ActorInput(const uint8_t* keys)
@@ -221,7 +221,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		blockPressed = false;
 		mStamina -= 0.3f;
 		
-		if (mItemState == ESword) {
+		if (mItemState == ESword || mItemState == ETorch) {
 			Attack();
 			
 		}
@@ -291,8 +291,8 @@ void FollowActor::UpdateActor(float deltaTime) {
 	if (mItemState == EBow ) {
 		if (mArrowCount <= 0) {
 			mItemState = ESword;
-			SwordActor* sword1 = new SwordActor(GetGame(), 0);
-			SwordActor* sword2 = new SwordActor(GetGame(), 1);
+			SwordActor* sword1 = new SwordActor(GetGame(), 1.0f, 0);
+			SwordActor* sword2 = new SwordActor(GetGame(), 1.0f, 1);
 			mAudioComp->PlayEvent("event:/Equipped");
 		}
 		
@@ -300,8 +300,8 @@ void FollowActor::UpdateActor(float deltaTime) {
 	if (mItemState == EBomb) {
 		if (mBombCount <= 0) {
 			mItemState = ESword;
-			SwordActor* sword1 = new SwordActor(GetGame(), 0);
-			SwordActor* sword2 = new SwordActor(GetGame(), 1);
+			SwordActor* sword1 = new SwordActor(GetGame(), 1.0f, 0);
+			SwordActor* sword2 = new SwordActor(GetGame(), 1.0f, 1);
 			mAudioComp->PlayEvent("event:/Equipped");
 		}
 
@@ -482,7 +482,7 @@ void FollowActor::Bomb()
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
 
-	BombActor* bomb = new BombActor(GetGame(),1);
+	BombActor* bomb = new BombActor(GetGame(), 15.0f, 1);
 	bomb->SetPlayer(this);
 	bomb->SetPosition(this->GetPosition()+Vector3(0.0,0.0,200.0) + dir * 100.0f);
 	bomb->RotateToNewForward(dir);

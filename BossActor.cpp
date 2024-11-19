@@ -46,7 +46,7 @@ BossActor::BossActor(Game* game)
 	mMeshComp = new SkeletalMeshComponent(this);
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/EnemyBoss.gpmesh");
 	mMeshComp->SetMesh(mesh);
-    mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Skel/EnemyBoss.gpskel"));
+	mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Skel/EnemyBoss.gpskel"));
 	game->SetBossActor(this);
 	mMoveComp = new MoveComponent(this);
 	mAudioComp = new AudioComponent(this);
@@ -63,7 +63,7 @@ BossActor::BossActor(Game* game)
 
 BossActor::~BossActor()
 {
-	
+
 }
 void BossActor::UpdateActor(float deltaTime) {
 
@@ -110,7 +110,7 @@ void BossActor::UpdateActor(float deltaTime) {
 		}
 	}
 
-	else if (mMoveState == EBattle && mHealth > 0.0f ) {
+	else if (mMoveState == EBattle && mHealth > 0.0f) {
 
 		if (mReactFlag == false) {
 			mReactFlag = true;
@@ -142,7 +142,7 @@ void BossActor::UpdateActor(float deltaTime) {
 		}
 	}
 
-	else if (mMoveState == EAttack && mHealth > 0.0f ) {
+	else if (mMoveState == EAttack && mHealth > 0.0f) {
 
 		forwardSpeed += 100.0f;
 		float angle = atan2(diff.y, diff.x);
@@ -208,7 +208,7 @@ void BossActor::UpdateActor(float deltaTime) {
 		jumpSpeed = 0.0f;
 
 	}
-	
+
 
 	if (mAttackBoxComp != nullptr) {
 		forwardSpeed = 0.0f;
@@ -249,7 +249,7 @@ void BossActor::UpdateActor(float deltaTime) {
 				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/EnemyBoss_dying.gpanim"), 1.0f);
 				deathFlag = false;
 			}
-			
+
 			if (mDamageTimer <= 0.0f) {
 				mState = EDead;
 
@@ -396,7 +396,7 @@ void BossActor::FixCollisions()
 			else
 			{
 				pos.z += dz;
-				
+
 			}
 
 			// Need to set position and update box component
@@ -501,6 +501,5 @@ void BossActor::FixCollisions()
 		}
 
 	}
-	
-}
 
+}

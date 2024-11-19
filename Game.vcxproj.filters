@@ -65,9 +65,6 @@
     <ClCompile Include="BoneTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BossActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BoxComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,9 +78,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DialogBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FollowActor.cpp">
@@ -146,9 +140,6 @@
     <ClCompile Include="Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReactActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -180,9 +171,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VertexArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SmokeActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ItemMenu.cpp">
@@ -242,6 +230,18 @@
     <ClCompile Include="BowActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EffecActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemActorBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BossActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -259,9 +259,6 @@
     <ClInclude Include="BoneTransform.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="BossActor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="BoxComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -275,9 +272,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="DialogBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="FollowActor.h">
@@ -432,5 +426,9 @@
     </ClInclude>
     <ClInclude Include="SwordActor.h" />
     <ClInclude Include="BowActor.h" />
+    <ClInclude Include="EffectActor.h" />
+    <ClInclude Include="ItemActorBase.h" />
+    <ClInclude Include="EnemyActor.h" />
+    <ClInclude Include="BossActor.h" />
   </ItemGroup>
 </Project>

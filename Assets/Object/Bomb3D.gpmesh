@@ -3,8 +3,6 @@
   "vertexformat": "PosNormTex",
   "shader": "BasicMesh",
   "textures": [
-    "Assets/Texture/Bomb3D.png",
-    "Assets/Texture/Bomb3D.png",
     "Assets/Texture/Bomb3D.png"
   ],
   "specularPower": 100.0,

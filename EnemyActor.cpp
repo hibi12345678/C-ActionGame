@@ -33,8 +33,7 @@ EnemyActor::EnemyActor(Game* game)
 	, mDamageTimer(0.0f)
 	, blinkTime(0.0f)
 	, blinkInterval(0.2f)
-    , isVisible(true)
-	, delta(0.0f,0.0f,0.0f)
+	, isVisible(true)
 	, randomValue(0)
 	, mMoveTimer(0.0f)
 	, mMoveState(EPatrol)
@@ -53,7 +52,7 @@ EnemyActor::EnemyActor(Game* game)
 		Vector3(50.0f, 50.0f, 240.0f));
 	mBox->SetObjectBox(myBox);
 	mBox->SetShouldRotate(false);
-	
+
 	srand(static_cast<unsigned int>(time(0)));
 	game->AddEnemy(this);
 
@@ -72,12 +71,12 @@ void EnemyActor::UpdateActor(float deltaTime) {
 	Vector3 playerPosition = player->GetPosition();
 	Vector3 pos = GetPosition();
 	Vector3 diff = playerPosition - pos;
-	
+
 	if (diff.LengthSq() <= 200000.0f && diff.LengthSq() > 100000.0f && mHealth > 0.0f) {
-			
+
 		mMoveState = EBattle;
 
-		
+
 	}
 
 	else if (diff.LengthSq() <= 100000.0f && mHealth > 0.0f) {
@@ -95,13 +94,13 @@ void EnemyActor::UpdateActor(float deltaTime) {
 		if (randomValue == 0)
 		{
 			forwardSpeed += 100.0f;
-			
+
 		}
 		else {
-			
+
 		}
 
-		if (mMoveTimer <= 0.0f ) {
+		if (mMoveTimer <= 0.0f) {
 
 
 			SetRotation(Quaternion::CreateFromAxisAngle(Random::GetFloatRange(0.0f, Math::TwoPi)));
@@ -111,14 +110,14 @@ void EnemyActor::UpdateActor(float deltaTime) {
 		}
 	}
 
-	else if (mMoveState == EBattle && mHealth > 0.0f &&  mHealth > 0.0f) {
+	else if (mMoveState == EBattle && mHealth > 0.0f && mHealth > 0.0f) {
 
 		if (mReactFlag == false) {
 			mReactFlag = true;
 			ReactActor* react = new ReactActor(GetGame());
 			react->SetPosition(GetPosition() + Vector3(0.0f, 0.0f, 250.0f));
 		}
-		
+
 		float angle = atan2(diff.y, diff.x);
 		float angleDegrees = angle * (180.0f / Math::Pi);
 		Quaternion rotation = Quaternion::CreateFromAxisAngle(angle);
@@ -128,16 +127,16 @@ void EnemyActor::UpdateActor(float deltaTime) {
 		// movement
 		if (randomValue == 0 || randomValue == 1)
 		{
-			
+
 			forwardSpeed += 200.0f;
-			
-			
+
+
 		}
 		else if (randomValue == 2) {
 
 			forwardSpeed += -50.0f;
-			
-		
+
+
 		}
 
 		if (mMoveTimer <= 0.0f) {
@@ -150,42 +149,42 @@ void EnemyActor::UpdateActor(float deltaTime) {
 	}
 
 	else if (mMoveState == EAttack && mHealth > 0.0f) {
-		
+
 		forwardSpeed += 100.0f;
 		float angle = atan2(diff.y, diff.x);
 		float angleDegrees = angle * (180.0f / Math::Pi);
 		Quaternion rotation = Quaternion::CreateFromAxisAngle(angle);
-		
+
 		SetRotation(rotation);
 		mMoveTimer -= deltaTime;
 		if (diff.LengthSq() <= 20000.0f) {
 			forwardSpeed = 0.0f;
-			
+
 			if (randomValue == 0)
 			{
 				strafeSpeed += 50.0f;
-				
-				
+
+
 			}
 			else if (randomValue == 1) {
-				
-				
+
+
 				strafeSpeed += -50.0f;
 			}
 			else if (randomValue == 2 && mAttackTimer <= 0.0f) {
 
 				Attack();
 			}
-			else if ( randomValue == 3 && mAttackTimer <= 0.0f) {
-				AttackGround();		
+			else if (randomValue == 3 && mAttackTimer <= 0.0f) {
+				AttackGround();
 				//mState = EJump;
 				//jumpSpeed += -250000.0f;
 			}
 			else {
-				
-				
+
+
 			}
-			
+
 			if (mMoveTimer <= 0.0f) {
 
 				randomValue = rand() % 4;
@@ -195,27 +194,27 @@ void EnemyActor::UpdateActor(float deltaTime) {
 	}
 
 
-	
+
 
 	// Did we just start moving?
 	if (!mMoving && (!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)) && groundFlag == true)
 	{
-		mMoving = true; 
-		
+		mMoving = true;
+
 		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_walk.gpanim"), 1.0f);
-			
+
 	}
 
 	// Or did we just stop moving?
 	else if (mMoving && Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && groundFlag == true && !mAttackBoxComp)
 	{
 		mMoving = false;
-		
+
 		if (deathFlag) {
 			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_idle.gpanim"), 1.0f);
 		}
-	
-		
+
+
 	}
 	if (mState == EJump) {
 
@@ -231,7 +230,7 @@ void EnemyActor::UpdateActor(float deltaTime) {
 		jumpSpeed = 0.0f;
 
 	}
-	
+
 
 	if (mAttackBoxComp != nullptr) {
 		forwardSpeed = 0.0f;
@@ -239,7 +238,7 @@ void EnemyActor::UpdateActor(float deltaTime) {
 	}
 	mMoveComp->SetForwardSpeed(forwardSpeed);
 	mMoveComp->SetStrafeSpeed(strafeSpeed);
-	
+
 	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
 	mState = EFall;
 	FixCollisions();
@@ -274,7 +273,7 @@ void EnemyActor::UpdateActor(float deltaTime) {
 				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_dying.gpanim"), 1.0f);
 				deathFlag = false;
 			}
-			
+
 			if (mDamageTimer <= 0.0f) {
 				mState = EDead;
 				DropItemActor* dropitem = new DropItemActor(GetGame());
@@ -305,7 +304,7 @@ void EnemyActor::UpdateActor(float deltaTime) {
 			if (deathFlag) {
 				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_idle.gpanim"), 1.0f);
 			}
-			
+
 		}
 		if (mBoxTimer <= 0.3f && groundFlag == false) {
 			if (deathFlag) {
@@ -331,7 +330,7 @@ void EnemyActor::SetVisible(bool visible)
 
 void EnemyActor::Attack() {
 
-	
+
 	// 攻撃判定用のBoxComponentを追加
 	mAttackBoxComp = new BoxComponent(this);
 	AABB myBox(Vector3(50.0f, -50.0f, 50.0f),
@@ -342,7 +341,7 @@ void EnemyActor::Attack() {
 	// タイマーをリセット
 	mBoxTimer = 0.5f;  // 0.5秒後に削除する
 	// タイマーをリセット
-	mAttackTimer = 4.0f;  
+	mAttackTimer = 4.0f;
 	groundFlag = true;
 	mAudioComp->PlayEvent("event:/EnemyAttack");
 }
@@ -351,13 +350,13 @@ void EnemyActor::AttackGround() {
 
 
 	// タイマーをリセット
-	mBoxTimer = 2.1f;  
+	mBoxTimer = 2.1f;
 
 	// タイマーをリセット
 	mAttackTimer = 4.0f;
-	
+
 	groundFlag = false;
-	
+
 	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Enemy_jump_attack.gpanim"), 1.0f);
 	mAudioComp->PlayEvent("event:/EnemyAttack2");
 }
@@ -391,7 +390,7 @@ void EnemyActor::FixCollisions()
 	auto& arrow = GetGame()->GetArrow();
 	auto& explosion = GetGame()->GetExplosion();
 	if (player != nullptr) {
-		
+
 		// デリファレンスしてメンバにアクセス
 		const AABB& enemyBox = player->GetBox()->GetWorldBox();
 		if (Intersect(playerBox, enemyBox))
@@ -429,7 +428,7 @@ void EnemyActor::FixCollisions()
 			else
 			{
 				pos.z += dz;
-				
+
 			}
 
 			// Need to set position and update box component
@@ -473,18 +472,18 @@ void EnemyActor::FixCollisions()
 			// Ditto for dz
 			float dz = Math::Abs(dz1) < Math::Abs(dz2) ?
 				dz1 : dz2;
-			
+
 
 			// Whichever is closest, adjust x/y position
 			if (Math::Abs(dx) <= Math::Abs(dy) && Math::Abs(dx) <= Math::Abs(dz))
 			{
 				pos.x += dx;
-				
+
 			}
 			else if (Math::Abs(dy) <= Math::Abs(dx) && Math::Abs(dy) <= Math::Abs(dz))
 			{
 				pos.y += dy;
-				
+
 			}
 			else
 			{
@@ -542,7 +541,7 @@ void EnemyActor::FixCollisions()
 				mBox->OnUpdateWorldTransform();
 			}
 
-			
+
 		}
 
 
@@ -572,7 +571,7 @@ void EnemyActor::FixCollisions()
 		if (ex != nullptr) {
 
 			const AABB& exBox = ex->GetBox()->GetWorldBox();
-			if (Intersect(playerBox, exBox) && mDamageTimer <= 0.0f )
+			if (Intersect(playerBox, exBox) && mDamageTimer <= 0.0f)
 			{
 				mAudioComp->PlayEvent("event:/Hit");
 				mHealth -= 1.0f;
@@ -585,4 +584,3 @@ void EnemyActor::FixCollisions()
 
 	}
 }
-
