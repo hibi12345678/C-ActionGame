@@ -33,7 +33,7 @@ void BoxComponent::OnUpdateWorldTransform()
 	// Scale
 	mWorldBox.mMin *= mOwner->GetScale();
 	mWorldBox.mMax *= mOwner->GetScale();
-	// Rotate (if we want to)
+	// Rotate (if we want toj
 	if (mShouldRotate)
 	{
 		mWorldBox.Rotate(mOwner->GetRotation());

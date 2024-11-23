@@ -35,7 +35,6 @@ DropItemActor::DropItemActor(Game* game)
 	mBox->SetObjectBox(myBox);
 	mBox->SetShouldRotate(false);
 	
-	
 	game->AddDropItem(this);
 	randomValue = rand() % 2;
 	if (randomValue ==0) {

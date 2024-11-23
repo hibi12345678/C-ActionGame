@@ -27,6 +27,7 @@ public:
 	void SaveProperties(rapidjson::Document::AllocatorType& alloc,
 		rapidjson::Value& inObj) const override;
 	void SetShouldRotate(bool value) { mShouldRotate = value; }
+   
 private:
 	AABB mObjectBox;
 	AABB mWorldBox;

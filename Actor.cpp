@@ -197,4 +197,5 @@ void Actor::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson:
 	JsonHelper::AddVector3(alloc, inObj, "position", mPosition);
 	JsonHelper::AddQuaternion(alloc, inObj, "rotation", mRotation);
 	JsonHelper::AddFloat(alloc, inObj, "scale", mScale);
+
 }

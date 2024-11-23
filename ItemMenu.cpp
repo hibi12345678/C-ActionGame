@@ -89,7 +89,7 @@ ItemMenu::~ItemMenu()
 	}
 	else if (mGame->GetPlayer()->GetItemState() == FollowActor::ETorch) {
 		if (menuState != ETorch) {
-			TorchItemActor* torch = new TorchItemActor(mGame,30.0f,0);
+			TorchItemActor* torch = new TorchItemActor(mGame,50.0f,0);
 		}
 		
 		

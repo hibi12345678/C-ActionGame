@@ -14,6 +14,9 @@
 
 CameraComponent::CameraComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
+	, mPitchSpeed(0.0f)
+	, mMaxPitch(Math::Pi / 3.0f)
+	, mPitch(0.0f)
 {
 }
 
@@ -24,3 +27,4 @@ void CameraComponent::SetViewMatrix(const Matrix4& view)
 	game->GetRenderer()->SetViewMatrix(view);
 	
 }
+

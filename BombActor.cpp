@@ -38,8 +38,8 @@ BombActor::BombActor(Game* game, float scale, int num)
 		mAudioComp = new AudioComponent(this);
 		// Add a box component
 		mBoxComp = new BoxComponent(this);
-		AABB myBox(Vector3(-25.0f, -25.0f, 0.0f),
-			Vector3(25.0f, 25.0f, 25.0f));
+		AABB myBox(Vector3(-5.0f, -5.0f, 0.0f),
+			Vector3(5.0f, 5.0f, 5.0f));
 		mBoxComp->SetObjectBox(myBox);
 		mBoxComp->SetShouldRotate(false);
 	}

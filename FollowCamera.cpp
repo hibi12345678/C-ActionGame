@@ -16,9 +16,6 @@
 #include "FollowActor.h"
 FollowCamera::FollowCamera(Actor* owner)
 	:CameraComponent(owner)
-	, mPitchSpeed(0.0f)
-	, mMaxPitch(Math::Pi / 3.0f)
-	, mPitch(0.0f)
 	, mSpringConstant(128.0)
 	, mTargetDist(100.0)
 	, mVelocity(Vector3(0.0,0.0,0.0))
@@ -28,24 +25,12 @@ FollowCamera::FollowCamera(Actor* owner)
 
 void FollowCamera::Update(float deltaTime)
 {
-
-	// Call parent update (doesn't do anything right now)
-	CameraComponent::Update(deltaTime);
-	// Camera position is owner position
 	Vector3 cameraPos = ComputeCameraPos() ;
-
-	// Update pitch based on pitch speed
 	mPitch += mPitchSpeed * deltaTime;
-	// Clamp pitch to [-max, +max]
 	mPitch = Math::Clamp(mPitch, -mMaxPitch * 0.7f, mMaxPitch*0.6f);
-	// Make a quaternion representing pitch rotation,
-	// which is about owner's right vector
 	Quaternion q(mOwner->GetRight(), mPitch);
-
-	// Rotate owner forward by pitch quaternion
 	Vector3 viewForward = Vector3::Transform(
 		mOwner->GetForward(), q);
-	// Target position 100 units in front of view forward
 	Vector3 target = mOwner->GetPosition() + viewForward * mTargetDist * 10.0f;
 	// Also rotate up by pitch quaternion
 	Vector3 up = Vector3::Transform(Vector3::UnitZ, q);
@@ -53,15 +38,12 @@ void FollowCamera::Update(float deltaTime)
 	// Create look at matrix, set as view
 	Matrix4 view = Matrix4::CreateLookAt(cameraPos, target, up);
 	SetViewMatrix(view);
-	
+
 	// Set listener attributes to the player's position, not the camera's
 	Game* game = mOwner->GetGame();
-	Vector3 playerPosition = mOwner-> GetPosition();
-	game->GetAudioSystem()->SetListener(view,Vector3::Zero,1.0f,playerPosition);
-
+	Vector3 playerPosition = mOwner->GetPosition();
+	game->GetAudioSystem()->SetListener(view, Vector3::Zero, 1.0f, playerPosition);
 }
-
-
 
 void FollowCamera::LoadProperties(const rapidjson::Value& inObj)
 {
@@ -78,7 +60,6 @@ void FollowCamera::LoadProperties(const rapidjson::Value& inObj)
 void FollowCamera::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	CameraComponent::SaveProperties(alloc, inObj);
-
 	JsonHelper::AddVector3(alloc, inObj, "actualPos", mActualPos);
 	JsonHelper::AddVector3(alloc, inObj, "velocity", mVelocity);
 	JsonHelper::AddFloat(alloc, inObj, "horzDist", mHorzDist);
