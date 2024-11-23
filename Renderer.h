@@ -13,7 +13,7 @@
 #include <SDL/SDL.h>
 #include "Math.h"
 #include <GL/glew.h> 
-
+#include <glm.hpp> 
 struct DirectionalLight
 {
 	// Direction of light
@@ -71,14 +71,16 @@ public:
 	class GBuffer* GetGBuffer() { return mGBuffer; }
 
 	void InitializeImGui(SDL_Window* window, SDL_GLContext context);
-
 	glm::mat4 Renderer::ConvertToGLM(const Matrix4& matrix);
+	glm::vec3 ToGlmVec3(const Vector3& vec) {
+		return glm::vec3(vec.x, vec.y, vec.z);
+	}
 private:
 	// Chapter 14 additions
 	void Draw3DScene(unsigned int framebuffer, const Matrix4& view, const Matrix4& proj, bool lit = true);
 	void DrawSkybox();
 	void DrawFromGBuffer();
-	//void DrawFromGBuffer();
+	void DrawAABB();
 	// End chapter 14 additions
 	bool LoadShaders();
 	void CreateSpriteVerts();
@@ -110,6 +112,7 @@ private:
 	class Shader* mSkinnedShader;	
 	// SkyBox shader
 	class Shader* mSkyboxShader;
+	class Shader* mLineShader;
 
 	// View/projection for 3D shaders
 	Matrix4 mView;
@@ -140,10 +143,12 @@ private:
 	std::vector<class PointLightComponent*> mPointLights;
 	class Mesh* mPointLightMesh;
 	float angle;
-
+	bool mBoxFlag;
 	unsigned int cubemapTexture;
 
 
 	// Create VAO, VBO, and EBO for the skybox
 	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
+
+
 };

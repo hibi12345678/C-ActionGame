@@ -5,7 +5,6 @@
 // Released under the BSD License
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-
 #include "LevelLoader.h"
 #include <fstream>
 #include <vector>
@@ -39,7 +38,7 @@ std::unordered_map<std::string, ActorFunc> LevelLoader::sActorFactoryMap
 	{ "FollowActor", &Actor::Create<FollowActor> },
 	{ "EnemyActor", &Actor::Create<EnemyActor> },
 	{ "PlaneActor", &Actor::Create<PlaneActor> },
-	
+
 };
 
 std::unordered_map<std::string, std::pair<int, ComponentFunc>> LevelLoader::sComponentFactoryMap
@@ -66,7 +65,7 @@ bool LevelLoader::LoadLevel(Game* game, const std::string& fileName)
 	}
 
 	int version = 0;
-	if (!JsonHelper::GetInt(doc, "version", version) || 
+	if (!JsonHelper::GetInt(doc, "version", version) ||
 		version != LevelVersion)
 	{
 		SDL_Log("Incorrect level file version for %s", fileName.c_str());
@@ -169,7 +168,7 @@ void LevelLoader::LoadGlobalProperties(Game* game, const rapidjson::Value& inObj
 	if (dirObj.IsObject())
 	{
 		DirectionalLight& light = game->GetRenderer()->GetDirectionalLight();
-		
+
 		// Set direction/color, if they exist
 		JsonHelper::GetVector3(dirObj, "direction", light.mDirection);
 		JsonHelper::GetVector3(dirObj, "color", light.mDiffuseColor);
@@ -252,13 +251,13 @@ void LevelLoader::LoadComponents(Actor* actor, const rapidjson::Value& inArray)
 	}
 }
 
-void LevelLoader::SaveGlobalProperties(rapidjson::Document::AllocatorType& alloc, 
+void LevelLoader::SaveGlobalProperties(rapidjson::Document::AllocatorType& alloc,
 	Game* game, rapidjson::Value& inObject)
 {
 	// Ambient light
 	JsonHelper::AddVector3(alloc, inObject, "ambientLight",
 		game->GetRenderer()->GetAmbientLight());
-	
+
 	// Directional light
 	DirectionalLight& dirLight = game->GetRenderer()->GetDirectionalLight();
 	rapidjson::Value dirObj(rapidjson::kObjectType);
@@ -267,7 +266,7 @@ void LevelLoader::SaveGlobalProperties(rapidjson::Document::AllocatorType& alloc
 	inObject.AddMember("directionalLight", dirObj, alloc);
 }
 
-void LevelLoader::SaveActors(rapidjson::Document::AllocatorType& alloc, 
+void LevelLoader::SaveActors(rapidjson::Document::AllocatorType& alloc,
 	Game* game, rapidjson::Value& inArray)
 {
 	const auto& actors = game->GetActors();
@@ -295,7 +294,7 @@ void LevelLoader::SaveActors(rapidjson::Document::AllocatorType& alloc,
 	}
 }
 
-void LevelLoader::SaveComponents(rapidjson::Document::AllocatorType& alloc, 
+void LevelLoader::SaveComponents(rapidjson::Document::AllocatorType& alloc,
 	const Actor* actor, rapidjson::Value& inArray)
 {
 	const auto& components = actor->GetComponents();
@@ -467,7 +466,7 @@ void JsonHelper::AddString(rapidjson::Document::AllocatorType& alloc,
 {
 	rapidjson::Value v;
 	v.SetString(value.c_str(), static_cast<rapidjson::SizeType>(value.length()),
-				alloc);
+		alloc);
 	inObject.AddMember(rapidjson::StringRef(name), v, alloc);
 }
 

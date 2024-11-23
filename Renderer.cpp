@@ -285,32 +285,22 @@ void Renderer::UnloadData()
 
 void Renderer::Draw()
 {
-
-
-	DrawSkybox();
-
-
+	
 	// Draw the 3D scene to the G-buffer
 	Draw3DScene(mGBuffer->GetBufferID(), mView, mProjection, false);
-
-
-
-
 	// Set the frame buffer back to zero (screen's frame buffer)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Draw from the GBuffer
 	DrawFromGBuffer();
-
+	
 	DrawSkybox();
-	// Draw all sprite components
-	// Disable depth buffering
+	
 	glDisable(GL_DEPTH_TEST);
-	// Enable alpha blending on the color buffer
+	DrawAABB();
 	glEnable(GL_BLEND);
 	glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-	// Set shader/vao as active
 	mSpriteShader->SetActive();
 	mSpriteVerts->SetActive();
 	for (auto sprite : mSprites)
@@ -321,7 +311,6 @@ void Renderer::Draw()
 		}
 	}
 	
-	// Draw any UI screens
 	for (auto ui : mGame->GetUIStack())
 	{
 		ui->Draw(mSpriteShader);
@@ -329,59 +318,36 @@ void Renderer::Draw()
 
 
 	// ---- ImGui描画のための準備 ----
-	
-	// ImGuiウィンドウのコンテキストをアクティブにする
 	SDL_GL_MakeCurrent(mImGuiWindow, mImGuiContext);
-	// バックバッファをクリア
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // 背景色を黒に設定
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // バッファをクリア
-	// ImGuiフレームの開始
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	ImGui_ImplSDL2_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
-	
 	ImGui::NewFrame();
-
 	ImGui::SetWindowSize(ImVec2(300.0f,700.0f), ImGuiCond_Always);
-	// ImGuiのUI要素
 	ImGui::Begin("Hello, ImGui!");
 
+	static float bgColor[3] = { 0.7f, 0.7f, 0.7f };
 
-	// Ambient LightのVector3
-	static float bgColor[3] = { 0.7f, 0.7f, 0.7f }; // 初期値設定定
-
-   // RGBのみを操作するカラーピッカー
 	if (ImGui::ColorPicker3("BG color", bgColor, ImGuiColorEditFlags_PickerHueWheel)) {
-		// カラーピッカーで変更されたRGB値をglClearColorに設定する
-		glClearColor(bgColor[0], bgColor[1], bgColor[2], 1.0f);  // アルファ値は1.0fに固定
+		glClearColor(bgColor[0], bgColor[1], bgColor[2], 1.0f);  
 
 	}
 	SetAmbientLight(Vector3(bgColor[0],
 		bgColor[1],
 		bgColor[2]));
-	if (mGame->GetPlayer() != nullptr && mGame->GetState()== Game::GameState::EGameplay) {
+	if (mGame->GetPlayer() != nullptr && mGame->GetState() != Game::GameState::EMainMenu ) {
 		float health = mGame->GetPlayer()->GetHealth();
 		Vector3 pos = mGame->GetPlayer()->Actor::GetPosition();
-
 		Quaternion Rotation = mGame->GetPlayer()->Actor::GetRotation();
-
 		static float values[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		
-
-		// 正しいスコープを指定して初期化
 		FollowActor::State mState = mGame->GetPlayer()->GetState();
-
-		// ヘルスの表示
+		
 		ImGui::Text("Health: %.2f", health);
-
-		// 位置（座標）の表示
 		ImGui::Text("Position: (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
-		// 位置（座標）の表示
 		ImGui::Text("Rotation: (%.2f, %.2f, %.2f ,%.2f)", Rotation.x, Rotation.y, Rotation.z, Rotation.w);
-
-
-		// 状態の表示（enum値を数値として表示する場合）
 		ImGui::Text("State: %d", static_cast<int>(mState));
-
+		ImGui::Checkbox("Draw Boxes ", &mBoxFlag);
 		/*		// 各要素を編集
 		for (int i = 0; i < 4; ++i)
 		{
@@ -389,7 +355,6 @@ void Renderer::Draw()
 			
 		}*/
 
-		// 状態の名前を文字列で表示する場合
 		const char* stateName = "";
 		switch (mState) {
 		case FollowActor::State::EJump:
@@ -412,14 +377,9 @@ void Renderer::Draw()
 
 	ImGui::End();
 
-	// ImGui描画
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-	// ImGuiウィンドウのバッファを入れ替え
 	SDL_GL_SwapWindow(mImGuiWindow);
-
-	// メインウィンドウを描画（必要に応じて追加）
 	SDL_GL_MakeCurrent(mWindow, mContext);
 	SDL_GL_SwapWindow(mWindow);
 }
@@ -587,37 +547,94 @@ void Renderer::Draw3DScene(unsigned int framebuffer, const Matrix4& view, const 
 
 void Renderer::DrawSkybox() {
 
-	// Since the cubemap will always have a depth of 1.0, we need that equal sign so it doesn't get discarded
+	
 	glDepthFunc(GL_LEQUAL);
 
 	mSkyboxShader->SetActive();
-	// We make the mat4 into a mat3 and then a mat4 again in order to get rid of the last row and column
-	// The last row and column affect the translation of the skybox (which we don't want to affect)
-	// Matrix4 -> glm::mat4に変換
 	glm::mat4 glmView = ConvertToGLM(mView);
 	glm::mat4 glmProjection = ConvertToGLM(mProjection);
-
-
 	glm::mat4 swappedView = glm::mat4(glmView[1] , glmView[2] , glmView[0] , glmView[3]);
 	glm::mat4 view = glm::mat4(glm::mat3(swappedView) );
 	glm::mat4 viewProj = glmProjection * view * 0.5f;
 	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(viewProj));
 
-	// Draws the cubemap as the last object so we can save a bit of performance by discarding all fragments
-	// where an object is present (a depth of 1.0f will always fail against any object's depth value)
 	glBindVertexArray(skyboxVAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
-	// Switch back to the normal depth function
 	glDepthFunc(GL_LESS);
 
 }
 
 
+void Renderer::DrawAABB()
+{
+	if (!mBoxFlag) return;
+
+	// シェーダープログラムを有効化
+	mLineShader->SetActive();
+
+	glm::mat4 glmView = ConvertToGLM(mView);
+	glm::mat4 glmProjection = ConvertToGLM(mProjection);
+	glm::mat4 swappedView = glm::mat4(glmView[0], glmView[1], glmView[2], glmView[3]);
+	glm::mat4 view = glm::mat4(glm::mat3(swappedView));
+
+	glm::mat4 viewProj = glmProjection * swappedView;
+
+	glUniformMatrix4fv(glGetUniformLocation(mLineShader->GetID(), "uViewProjection"),
+		1, GL_FALSE, glm::value_ptr(viewProj));
+
+	auto& boxes = mGame->GetPhysWorld()->GetBoxComponents();
+	for (auto box : boxes) {
+		const AABB& mWorldbox = box->GetWorldBox();
+
+		glm::mat4 minmat = ConvertToGLM(Matrix4::CreateTranslation(mWorldbox.mMin));
+		glm::vec3 min = glm::vec3(minmat[3]);
+		glm::mat4 maxmat = ConvertToGLM(Matrix4::CreateTranslation(mWorldbox.mMax));
+		glm::vec3 max = glm::vec3(maxmat[3]);
+
+		// AABBの頂点を定義
+		float vertices[] = {
+			min.x, min.y, min.z, max.x, min.y, min.z,
+			max.x, min.y, min.z, max.x, max.y, min.z,
+			max.x, max.y, min.z, min.x, max.y, min.z,
+			min.x, max.y, min.z, min.x, min.y, min.z,
+			min.x, min.y, max.z, max.x, min.y, max.z,
+			max.x, min.y, max.z, max.x, max.y, max.z,
+			max.x, max.y, max.z, min.x, max.y, max.z,
+			min.x, max.y, max.z, min.x, min.y, max.z,
+			min.x, min.y, min.z, min.x, min.y, max.z,
+			max.x, min.y, min.z, max.x, min.y, max.z,
+			max.x, max.y, min.z, max.x, max.y, max.z,
+			min.x, max.y, min.z, min.x, max.y, max.z,
+		};
+
+		// VBOとVAOの設定
+		GLuint VAO, VBO;
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+
+		glBindVertexArray(VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		// 描画
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_LINES, 0, 24);
+
+		// クリーンアップ
+		glDeleteBuffers(1, &VBO);
+		glDeleteVertexArrays(1, &VAO);
+	}
+}
+	
 void Renderer::DrawFromGBuffer()
 {
 	// Clear the current framebuffer
@@ -677,7 +694,6 @@ bool Renderer::LoadShaders()
 	{
 		return false;
 	}
-
 	mSpriteShader->SetActive();
 	// Set the view-projection matrix
 	Matrix4 spriteViewProj = Matrix4::CreateSimpleViewProj(mScreenWidth, mScreenHeight);
@@ -689,7 +705,6 @@ bool Renderer::LoadShaders()
 	{
 		return false;
 	}
-
 	mMeshShader->SetActive();
 	// Set the view-projection matrix
 	mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
@@ -703,10 +718,9 @@ bool Renderer::LoadShaders()
 	{
 		return false;
 	}
-
 	mSkinnedShader->SetActive();
 	mSkinnedShader->SetMatrixUniform("uViewProj", mView * mProjection);
-	
+
 	// Create shader for drawing from GBuffer (global lighting)
 	mGGlobalShader = new Shader();
 	if (!mGGlobalShader->Load("Shaders/GBufferGlobal.vert", "Shaders/GBufferGlobal.frag"))
@@ -722,9 +736,9 @@ bool Renderer::LoadShaders()
 	mGGlobalShader->SetMatrixUniform("uViewProj", spriteViewProj);
 	// The world transform scales to the screen and flips y
 	Matrix4 gbufferWorld = Matrix4::CreateScale(mScreenWidth, -mScreenHeight,
-												1.0f);
+		1.0f);
 	mGGlobalShader->SetMatrixUniform("uWorldTransform", gbufferWorld);
-	
+
 	// Create a shader for point lights from GBuffer
 	mGPointLightShader = new Shader();
 	if (!mGPointLightShader->Load("Shaders/BasicMesh.vert",
@@ -747,6 +761,17 @@ bool Renderer::LoadShaders()
 	}
 	mSkyboxShader->SetActive();
 
+	mSkyboxShader = new Shader();
+	if (!mSkyboxShader->Load("Shaders/SkyBox.vert", "Shaders/SkyBox.frag"))
+	{
+		return false;
+	}
+	
+	mLineShader = new Shader();
+	if (!mLineShader->Load("Shaders/Line.vert", "Shaders/Line.frag"))
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -830,3 +855,5 @@ glm::mat4 Renderer::ConvertToGLM(const Matrix4& matrix)
 	}
 	return glmMatrix;
 }
+
+

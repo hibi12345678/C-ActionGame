@@ -46,7 +46,6 @@ UIScreen::~UIScreen()
 		mTitle->Unload();
 		delete mTitle;
 	}
-
 	for (auto b : mButtons)
 	{
 		delete b;
@@ -55,7 +54,6 @@ UIScreen::~UIScreen()
 	{
 		delete b;
 	}
-	
 	for (auto b : mText)
 	{
 		delete b;
@@ -83,8 +81,6 @@ void UIScreen::Update(float deltaTime)
 
 void UIScreen::Draw(Shader* shader)
 {
-	
-
 	// Draw background (if exists)
 	if (mBackground)
 	{
@@ -92,22 +88,18 @@ void UIScreen::Draw(Shader* shader)
 	}
 	// Draw title (if exists)
 	if (mTitle)
-	{		
-		
-		DrawTexture(shader, mTitle, mTitlePos);
-		
+	{			
+		DrawTexture(shader, mTitle, mTitlePos);	
 	}
 
 	// Draw buttons
 	for (auto b : mButtons)
 	{
 		// Draw background of button
-		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;
-		
+		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;	
 		DrawTexture(shader, tex, b->GetPosition());
 		// Draw text of button
 		DrawTexture(shader,b->GetNameTex(), b->GetPosition());
-		
 
 	}	
 	// Draw buttons
@@ -117,17 +109,12 @@ void UIScreen::Draw(Shader* shader)
 		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;
 		DrawTexture(shader, tex, b->GetPosition());
 		// Draw text of button
-		DrawTexture(shader,b->GetNameTex(), b->GetPosition());
-
-		
-		
+		DrawTexture(shader,b->GetNameTex(), b->GetPosition());	
 	}
 	// Draw buttons
 	for (auto tex : mText)
 	{
-		
-		DrawTexture(shader, tex, tex->GetPos());
-		
+		DrawTexture(shader, tex, tex->GetPos());	
 	}
 	
 	// Draw buttons
@@ -135,31 +122,21 @@ void UIScreen::Draw(Shader* shader)
 	{
 		// Draw background of button
 		Texture* tex = b->GetHighlighted() ? mItemButtonOn : mItemButtonOff;
-
 		DrawTexture(shader, tex, b->GetPosition());
 		
 		if (b->GetTexNum() == 0) {
-			DrawTexture(shader, mSword, b->GetPosition());
-			
+			DrawTexture(shader, mSword, b->GetPosition());		
 		}
 		else if (b->GetTexNum() == 1) {
-			DrawTexture(shader, mTorch, b->GetPosition());
-			
+			DrawTexture(shader, mTorch, b->GetPosition());	
 		}
 		else if (b->GetTexNum() == 2) {
-			DrawTexture(shader, mBow, b->GetPosition());
-
-			
+			DrawTexture(shader, mBow, b->GetPosition());		
 		}
 		else if (b->GetTexNum() == 3) {
 			DrawTexture(shader, mBomb, b->GetPosition());
 
 		}
-		
-		
-		
-		
-
 
 	}
 	// Draw title (if exists)
@@ -252,8 +229,7 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 			}
 			else
 			{
-				b->SetHighlighted(false);
-				
+				b->SetHighlighted(false);		
 			}
 		}
 
@@ -261,12 +237,10 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 }
 
 void UIScreen::StartInput(const uint8_t* keys)
-{
-	
+{	
 	// Do we have buttons?
 	if (!mStartButton.empty())
 	{
-		
 		// Get position of mouse
 		int x, y;
 		SDL_GetMouseState(&x, &y);
@@ -276,17 +250,13 @@ void UIScreen::StartInput(const uint8_t* keys)
 		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
 		
 		for (auto b : mStartButton)
-		{
-			
+		{	
 			if (b->ContainsPoint(mousePos))
-			{
-				
+			{	
 				b->SetHighlighted(true);
 			}
 			else
 			{
-				// デバッグ用にサイズを出力
-				
 				b->SetHighlighted(false);
 			}
 		}
@@ -295,7 +265,6 @@ void UIScreen::StartInput(const uint8_t* keys)
 }
 void UIScreen::HandleKeyPress(int key)
 {
-
 	switch (key)
 	{
 	case SDL_BUTTON_LEFT:
@@ -323,15 +292,11 @@ void UIScreen::HandleKeyPress(int key)
 		}
 		if (!mStartButton.empty())
 		{
-
 			for (auto b : mStartButton)
 			{
-
 				if (b->GetHighlighted())
 				{
-
 					b->OnClick();
-
 					break;
 				}
 			}
@@ -373,8 +338,6 @@ void UIScreen::AddText(const std::string& text, Vector2 pos, int pointSize,
 {
 	
 	Texture* tex = new Texture();
-	
-	
 	tex = mFont->RenderText(text, color, pointSize);
 	tex->SetPos(pos);
 	mText.emplace_back(tex);
@@ -387,15 +350,12 @@ void UIScreen::CloseText()
 	for (auto b : mText) {
 		delete b;
 	}
-
 	mText.clear();
 }
 
 void UIScreen::SetItemText(const std::string& text, Vector2 pos, int pointSize,
-	const Vector3& color
-)
+	const Vector3& color)
 {
-
 
 	// Clear out previous title texture if it exists
 	if (mItemText)
@@ -404,13 +364,9 @@ void UIScreen::SetItemText(const std::string& text, Vector2 pos, int pointSize,
 		delete mItemText;
 		mItemText = nullptr;
 	}
-
 	mItemText = mFont->RenderText(text, color, pointSize);
 	//mItemText->SetTexNum(itemNum);
 	mItemText->SetPos(pos);
-	
-
-
 }
 
 void UIScreen::AddButton(const std::string& name, std::function<void()> onClick)
@@ -419,9 +375,6 @@ void UIScreen::AddButton(const std::string& name, std::function<void()> onClick)
 		static_cast<float>(mButtonOn->GetHeight()));
 	Button* b = new Button(name, mFont, onClick, mNextButtonPos, dims,0);
 	mButtons.emplace_back(b);
-	
-	// Update position of next button
-	// Move down by height of button plus padding
 	mNextButtonPos.y -= mButtonOff->GetHeight() + 20.0f;
 	
 }
@@ -430,16 +383,9 @@ void UIScreen::StartButton(const std::string& name, std::function<void()> onClic
 {
 	Vector2 dims(static_cast<float>(mButtonOn->GetWidth()),
 		static_cast<float>(mButtonOn->GetHeight()));
-	Button* b = new Button(name, mFont, onClick, Vector2(0.0f, 0.0f), dims,0);
-	
-	mStartButton.emplace_back(b);
-	
-	
+	Button* b = new Button(name, mFont, onClick, Vector2(0.0f, 0.0f), dims,0);	
+	mStartButton.emplace_back(b);	
 }
-	
-
-
-
 void UIScreen::ItemButton(const std::string& name,int texNumber ,std::function<void()> onClick)
 {
 	Vector2 dims(static_cast<float>(mItemButtonOn->GetWidth()),
@@ -449,56 +395,29 @@ void UIScreen::ItemButton(const std::string& name,int texNumber ,std::function<v
 	// Update position of next button
 	// Move down by height of button plus padding
 	mNextItemButtonPos.x += mItemButtonOff->GetWidth()+ 30.0f;
-
 }
 
 void UIScreen::DrawTexture(class Shader* shader, class Texture* texture,
-				 const Vector2& offset, float scale, bool flipY , int a)
+	const Vector2& offset, float scale, bool flipY, int a)
 {
-	// Scale the quad by the width/height of texture
-	// and flip the y if we need to
-
-	if (a == 0) {
-		float yScale = static_cast<float>(texture->GetHeight() * scale);
-		if (flipY) { yScale *= -1.0f; }
-		Matrix4 scaleMat = Matrix4::CreateScale(
-			static_cast<float>(texture->GetWidth()) * scale,
-			yScale,
-			1.0f);
-		// Translate to position on screen
-		Matrix4 transMat = Matrix4::CreateTranslation(
-			Vector3(offset.x, offset.y, 0.0f));
-
-		// Set world transform
-		Matrix4 world = scaleMat * transMat;
-		shader->SetMatrixUniform("uWorldTransform", world);
-		// Set current texture
-		texture->SetActive();
-		// Draw quad
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	float yScale = static_cast<float>(texture->GetHeight()) * scale;
+	if (a == 1) {
+		yScale = static_cast<float>(texture->GetHeight()) * 1.3f;
 	}
-	else if (a == 1) {
-		float yScale = static_cast<float>(texture->GetHeight() *1.3);
-		if (flipY) { yScale *= -1.0f; }
-		Matrix4 scaleMat = Matrix4::CreateScale(
-			static_cast<float>(texture->GetWidth()) * scale,
-			yScale,
-			1.0f);
-		// Translate to position on screen
-		Matrix4 transMat = Matrix4::CreateTranslation(
-			Vector3(offset.x, offset.y, 0.0f));
-
-		// Set world transform
-		Matrix4 world = scaleMat * transMat;
-		shader->SetMatrixUniform("uWorldTransform", world);
-		// Set current texture
-		texture->SetActive();
-		// Draw quad
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	if (flipY) {
+		yScale *= -1.0f;
 	}
+	Matrix4 scaleMat = Matrix4::CreateScale(
+		static_cast<float>(texture->GetWidth()) * scale,
+		yScale,
+		1.0f);
 
-
-
+	Matrix4 transMat = Matrix4::CreateTranslation(
+		Vector3(offset.x, offset.y, 0.0f));
+	Matrix4 world = scaleMat * transMat;
+	shader->SetMatrixUniform("uWorldTransform", world);
+	texture->SetActive();
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
 void UIScreen::SetRelativeMouseMode(bool relative)
@@ -527,7 +446,6 @@ Button::Button(const std::string& name, Font* font,
 	,mTexNum(TexNum)
 {
 	SetName(name);
-	
 }
 
 Button::~Button()
@@ -554,19 +472,15 @@ void Button::SetName(const std::string& name)
 
 bool Button::ContainsPoint(const Vector2& pt) const
 {
-
 	bool no = pt.x < (mPosition.x - mDimensions.x / 2.0f) ||
 		pt.x > (mPosition.x + mDimensions.x / 2.0f) ||
 		pt.y < (mPosition.y - mDimensions.y / 2.0f) ||
 		pt.y > (mPosition.y + mDimensions.y / 2.0f);
-
 	return !no;
 }
 
 void Button::OnClick()
 {
-	
-	// Call attached handler, if it exists
 	if (mOnClick)
 	{		
 		mOnClick();

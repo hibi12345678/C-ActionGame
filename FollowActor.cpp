@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include "FollowActor.h"
 #include "EnemyActor.h"
 #include "SkeletalMeshComponent.h"
@@ -51,7 +43,6 @@ FollowActor::FollowActor(Game* game)
 	, changeTimer(0.0f)
 	, deathFlag(true)
 	, jumpFlag(false)
-
 {
 	mMeshComp = new SkeletalMeshComponent(this);
 	mAudioComp = new AudioComponent(this);
@@ -61,9 +52,9 @@ FollowActor::FollowActor(Game* game)
 	// Add a box component
 	mBoxComp = new BoxComponent(this);
 	AABB myBox(Vector3(-25.0f, -25.0f, 0.0f),
-		Vector3(25.0f, 25.0f, 240.0f));
+		Vector3(25.0f, 25.0f, 150.0f));
 	mBoxComp->SetObjectBox(myBox);
-	mBoxComp->SetShouldRotate(false);
+	mBoxComp->SetShouldRotate(true);
 
 	blockPressed = false;
 	SwordActor* sword1 = new SwordActor(game,1.0f,0);
@@ -76,7 +67,6 @@ void FollowActor::ActorInput(const uint8_t* keys)
 	float forwardSpeed = 0.0f;
 	float strafeSpeed = 0.0f;
 
-	// wasd movement
 	if (keys[SDL_SCANCODE_W])
 	{
 		forwardSpeed += 200.0f;
@@ -169,8 +159,6 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		}
 	}
 
-
-
 	if (mAttackBoxComp != nullptr || mBlockBoxComp != nullptr) {
 		forwardSpeed = 0.0f;
 		strafeSpeed = 0.0f;
@@ -200,7 +188,6 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		angularSpeed *= maxAngularSpeed;
 	}
 
-	
 	// Compute pitch
 	const float maxPitchSpeed = Math::Pi * 8;
 	float pitchSpeed = 0.0f;
@@ -236,13 +223,9 @@ void FollowActor::ActorInput(const uint8_t* keys)
 	if (!mMoving && (!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)) && !mAttackBoxComp && mState == EGrounded)
 	{
 		mMoving = true;
-
 		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_walk.gpanim"));
 
-
-
 	}
-
 	// Or did we just stop moving?
 	else if (mMoving && Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && !mAttackBoxComp  &&  !mBlockBoxComp && mState == EGrounded)
 	{
@@ -257,6 +240,7 @@ void FollowActor::ActorInput(const uint8_t* keys)
 
 
 	}
+
 	if (mHealth > 0.0f) {
 		mMoveComp->SetAngularSpeed(angularSpeed);
 		if (mCameraComp) {
@@ -265,12 +249,9 @@ void FollowActor::ActorInput(const uint8_t* keys)
 		else if (mFPSCamera) {
 			mFPSCamera->SetPitchSpeed(pitchSpeed);
 		}
-		
-
 		mMoveComp->SetForwardSpeed(forwardSpeed);
 		mMoveComp->SetStrafeSpeed(strafeSpeed);
-	}
-	
+	}	
 	else{
 		mMeshComp->SetVisible(true);
 		mMoveComp->SetAngularSpeed(0.0f);
@@ -288,147 +269,108 @@ void FollowActor::ActorInput(const uint8_t* keys)
 
 void FollowActor::UpdateActor(float deltaTime) {
 
-	if (mItemState == EBow ) {
-		if (mArrowCount <= 0) {
-			mItemState = ESword;
-			SwordActor* sword1 = new SwordActor(GetGame(), 1.0f, 0);
-			SwordActor* sword2 = new SwordActor(GetGame(), 1.0f, 1);
-			mAudioComp->PlayEvent("event:/Equipped");
-		}
-		
-	}
-	if (mItemState == EBomb) {
-		if (mBombCount <= 0) {
-			mItemState = ESword;
-			SwordActor* sword1 = new SwordActor(GetGame(), 1.0f, 0);
-			SwordActor* sword2 = new SwordActor(GetGame(), 1.0f, 1);
-			mAudioComp->PlayEvent("event:/Equipped");
-		}
-
-	}
-	changeTimer += deltaTime;
-	if (mStamina >= 1.0f) {
-		mStamina = 1.0f;
-	}
-	else if (mStamina <= 0.0f) {
-		mStamina = 0.0f;
-	}
-	if (mState == EJump) {
-		
-		jumpSpeed += 50000.0f * deltaTime; // 重力の影響を受ける
-		if (jumpSpeed >= 0.0f) {
-			mState = EFall;
-		}
-	}
-	else if (mState == EFall) {
-		jumpSpeed += 100000.0f * deltaTime; // 重力の影響を受ける
-		
-	}
-	else if(mState == EGrounded) {
-		jumpSpeed = 0.0f;
-		if (mStamina < 1.0f && isShiftPressed == false) {
-			mStamina += 0.005f;
-		}
-	}
-	
-	
-
-	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
-
-	// タイマーが進行している場合
-	if (mAttackTimer > 0.0f) {
-		mAttackTimer -= deltaTime;
-		
-			if (mItemState == EBow) {
-				
-				if (mAttackTimer <= 0.6f) { 
-					mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bowidle.gpanim"), 1.0f);
-					mMoving = false; 
-				}
-
-			}
-			else{
-				
-				if (mAttackTimer <= 0.0f) { 
-					mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
-					mMoving = false; 
-				}
-			}
-			
-			
-		
-	}
-
-	// タイマーが進行している場合
-	if (mBlockTimer > 0.0f) {
-		mBlockTimer -= deltaTime;
-
-	}
-	// タイマーが進行している場合
-	if (mBoxTimer > 0.0f) {
-		mBoxTimer -= deltaTime;
-		// タイマーが0になったらBoxComponentを削除
-		if (mBoxTimer <= 0.0f) {
-
-			delete mAttackBoxComp;  // メモリの解放
-			mAttackBoxComp = nullptr;  // ポインタをクリア
-			
-		}
-	}
-
+	UpdateState(deltaTime);
+	UpdateStamina(deltaTime);
+	UpdateMovement(deltaTime);
+	UpdateTimers(deltaTime);
 	mState = EFall;
 	FixCollisions();
-	// タイマーが進行している場合
+	HandleVisibility(deltaTime);
+}
+
+void FollowActor::UpdateTimers(float deltaTime) {
+	changeTimer += deltaTime;
+	if (mAttackTimer > 0.0f) {
+		mAttackTimer -= deltaTime;
+		if (mItemState == EBow && mAttackTimer <= 0.6f) {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bowidle.gpanim"));
+		}
+		else if (mAttackTimer <= 0.0f) {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"));
+		}
+	}
+
+	if (mBlockTimer > 0.0f) mBlockTimer -= deltaTime;
+
+	if (mBoxTimer > 0.0f) {
+		mBoxTimer -= deltaTime;
+		if (mBoxTimer <= 0.0f) {
+			delete mAttackBoxComp;
+			mAttackBoxComp = nullptr;
+		}
+	}
+
 	if (mDamageTimer > 0.0f) {
 		mDamageTimer -= deltaTime;
-		if (mDamageTimer >= 3.0) {
-			mHealth -= 0.25f * deltaTime;
+		UpdateDamage(deltaTime);
+	}
+}
 
-		}
-		// 経過時間を増加させる
-		blinkTime += deltaTime;
+void FollowActor::UpdateStamina(float deltaTime) {
+	if (mState == EGrounded && mStamina < 1.0f && !isShiftPressed) {
+		mStamina = std::min(mStamina + 0.005f, 1.0f);
+	}
+}
 
-		// 一定間隔を超えたら可視状態を切り替え
-		if (blinkTime >= blinkInterval)
-		{
+void FollowActor::UpdateMovement(float deltaTime) {
+	if (mState == EJump) {
+		jumpSpeed += 50000.0f * deltaTime; // 重力
+		if (jumpSpeed >= 0.0f) mState = EFall;
+	}
+	else if (mState == EFall) {
+		jumpSpeed += 100000.0f * deltaTime;
+	}
+	else if (mState == EGrounded) {
+		jumpSpeed = 0.0f;
+	}
+	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
+}
 
-			// 可視状態を反転させる
-			isVisible = !isVisible;
-			mMeshComp->SetVisible(isVisible);
 
-			// タイマーをリセット
-			blinkTime = 0.0f;
-		}
-		if (mHealth <= 0.0f) {
-			if (deathFlag) {
-				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_dying.gpanim"), 1.0f);
-				deathFlag = false;
-			}
-			
-			if (mDamageTimer <= 0.0f) {
-				mState = EDead;
-				deathFlag = true;
-			}
-			
-			mHealth = 0.0f;
-		}
+void FollowActor::UpdateState(float deltaTime) {
+	if (mItemState == EBow && mArrowCount <= 0) {
+		EquipSword();
+	}
+	else if (mItemState == EBomb && mBombCount <= 0) {
+		EquipSword();
 	}
 
-	else  {
+	if (mDamageTimer <= 0.0f && mHealth <= 0.0f && deathFlag) {
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_dying.gpanim"), 1.0f);
+		deathFlag = false;
+		mState = EDead;
+	}
+}
+
+void FollowActor::EquipSword() {
+	mItemState = ESword;
+	SwordActor* sword1 = new SwordActor(GetGame(), 1.0f, 0);
+	SwordActor* sword2 = new SwordActor(GetGame(), 1.0f, 1);
+	mAudioComp->PlayEvent("event:/Equipped");
+}
+
+void FollowActor::UpdateDamage(float deltaTime) {
+	if (mDamageTimer >= 3.0f) {
+		mHealth = std::max(mHealth - 0.25f * deltaTime, 0.0f);
+	}
+
+	blinkTime += deltaTime;
+	if (blinkTime >= blinkInterval) {
+		isVisible = !isVisible;
+		mMeshComp->SetVisible(isVisible);
+		blinkTime = 0.0f;
+	}
+}
+
+void FollowActor::HandleVisibility(float deltaTime) {
+	if (mDamageTimer <= 0.0f) {
 		if (!mFPSCamera) {
 			mMeshComp->SetVisible(true);
-
 		}
-		
 		blinkTime = 0.0f;
-
 	}
-	
-
-	
-
-
 }
+
 void FollowActor::SetVisible(bool visible)
 {
 	mMeshComp->SetVisible(visible);
@@ -436,28 +378,22 @@ void FollowActor::SetVisible(bool visible)
 
 void FollowActor::Attack() {
 	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_attack.gpanim"),1.2f);
-	
-	// 攻撃判定用のBoxComponentを追加
 	mAttackBoxComp = new BoxComponent(this);
 	AABB myBox(Vector3(25.0f, -25.0f, 100.0f),
 		Vector3(75.0f, 25.0f, 170.0f));
 	mAttackBoxComp->SetObjectBox(myBox);
 	mAttackBoxComp->SetShouldRotate(true);
-	
-	// タイマーをリセット
-	mBoxTimer = 0.5f;  // 0.5秒後に削除する
-	// タイマーをリセット
-	mAttackTimer = 2.0f;  // 0.5秒後に削除する
+	mBoxTimer = 0.5f; 
+	mAttackTimer = 2.0f;  
 	mAudioComp->PlayEvent("event:/SwordAttack");
 }
+
 void FollowActor::Shoot()
 {
 	mArrowCount--;
 	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bow.gpanim"), 1.0f);
-	// Get direction vector
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
-	
 	ArrowActor* arrow = new ArrowActor(GetGame());
 	if (mCameraComp) {
 		arrow->SetPosition(this->GetPosition() + Vector3(0.0, 60.0, 120.0) + dir * 500.0f);
@@ -466,11 +402,8 @@ void FollowActor::Shoot()
 		arrow->SetPosition(start + dir * 100.0f);
 	}
 	arrow->SetPlayer(this);
-	
 	arrow->RotateToNewForward(dir);
-	// タイマーをリセット
 	mAttackTimer = 2.0f;  
-	// Play shooting sound
 	mAudioComp->PlayEvent("event:/Arrow");
 }
 
@@ -478,36 +411,25 @@ void FollowActor::Bomb()
 {
 	mBombCount--;
 	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bomb.gpanim"), 1.0f);
-	// Get direction vector
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
-
 	BombActor* bomb = new BombActor(GetGame(), 15.0f, 1);
 	bomb->SetPlayer(this);
 	bomb->SetPosition(this->GetPosition()+Vector3(0.0,0.0,200.0) + dir * 100.0f);
 	bomb->RotateToNewForward(dir);
-	// タイマーをリセット
 	mAttackTimer = 4.0f;
-	// Play shooting sound
 	mAudioComp->PlayEvent("event:/Throw");
 }
+
 void FollowActor::Block() {
-
-
 	if(mBlockBoxComp == nullptr){
 		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_block.gpanim"), 1.0f);
-		// 防御判定用のBoxComponentを追加
 		mBlockBoxComp = new BoxComponent(this);
 		AABB myBox(Vector3(25.0f, -1.0f, 50.0f),
 			Vector3(30.0f, 1.0f, 170.0f));
-
 		mBlockBoxComp->SetObjectBox(myBox);
-		mBlockBoxComp->SetShouldRotate(true);
-		
+		mBlockBoxComp->SetShouldRotate(true);	
 	}
-	
-	
-
 }
 
 void FollowActor::LoadProperties(const rapidjson::Value& inObj)
@@ -524,7 +446,6 @@ void FollowActor::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapi
 
 void FollowActor::FixCollisions()
 {
-	// Need to recompute my world transform to update world box
 	ComputeWorldTransform();
 
 	const AABB& playerBox = mBoxComp->GetWorldBox();
@@ -532,117 +453,29 @@ void FollowActor::FixCollisions()
 	const AABB& blockBox = mBlockBoxComp->GetWorldBox();
 
 	Vector3 pos = GetPosition();
-
+	auto* boss = GetGame()->GetBoss();
 	auto& planes = GetGame()->GetPlanes();
 	auto& enemy = GetGame()->GetEnemys();
-	auto* boss = GetGame()->GetBoss();
 	auto& item = GetGame()->GetDropItem();
-	
 	auto& explosion = GetGame()->GetExplosion();
 	for (auto pa : planes)
 	{
-		// Do we collide with this PlaneActor?
 		const AABB& planeBox = pa->GetBox()->GetWorldBox();
-		if (Intersect(playerBox, planeBox))
-		{
-			// Calculate all our differences
-			float dx1 = planeBox.mMax.x - playerBox.mMin.x;
-			float dx2 = planeBox.mMin.x - playerBox.mMax.x;
-			float dy1 = planeBox.mMax.y - playerBox.mMin.y;
-			float dy2 = planeBox.mMin.y - playerBox.mMax.y;
-			float dz1 = planeBox.mMax.z - playerBox.mMin.z;
-			float dz2 = planeBox.mMin.z - playerBox.mMax.z;
-
-			// Set dx to whichever of dx1/dx2 have a lower abs
-			float dx = Math::Abs(dx1) < Math::Abs(dx2) ?
-				dx1 : dx2;
-			// Ditto for dy
-			float dy = Math::Abs(dy1) < Math::Abs(dy2) ?
-				dy1 : dy2;
-			// Ditto for dz
-			float dz = Math::Abs(dz1) < Math::Abs(dz2) ?
-				dz1 : dz2;
-
-			// Whichever is closest, adjust x/y position
-			if (Math::Abs(dx) <= Math::Abs(dy) && Math::Abs(dx) <= Math::Abs(dz))
-			{
-				pos.x += dx;
-				
-			}
-			else if (Math::Abs(dy) <= Math::Abs(dx) && Math::Abs(dy) <= Math::Abs(dz))
-			{
-				pos.y += dy;
-				
-			}
-			else
-			{
-				pos.z += dz;
-				mState = EGrounded;
-				if (jumpFlag == true) {
-					jumpFlag = false;
-					mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
-				}
-				
-			}
-			
-			// Need to set position and update box component
-			SetPosition(pos);
-			mBoxComp->OnUpdateWorldTransform();
-		}
+		ResolveCollision(playerBox, planeBox, pos, mBoxComp);
 	}
-	
 
 	for (auto en : enemy)
 	{
 		if (en != nullptr) {
-
 			const AABB& enemyBox = en->GetBox()->GetWorldBox();
-			if (Intersect(playerBox, enemyBox))
-			{
-				// Calculate all our differences
-				float dx1 = enemyBox.mMax.x - playerBox.mMin.x;
-				float dx2 = enemyBox.mMin.x - playerBox.mMax.x;
-				float dy1 = enemyBox.mMax.y - playerBox.mMin.y;
-				float dy2 = enemyBox.mMin.y - playerBox.mMax.y;
-				float dz1 = enemyBox.mMax.z - playerBox.mMin.z;
-				float dz2 = enemyBox.mMin.z - playerBox.mMax.z;
-
-				// Set dx to whichever of dx1/dx2 have a lower abs
-				float dx = Math::Abs(dx1) < Math::Abs(dx2) ?
-					dx1 : dx2;
-				// Ditto for dy
-				float dy = Math::Abs(dy1) < Math::Abs(dy2) ?
-					dy1 : dy2;
-				// Ditto for dz
-				float dz = Math::Abs(dz1) < Math::Abs(dz2) ?
-					dz1 : dz2;
-
-				// Whichever is closest, adjust x/y position
-				if (Math::Abs(dx) <= Math::Abs(dy) && Math::Abs(dx) <= Math::Abs(dz))
-				{
-					pos.x += dx;
-				}
-				else if (Math::Abs(dy) <= Math::Abs(dx) && Math::Abs(dy) <= Math::Abs(dz))
-				{
-					pos.y += dy;
-				}
-				else
-				{
-					pos.z += dz;
-				}
-
-				// Need to set position and update box component
-				SetPosition(pos);
-				mBoxComp->OnUpdateWorldTransform();
-			}
-			
-			else if(en->GetAttackBox() != nullptr)
+			ResolveCollision(playerBox,enemyBox,pos,mBoxComp);
+						
+			if(en->GetAttackBox() != nullptr)
 			{
 				const AABB& enemyAttackBox = en->GetAttackBox()->GetWorldBox();
 				if (mBlockBoxComp != nullptr ) {
 
-					if (Intersect(blockBox, enemyAttackBox)) {
-						
+					if (Intersect(blockBox, enemyAttackBox)) {	
 						if (mBlockTimer <= 0.0f) {
 							mBlockTimer = 0.5f;
 							mStamina -= 0.3f;
@@ -651,81 +484,31 @@ void FollowActor::FixCollisions()
 					}
 					else if (!Intersect(blockBox, enemyAttackBox)) {
 						if (Intersect(playerBox, enemyAttackBox) && mDamageTimer <= 0.0f) {
-							
 							mAudioComp->PlayEvent("event:/Hit");
-
 							mDamageTimer = 4.0f;
 						}
 					}
-					
-
 				}
-	
 				else if (mBlockBoxComp == nullptr  && Intersect(playerBox, enemyAttackBox) && mDamageTimer <= 0.0f)
-				{
-					
+				{				
 					mAudioComp->PlayEvent("event:/Hit");
-					
 					mDamageTimer = 4.0f;
 				}
-			}
-			
-		}
-		
-		
+			}			
+		}		
 	}
+
 	if (boss != nullptr) {
 
 		const AABB& enemyBox = boss->GetBox()->GetWorldBox();
-		if (Intersect(playerBox, enemyBox))
-		{
-			// Calculate all our differences
-			float dx1 = enemyBox.mMax.x - playerBox.mMin.x;
-			float dx2 = enemyBox.mMin.x - playerBox.mMax.x;
-			float dy1 = enemyBox.mMax.y - playerBox.mMin.y;
-			float dy2 = enemyBox.mMin.y - playerBox.mMax.y;
-			float dz1 = enemyBox.mMax.z - playerBox.mMin.z;
-			float dz2 = enemyBox.mMin.z - playerBox.mMax.z;
-
-			// Set dx to whichever of dx1/dx2 have a lower abs
-			float dx = Math::Abs(dx1) < Math::Abs(dx2) ?
-				dx1 : dx2;
-			// Ditto for dy
-			float dy = Math::Abs(dy1) < Math::Abs(dy2) ?
-				dy1 : dy2;
-			// Ditto for dz
-			float dz = Math::Abs(dz1) < Math::Abs(dz2) ?
-				dz1 : dz2;
-
-			// Whichever is closest, adjust x/y position
-			if (Math::Abs(dx) <= Math::Abs(dy) && Math::Abs(dx) <= Math::Abs(dz))
-			{
-				pos.x += dx;
-			}
-			else if (Math::Abs(dy) <= Math::Abs(dx) && Math::Abs(dy) <= Math::Abs(dz))
-			{
-				pos.y += dy;
-			}
-			else
-			{
-				pos.z += dz;
-			}
-
-			// Need to set position and update box component
-			SetPosition(pos);
-			mBoxComp->OnUpdateWorldTransform();
-		}
-
-
-
-
-		else if (boss->GetAttackBox() != nullptr)
+		ResolveCollision(playerBox, enemyBox, pos, mBoxComp);
+		if (boss->GetAttackBox() != nullptr)
 		{
 			const AABB& enemyAttackBox = boss->GetAttackBox()->GetWorldBox();
 			if (mBlockBoxComp != nullptr) {
 
 				if (Intersect(blockBox, enemyAttackBox)) {
-					
+
 					if (mBlockTimer <= 0.0f) {
 						mBlockTimer = 1.0f;
 						mStamina -= 0.3f;
@@ -734,69 +517,79 @@ void FollowActor::FixCollisions()
 				}
 				else if (!Intersect(blockBox, enemyAttackBox)) {
 					if (Intersect(playerBox, enemyAttackBox) && mDamageTimer <= 0.0f) {
-						
 						mAudioComp->PlayEvent("event:/Hit");
-
 						mDamageTimer = 4.0f;
 					}
 				}
-
-
 			}
 
 			else if (mBlockBoxComp == nullptr && Intersect(playerBox, enemyAttackBox) && mDamageTimer <= 0.0f)
 			{
-				
 				mAudioComp->PlayEvent("event:/Hit");
-
 				mDamageTimer = 4.0f;
 			}
 		}
 	}
 
-
 	for (auto it : item)
 	{
 		if (it != nullptr) {
-
 			const AABB& itemBox = it->GetBox()->GetWorldBox();
 			if (Intersect(playerBox, itemBox))
 			{
 				mAudioComp->PlayEvent("event:/ItemGet");
 				if (it->GetItemNum() == 0) {
-					
 					mArrowCount += 5;
 				}
 				else if (it->GetItemNum() == 1) {
 					mBombCount += 1;
 				}
-
 			}
-
-
 		}
-
-
 	}
-
-
 
 	for (auto ex : explosion)
 	{
 		if (ex != nullptr) {
-
 			const AABB& exBox = ex->GetBox()->GetWorldBox();
 			if (Intersect(playerBox, exBox) && mDamageTimer <= 0.0f)
 			{
 				mAudioComp->PlayEvent("event:/Hit");
-
 				mDamageTimer = 5.0f;
-
 			}
+		}
+	}
+}
 
+void FollowActor::ResolveCollision(const AABB& aBox, const AABB& bBox, Vector3& pos, BoxComponent* boxComponent)
+{
+	if (Intersect(aBox, bBox))
+	{
+		float dx1 = bBox.mMax.x - aBox.mMin.x;
+		float dx2 = bBox.mMin.x - aBox.mMax.x;
+		float dy1 = bBox.mMax.y - aBox.mMin.y;
+		float dy2 = bBox.mMin.y - aBox.mMax.y;
+		float dz1 = bBox.mMax.z - aBox.mMin.z;
+		float dz2 = bBox.mMin.z - aBox.mMax.z;
+		float dx = Math::Abs(dx1) < Math::Abs(dx2) ? dx1 : dx2;
+		float dy = Math::Abs(dy1) < Math::Abs(dy2) ? dy1 : dy2;
+		float dz = Math::Abs(dz1) < Math::Abs(dz2) ? dz1 : dz2;
 
+		if (Math::Abs(dx) <= Math::Abs(dy) && Math::Abs(dx) <= Math::Abs(dz))
+		{
+			pos.x += dx;
+		}
+		else if (Math::Abs(dy) <= Math::Abs(dx) && Math::Abs(dy) <= Math::Abs(dz))
+		{
+			pos.y += dy;
+		}
+		else
+		{
+			pos.z += dz;
+			mState = EGrounded;
 		}
 
-
+		boxComponent->GetOwner()->SetPosition(pos);
+		boxComponent->OnUpdateWorldTransform();
 	}
 }

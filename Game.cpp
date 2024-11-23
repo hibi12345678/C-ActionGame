@@ -405,57 +405,39 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-
-
-	if (mGameState == GameState::EGameplay) {
-		scoreNumber = 0;
-		// Load English text
-		LoadText("Assets/Text/Main.gptext");
-		mHUD = new HUD(this);
-		// Load the level from file
-		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");	
-		
-		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");	
-		
-		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
-		
-		
-		gameOverFlag = false;
-		gameClearFlag == false;
-		// Optionally, ensure the cursor is explicitly disabled
-		SDL_ShowCursor(SDL_DISABLE);
-		// Enable relative mouse mode for camera look
-		SDL_SetRelativeMouseMode(SDL_TRUE);
-		// Make an initial call to get relative to clear out
-		SDL_GetRelativeMouseState(nullptr, nullptr);
-		
-	}
-
-	else if (mGameState == GameState::EMainMenu) {
-		
-		
-		// Load English text
-		LoadText("Assets/Text/Mainmenu.gptext");
-		
-		// Clear the UI stack
-		while (!mUIStack.empty())
-		{
+	// 共通の初期化
+	if (!mUIStack.empty()) {
+		while (!mUIStack.empty()) {
 			delete mUIStack.back();
 			mUIStack.pop_back();
 		}
+	}
+
+	// 状態ごとの処理
+	if (mGameState == GameState::EGameplay) {
+		scoreNumber = 0;
+		LoadText("Assets/Text/Main.gptext");
 		mHUD = new HUD(this);
-		// Load the level from file
+		// ゲームプレイ用のレベルロード
+		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");
+		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");
+		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
+		gameOverFlag = false;
+		gameClearFlag = false;
+		// マウス設定
+		SDL_ShowCursor(SDL_DISABLE);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+		SDL_GetRelativeMouseState(nullptr, nullptr); // 相対モード初期化
+	}
+	else if (mGameState == GameState::EMainMenu) {
+		LoadText("Assets/Text/Mainmenu.gptext");
+		mHUD = new HUD(this);
 		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");
 		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
 		new MainmenuUI(this);
-				
-		// Disable relative mouse mode to show the cursor
 		SDL_SetRelativeMouseMode(SDL_FALSE);
-		// Optionally, ensure the cursor is explicitly enabled
 		SDL_ShowCursor(SDL_ENABLE);
-
 	}
-	
 }
 
 void Game::UnloadData()

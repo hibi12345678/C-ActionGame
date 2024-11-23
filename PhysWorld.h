@@ -41,6 +41,8 @@ public:
 
 	// Add/remove box components from world
 	void AddBox(class BoxComponent* box);
+
+	const std::vector<class BoxComponent*>& PhysWorld::GetBoxComponents() const{return mBoxes;}
 	void RemoveBox(class BoxComponent* box);
 private:
 	class Game* mGame;

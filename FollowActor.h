@@ -9,7 +9,7 @@
 #pragma once
 #include "Actor.h"
 #include "SoundEvent.h"
-
+#include "BoxComponent.h"
 class FollowActor : public Actor
 {
 public:
@@ -28,10 +28,12 @@ public:
 		EBow,
 		EBomb
 	};
-	void ActorInput(const uint8_t* keys) override;
+
 	class FollowCamera* GetCameraComponent() { return mCameraComp; }
 	class SkeletalMeshComponent* GetSekltalMesh() { return mMeshComp; }
 	class  MoveComponent* GetMoveComponent() { return mMoveComp; }
+
+	void ActorInput(const uint8_t* keys) override;
 	void SetVisible(bool visible);
 	void UpdateActor(float deltaTime) override;
 	void LoadProperties(const rapidjson::Value& inObj) override;
@@ -40,18 +42,27 @@ public:
 	void Attack();
 	void Shoot();
 	void Bomb();
+	TypeID GetType() const override { return TFollowActor; }
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
 	ItemState GetItemState() const { return mItemState; }
 	void SetItemState(ItemState state) { mItemState = state; }
-	TypeID GetType() const override { return TFollowActor; }
 	float GetStamina()  { return  mStamina; }
 	float GetHealth()  { return  mHealth; }
 	Vector3 GetPos() const { return pos; }
 	class BoxComponent* GetBox() { return mBoxComp; }
 	class BoxComponent* GetAttackBox() { return mAttackBoxComp; }
 	void FixCollisions();
+	void ResolveCollision(const AABB& aBox, const AABB& bBox, Vector3& pos, BoxComponent* boxComponent);
 	void Block();
+	void EquipSword();
+	void UpdateDamage(float deltaTime);
+	void HandleVisibility(float deltaTime);
+	void UpdateState(float deltaTime);
+	void UpdateTimers(float deltaTime);
+	void UpdateStamina(float deltaTime);
+	void UpdateMovement(float deltaTime);
+
 private:
 	class MoveComponent* mMoveComp;
 	class AudioComponent* mAudioComp;
@@ -59,32 +70,36 @@ private:
 	class FPSCamera* mFPSCamera;
 	class SkeletalMeshComponent* mMeshComp;
 	class BoxComponent* mBoxComp;
-	SoundEvent mFootstep;
 	class BoxComponent* mAttackBoxComp;
 	class BoxComponent* mBlockBoxComp;
 	class AudioSystem* mAudioSystem;
 	
-	float mAttackTimer;  // 攻撃判定用のタイマー
-	float mBlockTimer;  // 攻撃判定用のタイマー
-	float mBoxTimer;  // 攻撃判定用のタイマー
+	SoundEvent mFootstep;
+	State mState;
+	ItemState mItemState;
+
+	int mArrowCount;
+	int mBombCount;
+
+	float mAttackTimer; 
+	float mBlockTimer; 
+	float mBoxTimer;
 	float mDamageTimer;
 	float changeTimer;
 	float blinkTime;
-	float blinkInterval; // 0.5秒ごとに点滅
-	bool isVisible;
-	bool mMoving;
-	// Actor's state
-	State mState;
-	ItemState mItemState;
+	float jumpSpeed;
+	float blinkInterval;
+	float mLastFootstep;
 	float mStamina;
 	float mHealth;
-	float jumpSpeed;
-	Vector3 pos;
+
 	bool isShiftPressed;
 	bool blockPressed;
-	float mLastFootstep;
-	int mArrowCount;
-	int mBombCount;
 	bool deathFlag;
 	bool jumpFlag;
+	bool isVisible;
+	bool mMoving;
+
+	Vector3 pos;
+
 };

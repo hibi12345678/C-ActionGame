@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include "PauseMenu.h"
 #include "Game.h"
 #include "DialogBox.h"
@@ -16,7 +8,6 @@ PauseMenu::PauseMenu(Game* game)
 	,flag(false)
 {
 
-	// currentState Ç game ÇÃèÛë‘Ç≈çXêV
 	currentState = static_cast<PauseMenu::State>(mGame->GetState());
 	flag = false;
 	mGame->SetState(Game::GameState::EPaused);
@@ -60,11 +51,8 @@ PauseMenu::~PauseMenu()
 		}
 		else {
 			mGame->SetState(Game::GameState::EGameplay);
-			// Optionally, ensure the cursor is explicitly disabled
 			SDL_ShowCursor(SDL_DISABLE);
-			// Enable relative mouse mode for camera look
 			SDL_SetRelativeMouseMode(SDL_TRUE);
-			// Make an initial call to get relative to clear out
 			SDL_GetRelativeMouseState(nullptr, nullptr);
 		}
 	}

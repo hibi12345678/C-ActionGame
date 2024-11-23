@@ -13,7 +13,8 @@
 #include "Math.h"
 #include "SoundEvent.h"
 #include <SDL/SDL_types.h>
-
+#include "BossActor.h"
+#include "PhysWorld.h"
 class Game
 {
 public:
@@ -52,7 +53,6 @@ public:
 	const std::string& GetText(const std::string& key);
 
 	class Skeleton* GetSkeleton(const std::string& fileName);
-
 	class Animation* GetAnimation(const std::string& fileName);
 
 	const std::vector<class Actor*>& GetActors() const { return mActors; }
