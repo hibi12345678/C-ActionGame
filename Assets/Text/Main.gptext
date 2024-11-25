@@ -17,10 +17,7 @@
 		"CancelButton": "Cancel",
                 "GameClear" : "Game Clear!",
                 "GameOver" : "Game Over",
-                "Score0" : "number of defeats : 0/3",
-                "Score1" : "number of defeats : 1/3",
-                "Score2" : "number of defeats : 2/3",
-                "Score3" : "number of defeats : 3/3",
+                "Score" : "number of defeats :    /3",
                 "Score4" : "Defeat the Boss",
                 "BossName" : "Boss"
  	}

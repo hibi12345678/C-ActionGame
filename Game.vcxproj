@@ -12,6 +12,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\imgui.ini" />
+    <None Include="Script\Shaders\BasicMesh.frag" />
+    <None Include="Script\Shaders\BasicMesh.vert" />
+    <None Include="Script\Shaders\GBufferGlobal.frag" />
+    <None Include="Script\Shaders\GBufferGlobal.vert" />
+    <None Include="Script\Shaders\GBufferPointLight.frag" />
+    <None Include="Script\Shaders\GBufferWrite.frag" />
+    <None Include="Script\Shaders\Line.frag" />
+    <None Include="Script\Shaders\Line.vert" />
+    <None Include="Script\Shaders\Phong.frag" />
+    <None Include="Script\Shaders\Phong.vert" />
+    <None Include="Script\Shaders\Skinned.vert" />
+    <None Include="Script\Shaders\SkyBox.frag" />
+    <None Include="Script\Shaders\SkyBox.vert" />
+    <None Include="Script\Shaders\Sprite.frag" />
+    <None Include="Script\Shaders\Sprite.vert" />
     <None Include="Shaders\BasicMesh.frag" />
     <None Include="Shaders\BasicMesh.vert" />
     <None Include="Shaders\GBufferGlobal.frag" />
@@ -29,81 +44,136 @@
     <None Include="Shaders\Sprite.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="ArrowActor.cpp" />
-    <ClCompile Include="ArrowMove.cpp" />
-    <ClCompile Include="AudioComponent.cpp" />
-    <ClCompile Include="AudioSystem.cpp" />
-    <ClCompile Include="BombActor.cpp" />
-    <ClCompile Include="BombMove.cpp" />
-    <ClCompile Include="BoneTransform.cpp" />
-    <ClCompile Include="BossActor.cpp" />
-    <ClCompile Include="BowActor.cpp" />
-    <ClCompile Include="BoxComponent.cpp" />
-    <ClCompile Include="CameraComponent.cpp" />
-    <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="DialogBox.cpp" />
-    <ClCompile Include="DropItemActor.cpp" />
-    <ClCompile Include="EffecActor.cpp" />
-    <ClCompile Include="EnemyActor.cpp" />
-    <ClCompile Include="ExplosionActor.cpp" />
-    <ClCompile Include="FollowActor.cpp" />
-    <ClCompile Include="FollowCamera.cpp" />
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FPSCamera.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameClear.cpp" />
-    <ClCompile Include="GameOver.cpp" />
-    <ClCompile Include="GBuffer.cpp" />
-    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imguiLayer.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="imgui\imgui_impl_sdl2.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="ItemActorBase.cpp" />
-    <ClCompile Include="ItemMenu.cpp" />
-    <ClCompile Include="LevelLoader.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MainmenuUI.cpp" />
-    <ClCompile Include="Math.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MeshComponent.cpp" />
-    <ClCompile Include="MoveComponent.cpp" />
-    <ClCompile Include="PauseMenu.cpp" />
-    <ClCompile Include="PhysWorld.cpp" />
-    <ClCompile Include="PlaneActor.cpp" />
-    <ClCompile Include="PointLightComponent.cpp" />
-    <ClCompile Include="Random.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Search.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="SkeletalMeshComponent.cpp" />
-    <ClCompile Include="Skeleton.cpp" />
-    <ClCompile Include="SoundEvent.cpp" />
-    <ClCompile Include="SpriteComponent.cpp" />
-    <ClCompile Include="SwordActor.cpp" />
-    <ClCompile Include="TargetComponent.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TorchItemActor.cpp" />
-    <ClCompile Include="UIScreen.cpp" />
-    <ClCompile Include="VertexArray.cpp" />
+    <ClCompile Include="Script\Actors\Actor.cpp" />
+    <ClCompile Include="Script\Actors\ArrowActor.cpp" />
+    <ClCompile Include="Script\Actors\BombActor.cpp" />
+    <ClCompile Include="Script\Actors\BoneTransform.cpp" />
+    <ClCompile Include="Script\Actors\BossActor.cpp" />
+    <ClCompile Include="Script\Actors\BowActor.cpp" />
+    <ClCompile Include="Script\Actors\DropItemActor.cpp" />
+    <ClCompile Include="Script\Actors\EffecActor.cpp" />
+    <ClCompile Include="Script\Actors\EnemyActor.cpp" />
+    <ClCompile Include="Script\Actors\ExplosionActor.cpp" />
+    <ClCompile Include="Script\Actors\FollowActor.cpp" />
+    <ClCompile Include="Script\Actors\ItemActorBase.cpp" />
+    <ClCompile Include="Script\Actors\PlaneActor.cpp" />
+    <ClCompile Include="Script\Actors\SwordActor.cpp" />
+    <ClCompile Include="Script\Actors\TorchItemActor.cpp" />
+    <ClCompile Include="Script\Component\Animation.cpp" />
+    <ClCompile Include="Script\Component\ArrowMove.cpp" />
+    <ClCompile Include="Script\Component\AudioComponent.cpp" />
+    <ClCompile Include="Script\Component\BombMove.cpp" />
+    <ClCompile Include="Script\Component\BoxComponent.cpp" />
+    <ClCompile Include="Script\Component\CameraComponent.cpp" />
+    <ClCompile Include="Script\Component\Component.cpp" />
+    <ClCompile Include="Script\Component\FollowCamera.cpp" />
+    <ClCompile Include="Script\Component\FPSCamera.cpp" />
+    <ClCompile Include="Script\Component\MoveComponent.cpp" />
+    <ClCompile Include="Script\Component\Skeleton.cpp" />
+    <ClCompile Include="Script\Component\TargetComponent.cpp" />
+    <ClCompile Include="Script\Core\Game.cpp" />
+    <ClCompile Include="Script\Core\Main.cpp" />
+    <ClCompile Include="Script\Graphics\GBuffer.cpp" />
+    <ClCompile Include="Script\Graphics\Mesh.cpp" />
+    <ClCompile Include="Script\Graphics\MeshComponent.cpp" />
+    <ClCompile Include="Script\Graphics\PointLightComponent.cpp" />
+    <ClCompile Include="Script\Graphics\Renderer.cpp" />
+    <ClCompile Include="Script\Graphics\Shader.cpp" />
+    <ClCompile Include="Script\Graphics\SkeletalMeshComponent.cpp" />
+    <ClCompile Include="Script\Graphics\SpriteComponent.cpp" />
+    <ClCompile Include="Script\Graphics\VertexArray.cpp" />
+    <ClCompile Include="Script\System\AudioSystem.cpp" />
+    <ClCompile Include="Script\System\Collision.cpp" />
+    <ClCompile Include="Script\System\GameClear.cpp" />
+    <ClCompile Include="Script\System\GameOver.cpp" />
+    <ClCompile Include="Script\System\LevelLoader.cpp" />
+    <ClCompile Include="Script\System\Maths.cpp" />
+    <ClCompile Include="Script\System\PhysWorld.cpp" />
+    <ClCompile Include="Script\System\Random.cpp" />
+    <ClCompile Include="Script\System\SoundEvent.cpp" />
+    <ClCompile Include="Script\UI\DialogBox.cpp" />
+    <ClCompile Include="Script\UI\Font.cpp" />
+    <ClCompile Include="Script\UI\HUD.cpp" />
+    <ClCompile Include="Script\UI\ItemMenu.cpp" />
+    <ClCompile Include="Script\UI\MainmenuUI.cpp" />
+    <ClCompile Include="Script\UI\PauseMenu.cpp" />
+    <ClCompile Include="Script\UI\Search.cpp" />
+    <ClCompile Include="Script\UI\Texture.cpp" />
+    <ClCompile Include="Script\UI\UIScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
-    <ClInclude Include="imgui\imguiLayer.h" />
     <ClInclude Include="imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="imgui\imgui_impl_sdl2.h" />
     <ClInclude Include="imgui\imgui_internal.h" />
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="Script\Actors\Actor.h" />
+    <ClInclude Include="Script\Actors\ArrowActor.h" />
+    <ClInclude Include="Script\Actors\BombActor.h" />
+    <ClInclude Include="Script\Actors\BoneTransform.h" />
+    <ClInclude Include="Script\Actors\BossActor.h" />
+    <ClInclude Include="Script\Actors\BowActor.h" />
+    <ClInclude Include="Script\Actors\DropItemActor.h" />
+    <ClInclude Include="Script\Actors\EffectActor.h" />
+    <ClInclude Include="Script\Actors\EnemyActor.h" />
+    <ClInclude Include="Script\Actors\ExplosionActor.h" />
+    <ClInclude Include="Script\Actors\FollowActor.h" />
+    <ClInclude Include="Script\Actors\ItemActorBase.h" />
+    <ClInclude Include="Script\Actors\PlaneActor.h" />
+    <ClInclude Include="Script\Actors\ReactActor.h" />
+    <ClInclude Include="Script\Actors\SmokeActor.h" />
+    <ClInclude Include="Script\Actors\SwordActor.h" />
+    <ClInclude Include="Script\Actors\TorchItemActor.h" />
+    <ClInclude Include="Script\Component\Animation.h" />
+    <ClInclude Include="Script\Component\ArrowMove.h" />
+    <ClInclude Include="Script\Component\AudioComponent.h" />
+    <ClInclude Include="Script\Component\BombMove.h" />
+    <ClInclude Include="Script\Component\BoxComponent.h" />
+    <ClInclude Include="Script\Component\CameraComponent.h" />
+    <ClInclude Include="Script\Component\Component.h" />
+    <ClInclude Include="Script\Component\FollowCamera.h" />
+    <ClInclude Include="Script\Component\FPSCamera.h" />
+    <ClInclude Include="Script\Component\MoveComponent.h" />
+    <ClInclude Include="Script\Component\Skeleton.h" />
+    <ClInclude Include="Script\Component\TargetComponent.h" />
+    <ClInclude Include="Script\Core\Game.h" />
+    <ClInclude Include="Script\Graphics\GBuffer.h" />
+    <ClInclude Include="Script\Graphics\Mesh.h" />
+    <ClInclude Include="Script\Graphics\MeshComponent.h" />
+    <ClInclude Include="Script\Graphics\PointLightComponent.h" />
+    <ClInclude Include="Script\Graphics\Renderer.h" />
+    <ClInclude Include="Script\Graphics\Shader.h" />
+    <ClInclude Include="Script\Graphics\SkeletalMeshComponent.h" />
+    <ClInclude Include="Script\Graphics\SpriteComponent.h" />
+    <ClInclude Include="Script\Graphics\VertexArray.h" />
+    <ClInclude Include="Script\System\AudioSystem.h" />
+    <ClInclude Include="Script\System\Collision.h" />
+    <ClInclude Include="Script\System\GameClear.h" />
+    <ClInclude Include="Script\System\GameOver.h" />
+    <ClInclude Include="Script\System\LevelLoader.h" />
+    <ClInclude Include="Script\System\Maths.h" />
+    <ClInclude Include="Script\System\MatrixPalette.h" />
+    <ClInclude Include="Script\System\PhysWorld.h" />
+    <ClInclude Include="Script\System\Random.h" />
+    <ClInclude Include="Script\System\SoundEvent.h" />
+    <ClInclude Include="Script\UI\DialogBox.h" />
+    <ClInclude Include="Script\UI\Font.h" />
+    <ClInclude Include="Script\UI\HUD.h" />
+    <ClInclude Include="Script\UI\ItemMenu.h" />
+    <ClInclude Include="Script\UI\MainmenuUI.h" />
+    <ClInclude Include="Script\UI\PauseMenu.h" />
+    <ClInclude Include="Script\UI\Texture.h" />
+    <ClInclude Include="Script\UI\UIScreen.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BC508D87-495F-4554-932D-DD68388B63CC}</ProjectGuid>
@@ -148,7 +218,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\imgui-master;..\external\imgui-master\backends;..\external\glm;..\external\stb-master;..\external\SOIL\include;..\CppActionGame\inc;..\CppActionGame\src;..\CppActionGame\imgui;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\imgui-master;..\external\imgui-master\backends;..\external\glm;..\external\stb-master;..\external\SOIL\include;..\CppActionGame\Script\Actors;..\CppActionGame\Script\Component;..\CppActionGame\Script\Core;..\CppActionGame\Script\Graphics;..\CppActionGame\Script\Shaders;..\CppActionGame\Script\System;..\CppActionGame\Script\UI;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
@@ -176,7 +246,7 @@ xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studi
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\imgui-master;..\external\imgui-master\backends;..\external\glm;..\external\stb-master;..\external\SOIL\include;..\CppActionGame\inc;..\CppActionGame\src;..\CppActionGame\imgui;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\imgui-master;..\external\imgui-master\backends;..\external\glm;..\external\stb-master;..\external\SOIL\include;..\CppActionGame\Script\Actors;..\CppActionGame\Script\Component;..\CppActionGame\Script\Core;..\CppActionGame\Script\Graphics;..\CppActionGame\Script\Shaders;..\CppActionGame\Script\System;..\CppActionGame\Script\UI;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
