@@ -70,6 +70,8 @@
     <ClCompile Include="Script\Actors\FollowActor.cpp" />
     <ClCompile Include="Script\Actors\ItemActorBase.cpp" />
     <ClCompile Include="Script\Actors\PlaneActor.cpp" />
+    <ClCompile Include="Script\Actors\ReactActor.cpp" />
+    <ClCompile Include="Script\Actors\SmokeActor.cpp" />
     <ClCompile Include="Script\Actors\SwordActor.cpp" />
     <ClCompile Include="Script\Actors\TorchItemActor.cpp" />
     <ClCompile Include="Script\Actors\UIActor.cpp" />
