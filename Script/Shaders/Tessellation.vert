@@ -18,6 +18,6 @@ void main()
 	vec4 pos = uModel * vec4(aPosition, 1.0);
 	fragWorldPos = pos.xyz;
     gl_Position = uViewProjection * uModel * vec4(aPosition, 1.0);
-	fragNormal = (vec4(inNormal, 0.0f) * uModel).xyz;
+	fragNormal = (vec4(inNormal, 0.0f)).xyz;
     teTexCoord = aTexCoord;
 }

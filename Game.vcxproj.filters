@@ -282,13 +282,16 @@
     <ClCompile Include="Script\UI\Tutorial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Script\Graphics\perlinNoise.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Script\Graphics\Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_sdl2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Actors\ReactActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Actors\SmokeActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -377,7 +380,6 @@
     <ClInclude Include="Script\Actors\UIActor.h" />
     <ClInclude Include="Script\Graphics\UIMeshComponent.h" />
     <ClInclude Include="Script\UI\Tutorial.h" />
-    <ClInclude Include="Script\Graphics\perlinNoise.h" />
     <ClInclude Include="Script\Graphics\Terrain.h" />
   </ItemGroup>
 </Project>

@@ -70,6 +70,8 @@
     <ClCompile Include="Script\Actors\FollowActor.cpp" />
     <ClCompile Include="Script\Actors\ItemActorBase.cpp" />
     <ClCompile Include="Script\Actors\PlaneActor.cpp" />
+    <ClCompile Include="Script\Actors\ReactActor.cpp" />
+    <ClCompile Include="Script\Actors\SmokeActor.cpp" />
     <ClCompile Include="Script\Actors\SwordActor.cpp" />
     <ClCompile Include="Script\Actors\TorchItemActor.cpp" />
     <ClCompile Include="Script\Actors\UIActor.cpp" />
@@ -90,7 +92,6 @@
     <ClCompile Include="Script\Graphics\GBuffer.cpp" />
     <ClCompile Include="Script\Graphics\Mesh.cpp" />
     <ClCompile Include="Script\Graphics\MeshComponent.cpp" />
-    <ClCompile Include="Script\Graphics\perlinNoise.cpp" />
     <ClCompile Include="Script\Graphics\PointLightComponent.cpp" />
     <ClCompile Include="Script\Graphics\Renderer.cpp" />
     <ClCompile Include="Script\Graphics\Shader.cpp" />
@@ -162,7 +163,6 @@
     <ClInclude Include="Script\Graphics\GBuffer.h" />
     <ClInclude Include="Script\Graphics\Mesh.h" />
     <ClInclude Include="Script\Graphics\MeshComponent.h" />
-    <ClInclude Include="Script\Graphics\perlinNoise.h" />
     <ClInclude Include="Script\Graphics\PointLightComponent.h" />
     <ClInclude Include="Script\Graphics\Renderer.h" />
     <ClInclude Include="Script\Graphics\Shader.h" />

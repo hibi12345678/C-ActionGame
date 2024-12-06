@@ -24,6 +24,7 @@ public:
     std::vector<float> generateHeightMap(int width, int height, float scale ,float heightscle);
     GLuint createHeightMapTexture(const std::vector<float>& heightMap, int width, int height);
     glm::mat4 ConvertToGLM(const Matrix4& matrix);
+    std::vector<float> loadHeightMap(const char* filePath, int& width, int& height);
     std::vector<Vertex> generateControlPoints(int gridWidth, int gridHeight, const std::vector<float>& heightMap);
     glm::vec3 CalculateNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3);
 private:
@@ -66,5 +67,7 @@ private:
     std::vector<Vertex> controlPoint;
     GLuint textureID;
     GLuint rockTextureID;
+    GLuint soilTextureID;
+    GLuint snowTextureID;
     GLuint numIndices;
 };

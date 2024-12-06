@@ -297,7 +297,7 @@ void Renderer::Draw()
 	// Draw the 3D scene to the G-buffer
 	Draw3DScene(mGBuffer->GetBufferID(), mView, mProjection, true);
 
-	//mTerrain->GenerateTerrain(mView, mProjection);
+	mTerrain->GenerateTerrain(mView, mProjection);
 
 	DrawSkybox();
 	// Set the frame buffer back to zero (screen's frame buffer)

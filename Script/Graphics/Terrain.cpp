@@ -1,4 +1,4 @@
-#include "Terrain.h"
+﻿#include "Terrain.h"
 #include "Texture.h"
 #include "stb_image.h"
 #include <glm.hpp>
@@ -9,41 +9,64 @@
 #include <cstdio> 
 Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
 
-    int width= 1024;
-    int height = 1024;
-    std::vector<GLuint> indices;
-    for (int z = 0; z <width; ++z) { 
-        for (int x = 0; x < width; ++x) {
-   
-            indices.push_back(z * width + x);           
-            indices.push_back(z * width + (x + 1));     
-            indices.push_back((z + 1) * width + x);     
+    int width= 2624;
+    int height = 1756;
 
-            indices.push_back((z + 1) * width + x);     
-            indices.push_back(z * width + (x + 1));     
-            indices.push_back((z + 1) * width + (x + 1)); 
+    std::vector<GLuint> indices;
+    for (int z = 0; z <height - 1; ++z) { 
+        for (int x = 0; x < width - 1; ++x) {
+   
+            indices.push_back(z * width + x);
+            indices.push_back(z * width + (x + 1));
+            indices.push_back((z + 1) * width + x);
+
+            indices.push_back((z + 1) * width + x);
+            indices.push_back(z * width + (x + 1));
+            indices.push_back((z + 1) * width + (x + 1));
         }
+        
     }
 
 
     numIndices = indices.size();
     mShader = shader;
-    
-  
-    std::vector<float> heightMap = generateHeightMap(width, height, 10.0f, 25.0f);
-    controlPoint = generateControlPoints(width, height, heightMap);
-    for (size_t i = 0; i < width * height - 2; i++)  
-    {
 
-        glm::vec3 p1 = controlPoint[i].position;
-        glm::vec3 p2 = controlPoint[i + 1].position;
-        glm::vec3 p3 = controlPoint[i + 2].position;
-        glm::vec3 normal = CalculateNormal(p1, p2, p3);
-        controlPoint[i].normal = normal;
-        controlPoint[i + 1].normal = normal;
-        controlPoint[i + 2].normal = normal;  
+
+  
+    std::vector<float> heightMap = loadHeightMap("Assets/Texture/iceland_heightmap.png",width, height);
+    controlPoint = generateControlPoints(width, height, heightMap);
+    for (auto& point : controlPoint) {
+        point.normal = glm::vec3(0.0f);
+     
     }
-   
+    for (size_t i = 0; i < indices.size(); i += 6)  // 6つずつ進める
+    {
+        
+        glm::vec3 p1 = controlPoint[indices[i]].position;
+        glm::vec3 p2 = controlPoint[indices[i + 1]].position;
+        glm::vec3 p3 = controlPoint[indices[i + 2]].position;
+        glm::vec3 normal1 = CalculateNormal(p1, p2, p3);
+
+        glm::vec3 p4 = controlPoint[indices[i + 5]].position;
+        glm::vec3 normal2 = CalculateNormal(p3, p2, p4);
+        
+ 
+        controlPoint[indices[i]].normal += normal1;
+
+       
+        controlPoint[indices[i + 1]].normal += normal1;
+        controlPoint[indices[i + 2]].normal += normal1;
+
+        controlPoint[indices[i + 3]].normal += normal2;
+        controlPoint[indices[i + 4]].normal += normal2;
+        controlPoint[indices[i + 5]].normal += normal2;
+        
+    }
+
+    // 法線の平均化
+    for (auto& point : controlPoint) {
+        point.normal = glm::normalize(point.normal);  // 平均化した法線を正規化
+    }
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -63,14 +86,16 @@ Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));  // �@���̐ݒ�
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));  // 法線の設定
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));  // UV�̐ݒ�
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));  // UVの設定
     glEnableVertexAttribArray(2);
 
     textureID = loadTerrainTexture("Assets/Texture/concrete_moss_diff_4k.jpg");
     rockTextureID = loadTerrainTexture("Assets/Texture/rock_boulder_dry_diff_4k.jpg");
+    soilTextureID = loadTerrainTexture("Assets/Texture/sandy_gravel_02_diff_4k.jpg");
+    snowTextureID = loadTerrainTexture("Assets/Texture/snow_02_diff_4k.jpg");
 
     glBindVertexArray(0); 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -91,23 +116,33 @@ void Terrain::GenerateTerrain(const Matrix4& view, const Matrix4& proj)
 
     glm::mat4 model = glm::mat4(1.0f); 
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, -100.0f)); 
-    model = glm::scale(model, glm::vec3(10.0f, 10.0f, 15.0f)); 
+    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f)); 
     model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); 
 
     glUniformMatrix4fv(glGetUniformLocation(mShader->GetID(), "uModel"), 1, GL_FALSE, glm::value_ptr(model));
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
 
-    glUniform1i(glGetUniformLocation(mShader->GetID(), "grassTexture"), 0);
+    glUniform1i(glGetUniformLocation(mShader->GetID(), "texture1"), 0);
 
     glActiveTexture(GL_TEXTURE1);
-   // glBindTexture(GL_TEXTURE_2D, rockTextureID);
+    glBindTexture(GL_TEXTURE_2D, rockTextureID);
 
-   // glUniform1i(glGetUniformLocation(mShader->GetID(), "rockTexture"), 1);
+    glUniform1i(glGetUniformLocation(mShader->GetID(), "texture2"), 1);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, soilTextureID);
+
+    glUniform1i(glGetUniformLocation(mShader->GetID(), "texture3"), 2);
+
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, snowTextureID);
+
+    glUniform1i(glGetUniformLocation(mShader->GetID(), "texture4"), 3);
 
     glBindVertexArray(VAO);
 
-    glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
 
     glBindVertexArray(0);
 }
@@ -126,13 +161,13 @@ std::vector<Vertex> Terrain::generateControlPoints(int gridWidth, int gridHeight
             float posY = startY + z * spacingY;
 
             int index = z * gridWidth + x; 
-            float posZ = heightMap[index];   
+            float posZ = heightMap[index] * 255.0f;   
 
             float uvX = (float)x / (gridWidth - 1); 
             float uvZ = (float)z / (gridHeight - 1); 
 
             Vertex vertex;
-            vertex.position = glm::vec3(posX, posY, posZ);
+            vertex.position = glm::vec3(posX, posY, posZ) ;
             vertex.uv = glm::vec2(uvX, uvZ);  
 
             controlPoints.push_back(vertex);
@@ -206,26 +241,36 @@ GLuint Terrain::loadTerrainTexture(const char* filePath) {
     return textureID;
 }
 
-GLuint Terrain::createHeightMapTexture(const std::vector<float>& heightMap, int width, int height) {
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, heightMap.data());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_2D, 0); 
-    return textureID;
+std::vector<float> Terrain::loadHeightMap(const char* filePath, int& width, int& height) {
+    int channels;
+    unsigned char* data = stbi_load(filePath, &width, &height, &channels, 1); // グレースケール (force_channels = 1)
 
+    // 高さマップを格納するベクターを作成
+    std::vector<float> heightMap(width * height);
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+
+            int index = y * width + x;
+            
+            
+            heightMap[index] = static_cast<float>(data[index]) / 255.0f;
+            
+        }
+    }
+
+    // メモリ解放
+    stbi_image_free(data);
+
+    return heightMap;
 }
-
 glm::vec3 Terrain::CalculateNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
 
     glm::vec3 edge1 = p2 - p1;
     glm::vec3 edge2 = p3 - p1;
     glm::vec3 normal = glm::cross(edge1, edge2);
 
+    
     return glm::normalize(normal);
 }
 glm::mat4 Terrain::ConvertToGLM(const Matrix4& matrix)
