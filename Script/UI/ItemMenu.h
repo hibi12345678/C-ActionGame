@@ -19,4 +19,6 @@ private:
 	ItemMenu::ItemState menuState;
 	
 	SoundEvent mMusicEvent;
+
+	class UIActor* uiActor;
 };

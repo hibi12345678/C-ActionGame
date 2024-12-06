@@ -15,6 +15,7 @@
 #include "FollowActor.h"
 #include "SpriteComponent.h"
 #include "MeshComponent.h"
+#include "UIMeshComponent.h"
 #include "UIScreen.h"
 #include "Game.h"
 #include <GL/glew.h>
@@ -23,7 +24,7 @@
 #include "PointLightComponent.h"
 #include "stb_image.h"
 #include <SOIL/SOIL.h>
-#include<iostream>
+#include <iostream>
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
@@ -34,7 +35,8 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
-#include "stb_image.h"
+#include "Terrain.h"
+
 Renderer::Renderer(Game* game)
 	:mGame(game)
 	,mSpriteShader(nullptr)
@@ -103,9 +105,9 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 	// Set OpenGL attributes
 	// Use the core OpenGL profile
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	// Specify version 3.3
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	// Specify version 4.2
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	// Request a color buffer with 8-bits per RGBA channel
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
@@ -156,7 +158,9 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 		SDL_Log("Failed to load shaders.");
 		return false;
 	}
-
+	// OpenGLのバージョンを取得
+	const GLubyte* version = glGetString(GL_VERSION);
+	std::cout << "OpenGL Version: " << version << std::endl;
 	// Create quad for drawing sprites
 	CreateSpriteVerts();
 
@@ -229,6 +233,7 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 		}
 	}
 
+	mTerrain = new Terrain(mTessellationShader,mView,mProjection);
 
 	return true;
 }
@@ -252,8 +257,12 @@ void Renderer::Shutdown()
 	delete mSpriteShader;
 	mMeshShader->Unload();
 	delete mMeshShader;
-	delete mSkyboxShader;
 	mSkyboxShader->Unload();
+	delete mSkyboxShader;
+	mLineShader->Unload();
+	delete mLineShader;
+	mTessellationShader->Unload();
+	delete mTessellationShader;
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
@@ -284,17 +293,23 @@ void Renderer::UnloadData()
 
 void Renderer::Draw()
 {
-	
+
 	// Draw the 3D scene to the G-buffer
-	Draw3DScene(mGBuffer->GetBufferID(), mView, mProjection, false);
+	Draw3DScene(mGBuffer->GetBufferID(), mView, mProjection, true);
+
+	//mTerrain->GenerateTerrain(mView, mProjection);
+
+	DrawSkybox();
 	// Set the frame buffer back to zero (screen's frame buffer)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Draw from the GBuffer
 	DrawFromGBuffer();
 	
-	DrawSkybox();
+	
+
 	
 	glDisable(GL_DEPTH_TEST);
+	
 	DrawAABB();
 	glEnable(GL_BLEND);
 	glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
@@ -315,7 +330,7 @@ void Renderer::Draw()
 	{
 		ui->Draw(mSpriteShader);
 	}
-
+	//DrawUIObj();
 
 	// ---- ImGui描画のための準備 ----
 	SDL_GL_MakeCurrent(mImGuiWindow, mImGuiContext);
@@ -324,7 +339,8 @@ void Renderer::Draw()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
-	ImGui::SetWindowSize(ImVec2(300.0f,700.0f), ImGuiCond_Always);
+	ImGui::SetWindowSize(ImVec2(480.0f, 800.0f), ImGuiCond_Always);  // サイズ設定
+	ImGui::SetWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Always);  // 位置設定
 	ImGui::Begin("Hello, ImGui!");
 
 	static float bgColor[3] = { 0.7f, 0.7f, 0.7f };
@@ -438,6 +454,17 @@ void Renderer::RemoveMeshComp(MeshComponent* mesh)
 	}
 }
 
+void Renderer::AddUIMeshComp(UIMeshComponent* mesh)
+{
+     mUIMeshComps.emplace_back(mesh);
+}
+
+void Renderer::RemoveUIMeshComp(UIMeshComponent* mesh)
+{
+	auto iter = std::find(mUIMeshComps.begin(), mUIMeshComps.end(), mesh);
+	mUIMeshComps.erase(iter);
+}
+
 void Renderer::AddPointLight(PointLightComponent * light)
 {
 	mPointLights.emplace_back(light);
@@ -543,6 +570,7 @@ void Renderer::Draw3DScene(unsigned int framebuffer, const Matrix4& view, const 
 			sk->Draw(mSkinnedShader);
 		}
 	}
+	
 }
 
 void Renderer::DrawSkybox() {
@@ -550,12 +578,13 @@ void Renderer::DrawSkybox() {
 	
 	glDepthFunc(GL_LEQUAL);
 
+
 	mSkyboxShader->SetActive();
 	glm::mat4 glmView = ConvertToGLM(mView);
 	glm::mat4 glmProjection = ConvertToGLM(mProjection);
-	glm::mat4 swappedView = glm::mat4(glmView[1] , glmView[2] , glmView[0] , glmView[3]);
+	glm::mat4 swappedView = glm::mat4(glmView[1] * 0.5f, glmView[2] * 0.5f, glmView[0], glmView[3]);
 	glm::mat4 view = glm::mat4(glm::mat3(swappedView) );
-	glm::mat4 viewProj = glmProjection * view * 0.5f;
+	glm::mat4 viewProj = glmProjection * view;
 	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(viewProj));
 
@@ -580,7 +609,6 @@ void Renderer::DrawAABB()
 	glm::mat4 glmView = ConvertToGLM(mView);
 	glm::mat4 glmProjection = ConvertToGLM(mProjection);
 	glm::mat4 swappedView = glm::mat4(glmView[0], glmView[1], glmView[2], glmView[3]);
-	glm::mat4 view = glm::mat4(glm::mat3(swappedView));
 
 	glm::mat4 viewProj = glmProjection * swappedView;
 
@@ -634,7 +662,39 @@ void Renderer::DrawAABB()
 		glDeleteVertexArrays(1, &VAO);
 	}
 }
+
+void Renderer::DrawUIObj() {
+
+	// 深度テスト無効化
+	glDisable(GL_DEPTH_TEST);  // 深度テストを無効化
+	glDepthFunc(GL_ALWAYS); // 常に深度テストに合格
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// オーソグラフィック投影行列を使用
+	//Matrix4 orthoProj = Matrix4::CreateOrtho((float)mScreenWidth,(float)mScreenHeight, -1.0f, 1.0f);
+	//Matrix4 view = Matrix4::Identity;
+
+	// Set the mesh shader active
+	mUIMeshShader->SetActive();
 	
+	// Update view-projection matrix
+	mUIMeshShader->SetMatrixUniform("uViewProj", mView * mProjection);  // ビューとオーソグラフィック行列を掛け合わせて渡す
+
+
+	for (auto mc : mUIMeshComps) {
+		if (mc->GetVisible()) {
+
+			mc->Draw(mUIMeshShader);
+
+		}
+	}
+
+	// 深度テストを再有効化
+	glEnable(GL_DEPTH_TEST);  // 3D描画用に深度テストを有効化
+	glDisable(GL_BLEND);
+	glDepthFunc(GL_LESS); // 通常の深度テストに戻す
+	glUseProgram(0);
+}
 void Renderer::DrawFromGBuffer()
 {
 	// Clear the current framebuffer
@@ -709,7 +769,7 @@ bool Renderer::LoadShaders()
 	// Set the view-projection matrix
 	mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
 	mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f),
-		mScreenWidth, mScreenHeight, 10.0f, 10000.0f);
+		mScreenWidth, mScreenHeight, 100.0f, 20000.0f);
 	mMeshShader->SetMatrixUniform("uViewProj", mView * mProjection);
 
 	// Create skinned shader
@@ -772,6 +832,21 @@ bool Renderer::LoadShaders()
 	{
 		return false;
 	}
+
+	mUIMeshShader = new Shader();
+	if (!mUIMeshShader->Load("Script/Shaders/UIMesh.vert", "Script/Shaders/GBufferWrite.frag"))
+	{
+		return false;
+	}
+
+	mTessellationShader = new Shader();
+	if (!mTessellationShader->Load("Script/Shaders/Tessellation.vert","Script/Shaders/Tessellation.frag"))
+	{
+		return false;
+	}
+
+
+
 	return true;
 }
 
@@ -836,11 +911,13 @@ void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
 }
 
 void Renderer::InitializeImGui(SDL_Window* window, SDL_GLContext context) {
+
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 	ImGui_ImplSDL2_InitForOpenGL(window, context);
-	ImGui_ImplOpenGL3_Init("#version 330");
+	ImGui_ImplOpenGL3_Init("#version 420"); 
+
 }
 
 glm::mat4 Renderer::ConvertToGLM(const Matrix4& matrix)

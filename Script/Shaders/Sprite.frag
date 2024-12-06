@@ -6,8 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-// Request GLSL 3.3
-#version 330
+#version 420
 
 // Tex coord input from vertex shader
 in vec2 fragTexCoord;

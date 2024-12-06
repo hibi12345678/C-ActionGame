@@ -24,10 +24,11 @@ TorchItemActor::TorchItemActor(Game* game, float scale, int num)
 	for (int i = 0; i <= 2; i++) {
 		PointLightComponent* pointLight = new PointLightComponent(game->GetPlayer());
 		pointLight->SetCol(Vector3(1.0, 0.6, 0.0));
-		pointLight->SetInRad(100.0);
-		pointLight->SetOutRad(400.0);
-		pointLight->SetPosition(Vector3(200.0f, 0.0f, 200.0f));
+		pointLight->SetInRad(0.0);
+		pointLight->SetOutRad(300.0);
+		pointLight->SetPosition(GetPosition() + Vector3(300.0f,0.0f,400.0f));
 		mPointLights.emplace_back(pointLight);
+		
 	}
 
 	
@@ -44,7 +45,6 @@ void TorchItemActor::UpdateActor(float deltaTime)
 		}
 		mPointLights.clear();
 		SetState(Actor::EDead);
-
 	}
 
 

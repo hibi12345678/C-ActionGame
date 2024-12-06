@@ -27,6 +27,12 @@
     <None Include="Script\Shaders\SkyBox.vert" />
     <None Include="Script\Shaders\Sprite.frag" />
     <None Include="Script\Shaders\Sprite.vert" />
+    <None Include="Script\Shaders\Tessellation.frag" />
+    <None Include="Script\Shaders\Tessellation.vert" />
+    <None Include="Script\Shaders\TessellationControl.vert" />
+    <None Include="Script\Shaders\TessellationEvaluation.vert" />
+    <None Include="Script\Shaders\UIMesh.frag" />
+    <None Include="Script\Shaders\UIMesh.vert" />
     <None Include="Shaders\BasicMesh.frag" />
     <None Include="Shaders\BasicMesh.vert" />
     <None Include="Shaders\GBufferGlobal.frag" />
@@ -58,7 +64,7 @@
     <ClCompile Include="Script\Actors\BossActor.cpp" />
     <ClCompile Include="Script\Actors\BowActor.cpp" />
     <ClCompile Include="Script\Actors\DropItemActor.cpp" />
-    <ClCompile Include="Script\Actors\EffecActor.cpp" />
+    <ClCompile Include="Script\Actors\EffectActor.cpp" />
     <ClCompile Include="Script\Actors\EnemyActor.cpp" />
     <ClCompile Include="Script\Actors\ExplosionActor.cpp" />
     <ClCompile Include="Script\Actors\FollowActor.cpp" />
@@ -66,6 +72,7 @@
     <ClCompile Include="Script\Actors\PlaneActor.cpp" />
     <ClCompile Include="Script\Actors\SwordActor.cpp" />
     <ClCompile Include="Script\Actors\TorchItemActor.cpp" />
+    <ClCompile Include="Script\Actors\UIActor.cpp" />
     <ClCompile Include="Script\Component\Animation.cpp" />
     <ClCompile Include="Script\Component\ArrowMove.cpp" />
     <ClCompile Include="Script\Component\AudioComponent.cpp" />
@@ -83,11 +90,14 @@
     <ClCompile Include="Script\Graphics\GBuffer.cpp" />
     <ClCompile Include="Script\Graphics\Mesh.cpp" />
     <ClCompile Include="Script\Graphics\MeshComponent.cpp" />
+    <ClCompile Include="Script\Graphics\perlinNoise.cpp" />
     <ClCompile Include="Script\Graphics\PointLightComponent.cpp" />
     <ClCompile Include="Script\Graphics\Renderer.cpp" />
     <ClCompile Include="Script\Graphics\Shader.cpp" />
     <ClCompile Include="Script\Graphics\SkeletalMeshComponent.cpp" />
     <ClCompile Include="Script\Graphics\SpriteComponent.cpp" />
+    <ClCompile Include="Script\Graphics\Terrain.cpp" />
+    <ClCompile Include="Script\Graphics\UIMeshComponent.cpp" />
     <ClCompile Include="Script\Graphics\VertexArray.cpp" />
     <ClCompile Include="Script\System\AudioSystem.cpp" />
     <ClCompile Include="Script\System\Collision.cpp" />
@@ -106,6 +116,7 @@
     <ClCompile Include="Script\UI\PauseMenu.cpp" />
     <ClCompile Include="Script\UI\Search.cpp" />
     <ClCompile Include="Script\UI\Texture.cpp" />
+    <ClCompile Include="Script\UI\Tutorial.cpp" />
     <ClCompile Include="Script\UI\UIScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -134,6 +145,7 @@
     <ClInclude Include="Script\Actors\SmokeActor.h" />
     <ClInclude Include="Script\Actors\SwordActor.h" />
     <ClInclude Include="Script\Actors\TorchItemActor.h" />
+    <ClInclude Include="Script\Actors\UIActor.h" />
     <ClInclude Include="Script\Component\Animation.h" />
     <ClInclude Include="Script\Component\ArrowMove.h" />
     <ClInclude Include="Script\Component\AudioComponent.h" />
@@ -150,11 +162,14 @@
     <ClInclude Include="Script\Graphics\GBuffer.h" />
     <ClInclude Include="Script\Graphics\Mesh.h" />
     <ClInclude Include="Script\Graphics\MeshComponent.h" />
+    <ClInclude Include="Script\Graphics\perlinNoise.h" />
     <ClInclude Include="Script\Graphics\PointLightComponent.h" />
     <ClInclude Include="Script\Graphics\Renderer.h" />
     <ClInclude Include="Script\Graphics\Shader.h" />
     <ClInclude Include="Script\Graphics\SkeletalMeshComponent.h" />
     <ClInclude Include="Script\Graphics\SpriteComponent.h" />
+    <ClInclude Include="Script\Graphics\Terrain.h" />
+    <ClInclude Include="Script\Graphics\UIMeshComponent.h" />
     <ClInclude Include="Script\Graphics\VertexArray.h" />
     <ClInclude Include="Script\System\AudioSystem.h" />
     <ClInclude Include="Script\System\Collision.h" />
@@ -173,6 +188,7 @@
     <ClInclude Include="Script\UI\MainmenuUI.h" />
     <ClInclude Include="Script\UI\PauseMenu.h" />
     <ClInclude Include="Script\UI\Texture.h" />
+    <ClInclude Include="Script\UI\Tutorial.h" />
     <ClInclude Include="Script\UI\UIScreen.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

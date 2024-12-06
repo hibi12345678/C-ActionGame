@@ -11,7 +11,7 @@
 #include <SDL/SDL.h>
 #include <fstream>
 #include <sstream>
-
+#include <iostream>
 Shader::Shader()
 	: mShaderProgram(0)
 	, mVertexShader(0)
@@ -53,6 +53,38 @@ bool Shader::Load(const std::string& vertName, const std::string& fragName)
 	
 	return true;
 }
+
+bool Shader::TessellationLoad(const std::string& vertName,
+	const std::string& tessControlName,
+	const std::string& tessEvaluationName,
+	const std::string& fragName)
+{
+	// 頂点シェーダー、テッセレーションシェーダー、フラグメントシェーダーをコンパイル
+	if (!CompileShader(vertName, GL_VERTEX_SHADER, mVertexShader) ||
+		!CompileTessellationShader(tessControlName, GL_TESS_CONTROL_SHADER, mTessControlShader) ||
+		!CompileTessellationShader(tessEvaluationName, GL_TESS_EVALUATION_SHADER, mTessEvaluationShader) ||
+		!CompileShader(fragName, GL_FRAGMENT_SHADER, mFragShader))
+	{
+		return false;
+	}
+
+	// シェーダープログラムを作成し、各シェーダーをアタッチ
+	mShaderProgram = glCreateProgram();
+	glAttachShader(mShaderProgram, mVertexShader);
+	glAttachShader(mShaderProgram, mTessControlShader);
+	glAttachShader(mShaderProgram, mTessEvaluationShader);
+	glAttachShader(mShaderProgram, mFragShader);
+	glLinkProgram(mShaderProgram);
+
+	// シェーダープログラムが正しくリンクされたか確認
+	if (!IsValidProgram())
+	{
+		return false;
+	}
+
+	return true;
+}
+
 
 void Shader::Unload()
 {
@@ -146,6 +178,52 @@ bool Shader::CompileShader(const std::string& fileName,
 	return true;
 }
 
+
+bool Shader::CompileTessellationShader(const std::string& fileName,
+	GLenum shaderType,
+	GLuint& outShader)
+{
+	// ファイルを開く
+	std::ifstream shaderFile(fileName);
+	if (shaderFile.is_open())
+	{
+		// ファイル全体を文字列として読み込む
+		std::stringstream sstream;
+		sstream << shaderFile.rdbuf();
+		std::string contents = sstream.str();
+		const char* contentsChar = contents.c_str();
+
+		// 指定されたタイプのシェーダーを作成
+		outShader = glCreateShader(shaderType);
+		// ソースコードを設定してコンパイル
+		glShaderSource(outShader, 1, &contentsChar, nullptr);
+		glCompileShader(outShader);
+
+		// コンパイル結果を確認
+		GLint success;
+		glGetShaderiv(outShader, GL_COMPILE_STATUS, &success);
+		if (success == GL_FALSE)
+		{
+			// エラーメッセージの取得
+			GLint logLength = 0;
+			glGetShaderiv(outShader, GL_INFO_LOG_LENGTH, &logLength);
+			std::vector<char> log(logLength);
+			glGetShaderInfoLog(outShader, logLength, &logLength, log.data());
+
+			SDL_Log("Failed to compile tessellation shader (%s): %s",
+				fileName.c_str(), log.data());
+			glDeleteShader(outShader);
+			return false;
+		}
+	}
+	else
+	{
+		SDL_Log("Tessellation shader file not found: %s", fileName.c_str());
+		return false;
+	}
+
+	return true;
+}
 bool Shader::IsCompiled(GLuint shader)
 {
 	GLint status;
@@ -181,3 +259,6 @@ bool Shader::IsValidProgram()
 	
 	return true;
 }
+
+
+

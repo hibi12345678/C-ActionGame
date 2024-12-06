@@ -79,6 +79,12 @@
     <None Include="Script\Shaders\SkyBox.vert" />
     <None Include="Script\Shaders\Sprite.frag" />
     <None Include="Script\Shaders\Sprite.vert" />
+    <None Include="Script\Shaders\UIMesh.frag" />
+    <None Include="Script\Shaders\UIMesh.vert" />
+    <None Include="Script\Shaders\TessellationControl.vert" />
+    <None Include="Script\Shaders\TessellationEvaluation.vert" />
+    <None Include="Script\Shaders\Tessellation.frag" />
+    <None Include="Script\Shaders\Tessellation.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -91,9 +97,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_sdl2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
@@ -160,9 +163,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Script\Graphics\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Script\Graphics\MeshComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Script\Graphics\PointLightComponent.cpp">
@@ -246,7 +246,7 @@
     <ClCompile Include="Script\Actors\DropItemActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Script\Actors\EffecActor.cpp">
+    <ClCompile Include="Script\Actors\EffectActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Script\Actors\EnemyActor.cpp">
@@ -268,6 +268,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Script\Actors\TorchItemActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Graphics\MeshComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Actors\UIActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Graphics\UIMeshComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\UI\Tutorial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Graphics\perlinNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Graphics\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_sdl2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -316,7 +337,6 @@
     <ClInclude Include="Script\System\SoundEvent.h" />
     <ClInclude Include="Script\Graphics\GBuffer.h" />
     <ClInclude Include="Script\Graphics\Mesh.h" />
-    <ClInclude Include="Script\Graphics\MeshComponent.h" />
     <ClInclude Include="Script\Graphics\PointLightComponent.h" />
     <ClInclude Include="Script\Graphics\Renderer.h" />
     <ClInclude Include="Script\Graphics\Shader.h" />
@@ -353,5 +373,11 @@
     <ClInclude Include="Script\Actors\SmokeActor.h" />
     <ClInclude Include="Script\Actors\SwordActor.h" />
     <ClInclude Include="Script\Actors\TorchItemActor.h" />
+    <ClInclude Include="Script\Graphics\MeshComponent.h" />
+    <ClInclude Include="Script\Actors\UIActor.h" />
+    <ClInclude Include="Script\Graphics\UIMeshComponent.h" />
+    <ClInclude Include="Script\UI\Tutorial.h" />
+    <ClInclude Include="Script\Graphics\perlinNoise.h" />
+    <ClInclude Include="Script\Graphics\Terrain.h" />
   </ItemGroup>
 </Project>

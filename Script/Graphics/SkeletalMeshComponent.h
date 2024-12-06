@@ -26,7 +26,7 @@ public:
 
 	// Play an animation. Returns the length of the animation
 	float PlayAnimation(class Animation* anim, float playRate = 1.0f);
-
+	float GetAnimTime() { return mAnimTime; }
 	TypeID GetType() const override { return TSkeletalMeshComponent; }
 
 	void LoadProperties(const rapidjson::Value& inObj) override;

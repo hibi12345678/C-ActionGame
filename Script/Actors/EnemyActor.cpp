@@ -298,6 +298,7 @@ void EnemyActor::HandleDeath() {
 			
 			DropItemActor* dropitem = new DropItemActor(GetGame());
 			dropitem->SetPosition(GetPosition());
+			
 			mState = EDead;
 		}
 		mHealth = 0.0f;
@@ -327,9 +328,9 @@ void EnemyActor::AddAttackBox() {
 	AABB myBox(Vector3(-150.0f, -125.0f, 0.0f), Vector3(150.0f, 125.0f, 10.0f));
 	mAttackBoxComp->SetObjectBox(myBox);
 	mAttackBoxComp->SetShouldRotate(true);
-
 	SmokeActor* smoke = new SmokeActor(GetGame());
 	smoke->SetPosition(GetPosition());
+	
 	groundFlag = true;
 }
 
