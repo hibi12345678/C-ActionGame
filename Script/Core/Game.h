@@ -39,6 +39,7 @@ public:
 		EMainMenu,
 		EGameplay,
 		EPaused,
+		ETutorial,
 		EItem,
 		EQuit
 	};

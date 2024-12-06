@@ -58,6 +58,7 @@ protected:
 	class Texture* mCross;
 	class Texture* mFrame;
 	class Texture* mFrame2;
+	class Texture* mTutorial;
 	// All the target components in the game
 	std::vector<class TargetComponent*> mTargetComps;
 	// 2D offsets of blips relative to radar

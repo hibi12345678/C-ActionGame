@@ -54,6 +54,7 @@ HUD::HUD(Game* game)
 	mCross = mGame->GetRenderer()->GetTexture("Assets/Texture/~.png");
 	mFrame = mGame->GetRenderer()->GetTexture("Assets/Texture/Frame.png");
 	mFrame2 = mGame->GetRenderer()->GetTexture("Assets/Texture/Frame2.png");
+	mTutorial = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial.png");
 }
 
 HUD::~HUD()
@@ -149,8 +150,8 @@ void HUD::Draw(Shader* shader)
 			BossActor* BossActor = mGame->GetBoss();;
 			//// Health bar
 			float health = BossActor->GetHealth();
-			DrawTexture(shader, mHealthBar, Vector2(-250.0f, -300.0f), health, false, 1);
-			DrawTexture(shader, mStaminaFrame, Vector2(-250.0f, -300.0f), 1, false, 1);
+			DrawTexture(shader, mHealthBar, Vector2(-250.0f, -300.0f), health * 1.5, false, 1);
+			DrawTexture(shader, mStaminaFrame, Vector2(-250.0f, -300.0f), 1.5, false, 1);
 		}
 		
 	}
@@ -178,7 +179,9 @@ void HUD::Draw(Shader* shader)
 			
 		}
 	}
-	
+	if (Game::GameState::ETutorial == mGame->GetState()) {
+		DrawTexture(shader, mTutorial, Vector2(0.0f, 0.0f), 0.5f);
+	}
 }
 
 void HUD::AddTargetComponent(TargetComponent* tc)

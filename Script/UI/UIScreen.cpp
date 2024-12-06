@@ -24,6 +24,7 @@ UIScreen::UIScreen(Game* game)
 	,mNextTextPos(0.0f, -100.0f)
 	,mBGPos(0.0f, 150.0f)
 	,mUIState(EActive)
+	,TutorialNum(0)
 {
 	// Add to UI Stack
 	mGame->PushUI(this);
@@ -37,6 +38,12 @@ UIScreen::UIScreen(Game* game)
 	mBomb = mGame->GetRenderer()->GetTexture("Assets/Texture/BombTex.png");
 	mTorch = mGame->GetRenderer()->GetTexture("Assets/Texture/TorchTex.png");
 	mArrow = mGame->GetRenderer()->GetTexture("Assets/Texture/ItemArrow.png");
+	mTutorialRightButtonOn = mGame->GetRenderer()->GetTexture("Assets/Texture/TutorialRightButtonOn.png");
+	mTutorialRightButtonOff = mGame->GetRenderer()->GetTexture("Assets/Texture/TutorialRightButtonOff.png");
+	mTutorialLeftButtonOn = mGame->GetRenderer()->GetTexture("Assets/Texture/TutorialLeftButtonOn.png");
+	mTutorialLeftButtonOff = mGame->GetRenderer()->GetTexture("Assets/Texture/TutorialLeftButtonOff.png");
+	mCloseButtonOff = mGame->GetRenderer()->GetTexture("Assets/Texture/CloseButtonOff.png");
+	mCloseButtonOn = mGame->GetRenderer()->GetTexture("Assets/Texture/CloseButtonOn.png");
 }
 
 UIScreen::~UIScreen()
@@ -62,10 +69,23 @@ UIScreen::~UIScreen()
 	{
 		delete b;
 	}
+
 	if (mItemText)
 	{
 		mItemText->Unload();
 		delete mItemText;
+	}
+	if (mTutorialButtonRight)
+	{
+		delete mTutorialButtonRight;
+	}	
+	if (mTutorialButtonLeft)
+	{	
+		delete mTutorialButtonLeft;
+	}
+	if (mCloseButton)
+	{
+		delete mCloseButton;
 	}
 	mItemButton.clear();
 	mButtons.clear();
@@ -76,6 +96,12 @@ UIScreen::~UIScreen()
 
 void UIScreen::Update(float deltaTime)
 {
+	if (TutorialNum < 0) {
+		TutorialNum = 0;
+	}
+	else if (TutorialNum > 3) {
+		TutorialNum = 3;
+	}
 
 }
 
@@ -111,7 +137,6 @@ void UIScreen::Draw(Shader* shader)
 		// Draw text of button
 		DrawTexture(shader,b->GetNameTex(), b->GetPosition());	
 	}
-	// Draw buttons
 	for (auto tex : mText)
 	{
 		DrawTexture(shader, tex, tex->GetPos());	
@@ -139,7 +164,15 @@ void UIScreen::Draw(Shader* shader)
 		}
 
 	}
-	// Draw title (if exists)
+
+	for (auto b : mStartButton)
+	{
+		// Draw background of button
+		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;
+		DrawTexture(shader, tex, b->GetPosition());
+		// Draw text of button
+		DrawTexture(shader, b->GetNameTex(), b->GetPosition());
+	}
 	if (mItemText)
 	{
 	
@@ -147,6 +180,39 @@ void UIScreen::Draw(Shader* shader)
 			DrawTexture(shader, mArrow, Vector2(0.0f, -70.0f),0.5f);
 		}
 		DrawTexture(shader, mItemText, mItemText->GetPos());
+
+	}
+	if (mTutorialButtonRight)
+	{
+		// Draw background of button
+		Texture* tex = mTutorialButtonRight->GetHighlighted() ? mTutorialRightButtonOn : mTutorialRightButtonOff;
+		if (TutorialNum != 3) {
+			DrawTexture(shader, tex, mTutorialButtonRight->GetPosition());
+		}
+		
+
+	}
+	if (mTutorialButtonLeft)
+	{
+		
+		// Draw background of button
+		Texture* tex = mTutorialButtonLeft->GetHighlighted() ? mTutorialLeftButtonOn : mTutorialLeftButtonOff;
+		if (TutorialNum != 0) {
+			DrawTexture(shader, tex, mTutorialButtonLeft->GetPosition());
+		}
+		
+
+	}
+	if (mCloseButton)
+	{
+
+		// Draw background of button
+		Texture* tex = mCloseButton->GetHighlighted() ? mCloseButtonOn : mCloseButtonOff;
+		if (TutorialNum == 3) {
+
+			DrawTexture(shader, tex, mCloseButton->GetPosition());
+		}
+
 
 	}
 	if (Game::GameState::EItem == mGame->GetState()) {
@@ -234,6 +300,73 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 		}
 
 	}
+
+	if (mTutorialButtonRight)
+	{
+		// Get position of mouse
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		// Convert to (0,0) center coordinates
+		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
+		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
+		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
+
+		if (mTutorialButtonRight->ContainsPoint(mousePos))
+		{
+			mTutorialButtonRight->SetHighlighted(true);
+
+		}
+		else
+		{
+			mTutorialButtonRight->SetHighlighted(false);
+		}
+	}
+
+	if (mTutorialButtonLeft)
+	{
+		// Get position of mouse
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		// Convert to (0,0) center coordinates
+		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
+		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
+		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
+
+		if (mTutorialButtonLeft->ContainsPoint(mousePos))
+		{
+			mTutorialButtonLeft->SetHighlighted(true);
+
+		}
+		else
+		{
+			mTutorialButtonLeft->SetHighlighted(false);
+		}
+
+
+	}
+
+	if (mCloseButton)
+	{
+		// Get position of mouse
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		// Convert to (0,0) center coordinates
+		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
+		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
+		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
+
+		if (mCloseButton->ContainsPoint(mousePos))
+		{
+			mCloseButton->SetHighlighted(true);
+
+		}
+		else
+		{
+			mCloseButton->SetHighlighted(false);
+		}
+
+
+	}
 }
 
 void UIScreen::StartInput(const uint8_t* keys)
@@ -302,6 +435,30 @@ void UIScreen::HandleKeyPress(int key)
 			}
 
 		}
+		if (mTutorialButtonRight)
+		{		
+			if (mTutorialButtonRight->GetHighlighted())
+			{
+				mTutorialButtonRight->OnClick();
+				break;
+			}
+		}
+		if (mTutorialButtonLeft)
+		{
+			if (mTutorialButtonLeft->GetHighlighted())
+			{
+				mTutorialButtonLeft->OnClick();
+				break;
+			}
+		}
+		if (mCloseButton)
+		{
+			if (mCloseButton->GetHighlighted())
+			{
+				mCloseButton->OnClick();
+				break;
+			}
+		}
 		break;
 	default:
 		break;
@@ -316,6 +473,14 @@ void UIScreen::Close()
 	mUIState = EClosing;
 }
 
+void UIScreen::CloseTutorial()
+{
+	if (TutorialNum == 3) {
+		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Tutorial");
+		mUIState = EClosing;
+	}
+	
+}
 void UIScreen::SetTitle(const std::string& text,
 						const Vector3& color,
 						int pointSize)
@@ -419,7 +584,29 @@ void UIScreen::DrawTexture(class Shader* shader, class Texture* texture,
 	texture->SetActive();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
+void UIScreen::DrawButtonRight(const std::string& name, std::function<void()> onClick)
+{
+	Vector2 dims(static_cast<float>(mTutorialRightButtonOn->GetWidth()),
+		static_cast<float>(mTutorialRightButtonOn->GetHeight()));
+	Button* b = new Button(name, mFont, onClick, Vector2(120.0f, -170.0f), dims, 0);
+	mTutorialButtonRight = b;
+}
 
+void UIScreen::DrawButtonLeft(const std::string& name, std::function<void()> onClick)
+{
+	Vector2 dims(static_cast<float>(mTutorialLeftButtonOn->GetWidth()),
+		static_cast<float>(mTutorialLeftButtonOn->GetHeight()));
+	Button* b = new Button(name, mFont, onClick, Vector2(-120.0f, -170.0f), dims, 0);
+	mTutorialButtonLeft = b;
+}
+
+void UIScreen::DrawCloseButton(const std::string& name, std::function<void()> onClick)
+{
+	Vector2 dims(static_cast<float>(mCloseButtonOn->GetWidth()),
+		static_cast<float>(mCloseButtonOn->GetHeight()));
+	Button* b = new Button(name, mFont, onClick, Vector2(250.0f, 200.0f), dims, 0);
+	mCloseButton = b;
+}
 void UIScreen::SetRelativeMouseMode(bool relative)
 {
 	if (relative)
@@ -434,6 +621,22 @@ void UIScreen::SetRelativeMouseMode(bool relative)
 	}
 }
 
+void UIScreen::AddTutorialNum()
+{ 
+	if (TutorialNum < 4) {
+		TutorialNum++;
+		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Tutorial");
+		
+	}
+	
+}
+void UIScreen::RemoveTutorialNum()
+{ 
+	if (TutorialNum > 0) {
+		TutorialNum--;
+		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Tutorial");
+	}
+}
 Button::Button(const std::string& name, Font* font,
 	std::function<void()> onClick,
 	const Vector2& pos, const Vector2& dims, int TexNum)
@@ -486,3 +689,5 @@ void Button::OnClick()
 		mOnClick();
 	}
 }
+
+

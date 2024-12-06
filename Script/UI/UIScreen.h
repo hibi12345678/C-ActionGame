@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #pragma once
 #include "Maths.h"
 #include <cstdint>
@@ -43,10 +35,9 @@ private:
 	Vector2 mDimensions;
 	int mTexNum;
 	bool mHighlighted;
-	class AudioSystem* mAudioSystem;
-	SoundEvent mMusicEvent;
 
-	
+
+
 };
 
 class UIScreen
@@ -88,6 +79,7 @@ public:
 		const Vector3& color = Color::White, int num = 0
 		);
 	void CloseText();
+	void CloseTutorial();
 	void SetItemText(const std::string& text, Vector2 pos, int pointSize,
 		const Vector3& color = Color::White
 	);
@@ -96,6 +88,11 @@ public:
 	// Add a button to this screen
 	void StartButton(const std::string& name, std::function<void()> onClick);
 	void ItemButton(const std::string& name, int texNumber ,std::function<void()> onClick);
+	void DrawButtonRight(const std::string& name, std::function<void()> onClick);
+	void DrawButtonLeft(const std::string& name, std::function<void()> onClick);
+	void DrawCloseButton(const std::string& name, std::function<void()> onClick);
+	void AddTutorialNum();
+	void RemoveTutorialNum();
 
 protected:
 	// Helper to draw a texture
@@ -107,7 +104,9 @@ protected:
 	// Sets the mouse mode to relative or not
 	void SetRelativeMouseMode(bool relative);
 	class Game* mGame;
-	
+
+
+	SoundEvent mMusicEvent;
 	class Font* mFont;
 	class Texture* mTitle;
 	class Texture* mBackground;
@@ -115,11 +114,19 @@ protected:
 	class Texture* mButtonOff;
 	class Texture* mItemButtonOn;
 	class Texture* mItemButtonOff;
+	class Texture* mTutorialButtonOn;
+	class Texture* mTutorialButtonOff;
 	class Texture* mSword;
 	class Texture* mBow;
 	class Texture* mBomb;
 	class Texture* mTorch;
 	class Texture* mArrow;
+	class Texture* mTutorialRightButtonOn;
+	class Texture* mTutorialRightButtonOff;
+	class Texture* mTutorialLeftButtonOn;
+	class Texture* mTutorialLeftButtonOff;
+	class Texture* mCloseButtonOn;
+	class Texture* mCloseButtonOff;
 	bool mArrowFlag;
 	// Configure positions
 	Vector2 mTitlePos;
@@ -128,6 +135,7 @@ protected:
 	Vector2 mNextTextPos;
 	Vector2 mBGPos;
 	int texNum;
+	int TutorialNum;
 	// State
 	UIState mUIState;
 	
@@ -138,4 +146,11 @@ protected:
 	std::vector<Button*> mStartButton;
 
 	std::vector<Button*> mItemButton;
+
+	std::vector<Button*> mTutorialButton;
+
+	class Button* mTutorialButtonRight;
+	class Button* mTutorialButtonLeft;
+	class Button* mCloseButton;
+
 };

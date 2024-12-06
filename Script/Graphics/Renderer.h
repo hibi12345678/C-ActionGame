@@ -42,6 +42,9 @@ public:
 	void AddMeshComp(class MeshComponent* mesh);
 	void RemoveMeshComp(class MeshComponent* mesh);
 
+	void AddUIMeshComp(class UIMeshComponent* mesh);
+	void RemoveUIMeshComp(class UIMeshComponent* mesh);
+
 	void AddPointLight(class PointLightComponent* light);
 	void RemovePointLight(class PointLightComponent* light);
 
@@ -79,6 +82,7 @@ private:
 	// Chapter 14 additions
 	void Draw3DScene(unsigned int framebuffer, const Matrix4& view, const Matrix4& proj, bool lit = true);
 	void DrawSkybox();
+	void DrawUIObj();
 	void DrawFromGBuffer();
 	void DrawAABB();
 	// End chapter 14 additions
@@ -97,22 +101,25 @@ private:
 	// All (non-skeletal) mesh components drawn
 	std::vector<class MeshComponent*> mMeshComps;
 	std::vector<class SkeletalMeshComponent*> mSkeletalMeshes;
-
+	std::vector<class UIMeshComponent*> mUIMeshComps;
 	// Game
 	class Game* mGame;
-
+	class Terrain* mTerrain;
 	// Sprite shader
 	class Shader* mSpriteShader;
 	// Sprite vertex array
 	class VertexArray* mSpriteVerts;
 
-	// Mesh shader
+	// shader
 	class Shader* mMeshShader;
-	// Skinned shader
+
+	class Shader* mUIMeshShader;
+
 	class Shader* mSkinnedShader;	
-	// SkyBox shader
+
 	class Shader* mSkyboxShader;
 	class Shader* mLineShader;
+	class Shader* mTessellationShader;
 
 	// View/projection for 3D shaders
 	Matrix4 mView;

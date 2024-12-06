@@ -11,6 +11,7 @@
 #include "SwordActor.h"
 #include "BombActor.h"
 #include "BowActor.h"
+#include "UIActor.h"
 ItemMenu::ItemMenu(Game* game)
 	:UIScreen(game)
 	
@@ -25,6 +26,7 @@ ItemMenu::ItemMenu(Game* game)
 	FollowActor* player = mGame->GetPlayer();
 	menuState = static_cast<ItemMenu::ItemState>(player->GetItemState());
 	
+	uiActor = new UIActor(mGame);
 	static const std::vector<std::pair<std::string, FollowActor::ItemState>> items = {
 		{"SwordText", FollowActor::ESword},
 		{"TorchText", FollowActor::ETorch},
@@ -57,10 +59,10 @@ ItemMenu::~ItemMenu()
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_GetRelativeMouseState(nullptr, nullptr);
 
-	// 現在のプレイヤーのアイテムステートを取得
-	FollowActor::ItemState currentState = mGame->GetPlayer()->GetItemState();
 
-	// アイテム作成処理
+	FollowActor::ItemState currentState = mGame->GetPlayer()->GetItemState();
+	uiActor->SetState(Actor::EDead);
+
 	if (menuState != currentState) {
 		switch (currentState) {
 		case FollowActor::ESword:

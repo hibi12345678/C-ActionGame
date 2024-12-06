@@ -28,6 +28,18 @@ public:
 		EBow,
 		EBomb
 	};
+	enum class AnimationState {
+		Idle,
+		Walk,
+		Back,
+		Right,
+		Left,
+		Run,
+		Jump,
+		Die,
+		Attack,
+		Block
+	};
 
 	class FollowCamera* GetCameraComponent() { return mCameraComp; }
 	class SkeletalMeshComponent* GetSekltalMesh() { return mMeshComp; }
@@ -76,11 +88,11 @@ private:
 	class BoxComponent* mAttackBoxComp;
 	class BoxComponent* mBlockBoxComp;
 	class AudioSystem* mAudioSystem;
-	
+
 	SoundEvent mFootstep;
 	State mState;
 	ItemState mItemState;
-
+	AnimationState mAnimState;
 	int mArrowCount;
 	int mBombCount;
 
@@ -96,6 +108,9 @@ private:
 	float mStamina;
 	float mHealth;
 	float mHealthRed;
+	float mAnimTime;
+	float inertiaStrafe;
+	float inertiaForward;
 
 	bool isShiftPressed;
 	bool blockPressed;

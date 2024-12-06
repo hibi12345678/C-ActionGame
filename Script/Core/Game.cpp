@@ -35,6 +35,7 @@
 #include "GameClear.h"
 #include <iostream>
 #include "imgui_impl_sdl2.h"
+#include "Tutorial.h"
 Game::Game()
 	:mRenderer(nullptr)
 	, mAudioSystem(nullptr)
@@ -47,8 +48,7 @@ Game::Game()
 	, gameClearFlag(false)
 	, scoreNumber(0)
     , mBossTime(0.0f)
-{
-	
+{	
 }
 
 bool Game::Initialize()
@@ -203,22 +203,6 @@ void Game::HandleKeyPress(int key)
 		}
 		
 		break;
-	case '-':
-	{
-		// Reduce master volume
-		float volume = mAudioSystem->GetBusVolume("bus:/");
-		volume = Math::Max(0.0f, volume - 0.1f);
-		mAudioSystem->SetBusVolume("bus:/", volume);
-		break;
-	}
-	case '=':
-	{
-		// Increase master volume
-		float volume = mAudioSystem->GetBusVolume("bus:/");
-		volume = Math::Min(1.0f, volume + 0.1f);
-		mAudioSystem->SetBusVolume("bus:/", volume);
-		break;
-	}
 	default:
 		break;
 	}
@@ -419,15 +403,10 @@ void Game::LoadData()
 		LoadText("Assets/Text/Main.gptext");
 		mHUD = new HUD(this);
 		// ゲームプレイ用のレベルロード
-		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");
 		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");
-		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
+		class Tutorial* mTutorial = new Tutorial(this);
 		gameOverFlag = false;
 		gameClearFlag = false;
-		// マウス設定
-		SDL_ShowCursor(SDL_DISABLE);
-		SDL_SetRelativeMouseMode(SDL_TRUE);
-		SDL_GetRelativeMouseState(nullptr, nullptr); // 相対モード初期化
 	}
 	else if (mGameState == GameState::EMainMenu) {
 		LoadText("Assets/Text/Mainmenu.gptext");

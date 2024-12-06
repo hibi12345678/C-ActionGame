@@ -6,8 +6,9 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-// Request GLSL 3.3
-#version 330
+
+
+#version 420
 
 // Inputs from vertex shader
 // Tex coord

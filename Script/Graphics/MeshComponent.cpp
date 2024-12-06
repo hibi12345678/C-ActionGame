@@ -22,6 +22,7 @@ MeshComponent::MeshComponent(Actor* owner, bool isSkeletal)
 	,mTextureIndex(0)
 	,mVisible(true)
 	,mIsSkeletal(isSkeletal)
+
 {
 	mOwner->GetGame()->GetRenderer()->AddMeshComp(this);
 }

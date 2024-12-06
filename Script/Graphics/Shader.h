@@ -17,6 +17,11 @@ public:
 	Shader();
 	~Shader();
 	bool Load(const std::string& vertName, const std::string& fragName);
+	bool TessellationLoad(const std::string& vertName,
+		const std::string& tessControlName,
+		const std::string& tessEvaluationName,
+		const std::string& fragName);
+	bool CompileTessellationShader(const std::string& shaderPath, GLenum shaderType, GLuint& shaderID);
 	void Unload();
 	// Set this as the active shader program
 	void SetActive();
@@ -47,4 +52,7 @@ private:
 	GLuint mVertexShader;
 	GLuint mFragShader;
 	GLuint mShaderProgram;
+	GLuint mTessEvaluationShader;
+	GLuint mTessControlShader;
+
 };
