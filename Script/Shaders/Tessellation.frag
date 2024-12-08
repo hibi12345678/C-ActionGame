@@ -11,6 +11,7 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform sampler2D texture3;
 uniform sampler2D texture4;
+uniform float uZScale;
 void main()
 {
     outNormal = fragNormal;
@@ -18,14 +19,28 @@ void main()
     outWorldPos = fragWorldPos;
     float height = fragWorldPos.z;
 
-    if (height >110.0) {
-        
-        outDiffuse = mix(texture(texture2, teTexCoord).xyz, texture(texture4, teTexCoord).xyz, smoothstep(0.0, 1.0, slope));
-    } else if (height < -90.0) {
-       
-        outDiffuse = mix(texture(texture2, teTexCoord).xyz, texture(texture3, teTexCoord).xyz, smoothstep(0.0, 1.0, slope));
-    } else {
-       
+    vec3 blendColor;
+
+    if (height > 60.0 * uZScale) {
+        float blendFactor = smoothstep(40.0 * uZScale, 70.0 * uZScale, height);
+        blendColor = mix(texture(texture1, teTexCoord).xyz, 
+                     texture(texture4, teTexCoord).xyz, 
+                     blendFactor);
+      outDiffuse = mix(texture(texture2, teTexCoord).xyz,blendColor,smoothstep(0.0, 1.0, slope));
+    }
+    
+    else if (height < -90.0 * uZScale) {
+        float blendFactor = smoothstep(-100.0 * uZScale, -80.0 * uZScale, height);
+        blendColor = mix(texture(texture1, teTexCoord).xyz, 
+                     texture(texture3, teTexCoord).xyz, 
+                     blendFactor);
+      outDiffuse = mix(texture(texture2, teTexCoord).xyz,blendColor,smoothstep(0.0, 1.0, slope));
+    } 
+    
+    else {
+
+        float blendFactor = smoothstep(-10.0 * uZScale, 10.0 * uZScale, height);
         outDiffuse = mix(texture(texture2, teTexCoord).xyz, texture(texture1, teTexCoord).xyz, smoothstep(0.0, 1.0, slope));
     }
+
 }

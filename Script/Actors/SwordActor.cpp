@@ -18,6 +18,7 @@ SwordActor::SwordActor(Game* game, float scale, int num)
 		Mesh* mesh = game->GetRenderer()->GetMesh("Assets/Object/Shield.gpmesh");
 		mc->SetMesh(mesh);
 	}
+	
 }
 
 void SwordActor::UpdateActor(float deltaTime)
@@ -30,4 +31,5 @@ void SwordActor::UpdateActor(float deltaTime)
 		SetState(Actor::EDead);
 
 	}
+	
 }

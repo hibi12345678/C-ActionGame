@@ -36,7 +36,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 #include "Terrain.h"
-
+#include "TreeActor.h"
 Renderer::Renderer(Game* game)
 	:mGame(game)
 	,mSpriteShader(nullptr)
@@ -99,6 +99,7 @@ std::string facesCubemap[6] =
 
 bool Renderer::Initialize(float screenWidth, float screenHeight)
 {
+
 	mScreenWidth = screenWidth;
 	mScreenHeight = screenHeight;
 
@@ -119,10 +120,10 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 	// Force OpenGL to use hardware acceleration
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-	mWindow = SDL_CreateWindow("Game", 100, 100,
+	mWindow = SDL_CreateWindow("Game", 10, 150,
 		static_cast<int>(mScreenWidth), static_cast<int>(mScreenHeight), SDL_WINDOW_OPENGL);
-	mImGuiWindow = SDL_CreateWindow("ImGui Window", 1150,100,
-		480, 800, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	mImGuiWindow = SDL_CreateWindow("ImGui Window", 1044,150,
+		866, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
 	mImGuiContext = SDL_GL_CreateContext(mImGuiWindow);
 	
@@ -134,6 +135,7 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 
 	// Create an OpenGL context
 	mContext = SDL_GL_CreateContext(mWindow);
+
 	// SDL_image初期化
 	if (!(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) & (IMG_INIT_JPG | IMG_INIT_PNG))) {
 		std::cerr << "Failed to initialize SDL_image: " << IMG_GetError() << std::endl;
@@ -147,7 +149,7 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 		SDL_Log("Failed to initialize GLEW.");
 		return false;
 	}
-
+	InitializeImGui(mImGuiWindow, mImGuiContext);
 	// On some platforms, GLEW will emit a benign error code,
 	// so clear it
 	glGetError();
@@ -178,7 +180,7 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 	// Load point light mesh
 	mPointLightMesh = GetMesh("Assets/Object/PointLight.gpmesh");
 
-	InitializeImGui(mImGuiWindow, mImGuiContext);
+	
 
 	glGenVertexArrays(1, &skyboxVAO);
 	glGenBuffers(1, &skyboxVBO);
@@ -293,7 +295,7 @@ void Renderer::UnloadData()
 
 void Renderer::Draw()
 {
-
+	//Draw the GameScene
 	// Draw the 3D scene to the G-buffer
 	Draw3DScene(mGBuffer->GetBufferID(), mView, mProjection, true);
 
@@ -304,10 +306,7 @@ void Renderer::Draw()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Draw from the GBuffer
 	DrawFromGBuffer();
-	
-	
 
-	
 	glDisable(GL_DEPTH_TEST);
 	
 	DrawAABB();
@@ -332,44 +331,101 @@ void Renderer::Draw()
 	}
 	//DrawUIObj();
 
-	// ---- ImGui描画のための準備 ----
+    // ---- ImGui描画のための準備 ----
 	SDL_GL_MakeCurrent(mImGuiWindow, mImGuiContext);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	ImGui_ImplSDL2_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
-	ImGui::SetWindowSize(ImVec2(480.0f, 800.0f), ImGuiCond_Always);  // サイズ設定
-	ImGui::SetWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Always);  // 位置設定
-	ImGui::Begin("Hello, ImGui!");
+
+	// Docking領域を作成
+	ImGuiID dockspace_id = ImGui::GetID("DockSpace");
+	ImGui::DockSpaceOverViewport(dockspace_id, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+
+	// 背景色設定ウィンドウ
+	ImGui::SetWindowSize(ImVec2(480.0f, 800.0f), ImGuiCond_Always);
+	ImGui::SetWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Always);
+	ImGui::Begin("SetAmbientLight");
 
 	static float bgColor[3] = { 0.7f, 0.7f, 0.7f };
-
 	if (ImGui::ColorPicker3("BG color", bgColor, ImGuiColorEditFlags_PickerHueWheel)) {
-		glClearColor(bgColor[0], bgColor[1], bgColor[2], 1.0f);  
-
+		glClearColor(bgColor[0], bgColor[1], bgColor[2], 1.0f);
 	}
-	SetAmbientLight(Vector3(bgColor[0],
-		bgColor[1],
-		bgColor[2]));
-	if (mGame->GetPlayer() != nullptr && mGame->GetState() != Game::GameState::EMainMenu ) {
+	SetAmbientLight(Vector3(bgColor[0], bgColor[1], bgColor[2]));
+	ImGui::End();  
+
+	auto& trees = mGame->GetTree();
+
+	for (size_t i = 0; i < trees.size(); ++i)
+	{
+		auto& tree = trees[i];
+		ImGui::PushID(i);
+
+		ImGui::Begin("Tree Transform", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+		ImGui::Text("Tree %zu", i);
+
+
+		Vector3 position = tree->GetPosition();
+		ImGui::Columns(3, nullptr, false);
+		ImGui::InputFloat(("Pos X" + std::to_string(i)).c_str(), &position.x);
+		ImGui::NextColumn();
+		ImGui::InputFloat(("Pos Y##" + std::to_string(i)).c_str(), &position.y);
+		ImGui::NextColumn();
+		ImGui::InputFloat(("Pos Z##" + std::to_string(i)).c_str(), &position.z);
+		ImGui::Columns(1);
+
+		tree->SetPosition(position);
+
+		Quaternion rotation = tree->GetRotation();
+		ImGui::Columns(4, nullptr, false);
+		ImGui::InputFloat(("Rot X##" + std::to_string(i)).c_str(), &rotation.x);
+		ImGui::NextColumn();
+		ImGui::InputFloat(("Rot Y##" + std::to_string(i)).c_str(), &rotation.y);
+		ImGui::NextColumn();
+		ImGui::InputFloat(("Rot Z##" + std::to_string(i)).c_str(), &rotation.z);
+		ImGui::NextColumn();
+		ImGui::InputFloat(("Rot W##" + std::to_string(i)).c_str(), &rotation.w);
+		ImGui::Columns(1);
+
+
+		tree->SetRotation(rotation);
+
+		ImGui::End();
+
+		ImGui::PopID();
+	}
+
+	if (mTerrain != nullptr && mGame->GetState() != Game::GameState::EMainMenu) {
+		ImGui::Begin("Terrain");
+		glm::vec3 terrainPos = mTerrain->GetTranslate();
+		ImGui::Columns(3, nullptr, false);
+		ImGui::InputFloat("Pos X##", &terrainPos.x);
+		ImGui::NextColumn();
+		ImGui::InputFloat("Pos Y##", &terrainPos.y);
+		ImGui::NextColumn();
+		ImGui::InputFloat("Pos Z##", &terrainPos.z);
+		ImGui::Columns(1);
+		mTerrain->SetTranslate(terrainPos);
+		ImGui::End();
+	}
+
+
+	if (mGame->GetPlayer() != nullptr && mGame->GetState() != Game::GameState::EMainMenu) {
+		ImGui::Begin("Player Info");
+
 		float health = mGame->GetPlayer()->GetHealth();
 		Vector3 pos = mGame->GetPlayer()->Actor::GetPosition();
 		Quaternion Rotation = mGame->GetPlayer()->Actor::GetRotation();
 		static float values[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		FollowActor::State mState = mGame->GetPlayer()->GetState();
-		
+
 		ImGui::Text("Health: %.2f", health);
 		ImGui::Text("Position: (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
 		ImGui::Text("Rotation: (%.2f, %.2f, %.2f ,%.2f)", Rotation.x, Rotation.y, Rotation.z, Rotation.w);
 		ImGui::Text("State: %d", static_cast<int>(mState));
 		ImGui::Checkbox("Draw Boxes ", &mBoxFlag);
-		/*		// 各要素を編集
-		for (int i = 0; i < 4; ++i)
-		{
-			ImGui::SliderFloat(("Value " + std::to_string(i)).c_str(), &values[i], -10.0f, 10.0f);
-			
-		}*/
 
 		const char* stateName = "";
 		switch (mState) {
@@ -388,10 +444,12 @@ void Renderer::Draw()
 		}
 		ImGui::Text("State (Name): %s", stateName);
 
+		ImGui::End();  
 	}
 
 
-	ImGui::End();
+
+
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -769,7 +827,7 @@ bool Renderer::LoadShaders()
 	// Set the view-projection matrix
 	mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
 	mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f),
-		mScreenWidth, mScreenHeight, 100.0f, 20000.0f);
+		mScreenWidth, mScreenHeight, 100.0f, 200000.0f);
 	mMeshShader->SetMatrixUniform("uViewProj", mView * mProjection);
 
 	// Create skinned shader
@@ -910,13 +968,19 @@ void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
 	outDir.Normalize();
 }
 
-void Renderer::InitializeImGui(SDL_Window* window, SDL_GLContext context) {
-
+// ImGui初期化関数
+void Renderer::InitializeImGui(SDL_Window* imguiWindow, SDL_GLContext imguiContext) {
+	// ImGuiの設定
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
-	ImGui_ImplSDL2_InitForOpenGL(window, context);
-	ImGui_ImplOpenGL3_Init("#version 420"); 
+
+	// ImGuiのSDLバックエンドとOpenGL3バックエンドの初期化
+	ImGui_ImplSDL2_InitForOpenGL(imguiWindow, imguiContext);
+	ImGui_ImplOpenGL3_Init("#version 420 core");
+
+	// Dockingを有効にする
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 }
 

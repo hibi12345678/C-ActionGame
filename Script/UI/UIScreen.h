@@ -93,7 +93,7 @@ public:
 	void DrawCloseButton(const std::string& name, std::function<void()> onClick);
 	void AddTutorialNum();
 	void RemoveTutorialNum();
-
+	int GetTutorialNum()const { return TutorialNum; }
 protected:
 	// Helper to draw a texture
 	void DrawTexture(class Shader* shader, class Texture* texture,
@@ -103,11 +103,10 @@ protected:
 	                 int a = 0);
 	// Sets the mouse mode to relative or not
 	void SetRelativeMouseMode(bool relative);
+
 	class Game* mGame;
-
-
-	SoundEvent mMusicEvent;
 	class Font* mFont;
+	class Texture* mItemText;
 	class Texture* mTitle;
 	class Texture* mBackground;
 	class Texture* mButtonOn;
@@ -127,30 +126,37 @@ protected:
 	class Texture* mTutorialLeftButtonOff;
 	class Texture* mCloseButtonOn;
 	class Texture* mCloseButtonOff;
-	bool mArrowFlag;
-	// Configure positions
+	class Texture* mTutorial;
+	class Texture* mTutorialTex0;
+	class Texture* mTutorialTex1_1;
+	class Texture* mTutorialTex1_2;
+	class Texture* mTutorialTex1_3;
+	class Texture* mTutorialTex2;
+
+
+	class Button* mTutorialButtonRight;
+	class Button* mTutorialButtonLeft;
+	class Button* mCloseButton;
+
 	Vector2 mTitlePos;
 	Vector2 mNextButtonPos;
 	Vector2 mNextItemButtonPos;
 	Vector2 mNextTextPos;
 	Vector2 mBGPos;
-	int texNum;
-	int TutorialNum;
-	// State
+	
 	UIState mUIState;
 	
+	SoundEvent mMusicEvent;
+
 	std::vector<Texture*> mText;
-	class Texture* mItemText;
 	std::vector<Button*> mButtons;
-
 	std::vector<Button*> mStartButton;
-
 	std::vector<Button*> mItemButton;
-
 	std::vector<Button*> mTutorialButton;
 
-	class Button* mTutorialButtonRight;
-	class Button* mTutorialButtonLeft;
-	class Button* mCloseButton;
+	int texNum;
+	int TutorialNum;
+
+	bool mArrowFlag;
 
 };

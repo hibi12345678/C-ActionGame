@@ -54,7 +54,7 @@ HUD::HUD(Game* game)
 	mCross = mGame->GetRenderer()->GetTexture("Assets/Texture/~.png");
 	mFrame = mGame->GetRenderer()->GetTexture("Assets/Texture/Frame.png");
 	mFrame2 = mGame->GetRenderer()->GetTexture("Assets/Texture/Frame2.png");
-	mTutorial = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial.png");
+	
 }
 
 HUD::~HUD()
@@ -70,23 +70,16 @@ void HUD::Update(float deltaTime)
 void HUD::Draw(Shader* shader)
 {
 	
-	
 	if (Game::GameState::EGameplay == mGame->GetState() || Game::GameState::EItem == mGame->GetState()) {
 
-		// Radar
 		const Vector2 cRadarPos(-390.0f, 275.0f);
 		DrawTexture(shader, mRadar, cRadarPos, 1.0f);
-		// Blips
 		for (Vector2& blip : mBlips)
 		{
 			DrawTexture(shader, mBlipTex, cRadarPos + blip, 1.0f);
 		}
-		// Radar arrow
 		DrawTexture(shader, mRadarArrow, cRadarPos);
-
-	
-		// Šù‘¶‚Ì FollowActor ‚ðŽæ“¾
-		FollowActor* followActor = mGame->GetPlayer();;
+		FollowActor* followActor = mGame->GetPlayer();
 		if (followActor != nullptr) {
 			float stamina = followActor->GetStamina();
 
@@ -148,7 +141,7 @@ void HUD::Draw(Shader* shader)
 			bosstex = mFont->RenderText("BossName", Color::White, 18);
 			DrawTexture(shader, bosstex, Vector2(-200.0, -270.0f));
 			BossActor* BossActor = mGame->GetBoss();;
-			//// Health bar
+
 			float health = BossActor->GetHealth();
 			DrawTexture(shader, mHealthBar, Vector2(-250.0f, -300.0f), health * 1.5, false, 1);
 			DrawTexture(shader, mStaminaFrame, Vector2(-250.0f, -300.0f), 1.5, false, 1);
@@ -179,9 +172,7 @@ void HUD::Draw(Shader* shader)
 			
 		}
 	}
-	if (Game::GameState::ETutorial == mGame->GetState()) {
-		DrawTexture(shader, mTutorial, Vector2(0.0f, 0.0f), 0.5f);
-	}
+
 }
 
 void HUD::AddTargetComponent(TargetComponent* tc)
@@ -202,40 +193,30 @@ void HUD::UpdateRadar(float deltaTime)
 {
 	
 	if (Game::GameState::EGameplay == mGame->GetState()) {
-		// Clear blip positions from last frame
+
 		mBlips.clear();
 
-		// Convert player position to radar coordinates (x forward, z up)
 		Vector3 playerPos = mGame->GetPlayer()->GetPosition();
 		Vector2 playerPos2D(playerPos.y, playerPos.x);
-		// Ditto for player forward
+
 		Vector3 playerForward = mGame->GetPlayer()->GetForward();
 		Vector2 playerForward2D(playerForward.x, playerForward.y);
 
-		// Use atan2 to get rotation of radar
 		float angle = Math::Atan2(playerForward2D.y, playerForward2D.x);
-		// Make a 2D rotation matrix
 		Matrix3 rotMat = Matrix3::CreateRotation(angle);
 		
-		// Get positions of blips
 		for (auto tc : mTargetComps)
 		{
 			
 			Vector3 targetPos = tc->GetOwner()->GetPosition();
 			Vector2 actorPos2D(targetPos.y, targetPos.x);
-
-			// Calculate vector between player and target
 			Vector2 playerToTarget = actorPos2D - playerPos2D;
 
-			// See if within range
 			if (playerToTarget.LengthSq() <= (mRadarRange * mRadarRange))
 			{
-				// Convert playerToTarget into an offset from
-				// the center of the on-screen radar
 				Vector2 blipPos = playerToTarget;
 				blipPos *= mRadarRadius / mRadarRange;
 
-				// Rotate blipPos
 				blipPos = Vector2::Transform(blipPos, rotMat);
 				mBlips.emplace_back(blipPos);
 			}

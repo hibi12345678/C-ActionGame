@@ -12,6 +12,8 @@ Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
     int width= 2624;
     int height = 1756;
 
+    pos = glm::vec3(15000.0f, 10000.0f, -100.0f);
+
     std::vector<GLuint> indices;
     for (int z = 0; z <height - 1; ++z) { 
         for (int x = 0; x < width - 1; ++x) {
@@ -27,45 +29,37 @@ Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
         
     }
 
-
     numIndices = indices.size();
     mShader = shader;
-
-
   
     std::vector<float> heightMap = loadHeightMap("Assets/Texture/iceland_heightmap.png",width, height);
     controlPoint = generateControlPoints(width, height, heightMap);
+
     for (auto& point : controlPoint) {
         point.normal = glm::vec3(0.0f);
-     
+ 
     }
-    for (size_t i = 0; i < indices.size(); i += 6)  // 6つずつ進める
+
+    for (size_t i = 0; i < indices.size(); i += 6) 
     {
-        
         glm::vec3 p1 = controlPoint[indices[i]].position;
         glm::vec3 p2 = controlPoint[indices[i + 1]].position;
         glm::vec3 p3 = controlPoint[indices[i + 2]].position;
         glm::vec3 normal1 = CalculateNormal(p1, p2, p3);
-
         glm::vec3 p4 = controlPoint[indices[i + 5]].position;
         glm::vec3 normal2 = CalculateNormal(p3, p2, p4);
         
- 
         controlPoint[indices[i]].normal += normal1;
-
-       
         controlPoint[indices[i + 1]].normal += normal1;
         controlPoint[indices[i + 2]].normal += normal1;
-
         controlPoint[indices[i + 3]].normal += normal2;
         controlPoint[indices[i + 4]].normal += normal2;
         controlPoint[indices[i + 5]].normal += normal2;
         
     }
 
-    // 法線の平均化
     for (auto& point : controlPoint) {
-        point.normal = glm::normalize(point.normal);  // 平均化した法線を正規化
+        point.normal = glm::normalize(point.normal); 
     }
 
     glGenVertexArrays(1, &VAO);
@@ -92,7 +86,7 @@ Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));  // UVの設定
     glEnableVertexAttribArray(2);
 
-    textureID = loadTerrainTexture("Assets/Texture/concrete_moss_diff_4k.jpg");
+    textureID = loadTerrainTexture("Assets/Texture/aerial_grass_rock_diff_4k.jpg");
     rockTextureID = loadTerrainTexture("Assets/Texture/rock_boulder_dry_diff_4k.jpg");
     soilTextureID = loadTerrainTexture("Assets/Texture/sandy_gravel_02_diff_4k.jpg");
     snowTextureID = loadTerrainTexture("Assets/Texture/snow_02_diff_4k.jpg");
@@ -105,7 +99,7 @@ Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
 void Terrain::GenerateTerrain(const Matrix4& view, const Matrix4& proj)
 {
     mShader->SetActive();
-
+    
     glm::mat4 glmView = ConvertToGLM(view);
     glm::mat4 glmProjection = ConvertToGLM(proj);
     glm::mat4 swappedView = glm::mat4(glmView[0], glmView[1], glmView[2], glmView[3]);
@@ -113,12 +107,12 @@ void Terrain::GenerateTerrain(const Matrix4& view, const Matrix4& proj)
 
 
     glUniformMatrix4fv(glGetUniformLocation(mShader->GetID(), "uViewProjection"), 1, GL_FALSE, glm::value_ptr(viewProj));
-
+    glm::vec3 scale = glm::vec3(30.0f, 30.0f, 30.0f);
     glm::mat4 model = glm::mat4(1.0f); 
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -100.0f)); 
-    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f)); 
+    model = glm::translate(model,pos); 
+    model = glm::scale(model, scale); 
     model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); 
-
+    glUniform1f(glGetUniformLocation(mShader->GetID(), "uZScale"), scale.z);
     glUniformMatrix4fv(glGetUniformLocation(mShader->GetID(), "uModel"), 1, GL_FALSE, glm::value_ptr(model));
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -218,6 +212,7 @@ std::vector<float> Terrain::generateHeightMap(int width, int height, float scale
 GLuint Terrain::loadTerrainTexture(const char* filePath) {
     int width, height, channels;
     unsigned char* data = stbi_load(filePath, &width, &height, &channels, 0);
+
     if (!data) {
         printf("Failed to load texture: %s\nReason: %s\n", filePath, stbi_failure_reason());
         return 0;
@@ -245,7 +240,6 @@ std::vector<float> Terrain::loadHeightMap(const char* filePath, int& width, int&
     int channels;
     unsigned char* data = stbi_load(filePath, &width, &height, &channels, 1); // グレースケール (force_channels = 1)
 
-    // 高さマップを格納するベクターを作成
     std::vector<float> heightMap(width * height);
 
     for (int y = 0; y < height; ++y) {
@@ -259,7 +253,6 @@ std::vector<float> Terrain::loadHeightMap(const char* filePath, int& width, int&
         }
     }
 
-    // メモリ解放
     stbi_image_free(data);
 
     return heightMap;

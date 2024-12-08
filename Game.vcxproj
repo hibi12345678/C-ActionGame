@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgui\imgui.ini" />
     <None Include="Script\Shaders\BasicMesh.frag" />
     <None Include="Script\Shaders\BasicMesh.vert" />
     <None Include="Script\Shaders\GBufferGlobal.frag" />
@@ -74,6 +73,7 @@
     <ClCompile Include="Script\Actors\SmokeActor.cpp" />
     <ClCompile Include="Script\Actors\SwordActor.cpp" />
     <ClCompile Include="Script\Actors\TorchItemActor.cpp" />
+    <ClCompile Include="Script\Actors\TreeActor.cpp" />
     <ClCompile Include="Script\Actors\UIActor.cpp" />
     <ClCompile Include="Script\Component\Animation.cpp" />
     <ClCompile Include="Script\Component\ArrowMove.cpp" />
@@ -124,6 +124,7 @@
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="imgui\imgui_impl_sdl2.h" />
     <ClInclude Include="imgui\imgui_internal.h" />
     <ClInclude Include="imgui\imstb_rectpack.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Script\Actors\SmokeActor.h" />
     <ClInclude Include="Script\Actors\SwordActor.h" />
     <ClInclude Include="Script\Actors\TorchItemActor.h" />
+    <ClInclude Include="Script\Actors\TreeActor.h" />
     <ClInclude Include="Script\Actors\UIActor.h" />
     <ClInclude Include="Script\Component\Animation.h" />
     <ClInclude Include="Script\Component\ArrowMove.h" />
@@ -234,7 +236,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\imgui-master;..\external\imgui-master\backends;..\external\glm;..\external\stb-master;..\external\SOIL\include;..\CppActionGame\Script\Actors;..\CppActionGame\Script\Component;..\CppActionGame\Script\Core;..\CppActionGame\Script\Graphics;..\CppActionGame\Script\Shaders;..\CppActionGame\Script\System;..\CppActionGame\Script\UI;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\glm;..\external\stb-master;..\external\SOIL\include;imgui;Script\Actors;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
@@ -262,7 +264,7 @@ xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studi
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\imgui-master;..\external\imgui-master\backends;..\external\glm;..\external\stb-master;..\external\SOIL\include;..\CppActionGame\Script\Actors;..\CppActionGame\Script\Component;..\CppActionGame\Script\Core;..\CppActionGame\Script\Graphics;..\CppActionGame\Script\Shaders;..\CppActionGame\Script\System;..\CppActionGame\Script\UI;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\GLEW\include;..\external\glm;..\external\stb-master;..\external\SOIL\include;imgui;Script\Actors;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
