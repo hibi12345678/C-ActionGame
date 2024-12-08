@@ -49,9 +49,6 @@
     <None Include="Shaders\Skinned.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="imgui\imgui.ini">
-      <Filter>Inc FIles</Filter>
-    </None>
     <None Include="Shaders\Line.frag">
       <Filter>Inc FIles</Filter>
     </None>
@@ -87,24 +84,6 @@
     <None Include="Script\Shaders\Tessellation.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Script\UI\DialogBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -285,41 +264,38 @@
     <ClCompile Include="Script\Graphics\Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_sdl2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Script\Actors\ReactActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Script\Actors\SmokeActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_sdl2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Actors\TreeActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="imgui\imconfig.h">
-      <Filter>Inc FIles</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui.h">
-      <Filter>Inc FIles</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_opengl3.h">
-      <Filter>Inc FIles</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_sdl2.h">
-      <Filter>Inc FIles</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_internal.h">
-      <Filter>Inc FIles</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>Inc FIles</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>Inc FIles</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>Inc FIles</Filter>
-    </ClInclude>
     <ClInclude Include="Script\UI\DialogBox.h" />
     <ClInclude Include="Script\UI\Font.h" />
     <ClInclude Include="Script\UI\HUD.h" />
@@ -381,5 +357,15 @@
     <ClInclude Include="Script\Graphics\UIMeshComponent.h" />
     <ClInclude Include="Script\UI\Tutorial.h" />
     <ClInclude Include="Script\Graphics\Terrain.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="imgui\imgui_impl_sdl2.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Script\Actors\TreeActor.h" />
   </ItemGroup>
 </Project>

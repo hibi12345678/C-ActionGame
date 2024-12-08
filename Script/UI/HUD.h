@@ -58,15 +58,13 @@ protected:
 	class Texture* mCross;
 	class Texture* mFrame;
 	class Texture* mFrame2;
-	class Texture* mTutorial;
-	// All the target components in the game
+	
 	std::vector<class TargetComponent*> mTargetComps;
-	// 2D offsets of blips relative to radar
 	std::vector<Vector2> mBlips;
-	// Adjust range of radar and radius
+
 	float mRadarRange;
 	float mRadarRadius;
-	// Whether the crosshair targets an enemy
+
 	bool mTargetEnemy;
 	int itemNum;
 };

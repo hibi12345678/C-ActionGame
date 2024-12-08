@@ -21,12 +21,14 @@ public:
     float grad(int hash, float x, float y);
     float perlin(float x, float y);
 
-    std::vector<float> generateHeightMap(int width, int height, float scale ,float heightscle);
-    GLuint createHeightMapTexture(const std::vector<float>& heightMap, int width, int height);
+    std::vector<float> generateHeightMap(int width, int height, float scale ,float heightscle);  
     glm::mat4 ConvertToGLM(const Matrix4& matrix);
     std::vector<float> loadHeightMap(const char* filePath, int& width, int& height);
     std::vector<Vertex> generateControlPoints(int gridWidth, int gridHeight, const std::vector<float>& heightMap);
     glm::vec3 CalculateNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3);
+    glm::vec3 GetTranslate() const { return pos; }
+    void SetTranslate(glm::vec3 translate) { pos = translate; }
+
 private:
     int p[512] = { 
     227, 167, 197, 127, 151, 7, 90, 148, 160, 94, 86, 28, 223, 93, 105, 122,
@@ -70,4 +72,5 @@ private:
     GLuint soilTextureID;
     GLuint snowTextureID;
     GLuint numIndices;
+    glm::vec3 pos;
 };

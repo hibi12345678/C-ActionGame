@@ -214,6 +214,7 @@ void EnemyActor::UpdateAttackState(float deltaTime) {
 			mMoveTimer = 2.0f + static_cast<float>(randomValue);
 		}
 	}
+	
 }
 
 void EnemyActor::SetRandomRotation() {

@@ -44,6 +44,12 @@ UIScreen::UIScreen(Game* game)
 	mTutorialLeftButtonOff = mGame->GetRenderer()->GetTexture("Assets/Texture/TutorialLeftButtonOff.png");
 	mCloseButtonOff = mGame->GetRenderer()->GetTexture("Assets/Texture/CloseButtonOff.png");
 	mCloseButtonOn = mGame->GetRenderer()->GetTexture("Assets/Texture/CloseButtonOn.png");
+	mTutorial = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial.jpg");
+	mTutorialTex0 = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial0.png");
+	mTutorialTex1_1 = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial1-1.png");
+	mTutorialTex1_2 = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial1-2.png");
+	mTutorialTex1_3 = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial1-3.png");
+	mTutorialTex2 = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial2.png");
 }
 
 UIScreen::~UIScreen()
@@ -107,45 +113,40 @@ void UIScreen::Update(float deltaTime)
 
 void UIScreen::Draw(Shader* shader)
 {
-	// Draw background (if exists)
+
 	if (mBackground)
 	{
 		DrawTexture(shader, mBackground, mBGPos);
 	}
-	// Draw title (if exists)
+
 	if (mTitle)
 	{			
 		DrawTexture(shader, mTitle, mTitlePos);	
 	}
 
-	// Draw buttons
 	for (auto b : mButtons)
 	{
-		// Draw background of button
 		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;	
 		DrawTexture(shader, tex, b->GetPosition());
-		// Draw text of button
 		DrawTexture(shader,b->GetNameTex(), b->GetPosition());
 
 	}	
-	// Draw buttons
+
 	for (auto b : mStartButton)
 	{
-		// Draw background of button
+
 		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;
 		DrawTexture(shader, tex, b->GetPosition());
-		// Draw text of button
 		DrawTexture(shader,b->GetNameTex(), b->GetPosition());	
 	}
+
 	for (auto tex : mText)
 	{
 		DrawTexture(shader, tex, tex->GetPos());	
 	}
 	
-	// Draw buttons
 	for (auto b : mItemButton)
 	{
-		// Draw background of button
 		Texture* tex = b->GetHighlighted() ? mItemButtonOn : mItemButtonOff;
 		DrawTexture(shader, tex, b->GetPosition());
 		
@@ -167,12 +168,11 @@ void UIScreen::Draw(Shader* shader)
 
 	for (auto b : mStartButton)
 	{
-		// Draw background of button
 		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;
 		DrawTexture(shader, tex, b->GetPosition());
-		// Draw text of button
 		DrawTexture(shader, b->GetNameTex(), b->GetPosition());
 	}
+
 	if (mItemText)
 	{
 	
@@ -182,9 +182,58 @@ void UIScreen::Draw(Shader* shader)
 		DrawTexture(shader, mItemText, mItemText->GetPos());
 
 	}
+
+	if (Game::GameState::ETutorial == mGame->GetState()) {
+		DrawTexture(shader, mTutorial, Vector2(0.0f, 0.0f), 0.5f);
+
+		Texture* tex = mFont->RenderText("Guide", Color::Black, 60, 1);
+		DrawTexture(shader, tex, Vector2(0.0f, 240.0f));
+		switch (TutorialNum) {
+		case 0:
+			tex = mFont->RenderText("Defeat the Boss!!", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
+			DrawTexture(shader, mTutorialTex0, Vector2(0.0f, 50.0f));
+			break;
+
+		case 1:
+			DrawTexture(shader, mTutorialTex1_1, Vector2(0.0f, 130.0f));
+			DrawTexture(shader, mTutorialTex1_2, Vector2(-120.0f, -40.0f));
+			DrawTexture(shader, mTutorialTex1_3, Vector2(120.0f, -40.0f));
+			tex = mFont->RenderText("Health bar, ", Color::Black, 24, 1);
+			DrawTexture(shader, tex, Vector2(0.0f, 200.0f));
+			tex = mFont->RenderText("Stamina bar, ", Color::Black, 24, 1);
+			DrawTexture(shader, tex, Vector2(20.0f, 140.0f));
+			tex = mFont->RenderText("Rader", Color::Black, 24, 1);
+			DrawTexture(shader, tex, Vector2(-120.0f, 40.0f));
+			tex = mFont->RenderText("Equipped Items", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
+			break;
+
+		case 2:
+			tex = mFont->RenderText("Press Tab to select an item", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
+			DrawTexture(shader, mTutorialTex2, Vector2(0.0f, 50.0f));
+			break;
+
+		case 3:
+			tex = mFont->RenderText("WASD : Move", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(-200.0f, 180.0f));
+			tex = mFont->RenderText("Space : Jump", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(-205.0f, 100.0f));
+			tex = mFont->RenderText("Left Click : Attack", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(-170.0f, 20.0f));
+			tex = mFont->RenderText("E : Skill", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(110.0f, 180.0f));
+			tex = mFont->RenderText("Esc : Menu", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(145.0f, 100.0f));
+			tex = mFont->RenderText("Tab : ItemMenu", Color::Black, 42, 1);
+			DrawTexture(shader, tex, Vector2(190.0f, 20.0f));
+			break;
+		}
+	}
+
 	if (mTutorialButtonRight)
 	{
-		// Draw background of button
 		Texture* tex = mTutorialButtonRight->GetHighlighted() ? mTutorialRightButtonOn : mTutorialRightButtonOff;
 		if (TutorialNum != 3) {
 			DrawTexture(shader, tex, mTutorialButtonRight->GetPosition());
@@ -192,10 +241,10 @@ void UIScreen::Draw(Shader* shader)
 		
 
 	}
+
 	if (mTutorialButtonLeft)
 	{
 		
-		// Draw background of button
 		Texture* tex = mTutorialButtonLeft->GetHighlighted() ? mTutorialLeftButtonOn : mTutorialLeftButtonOff;
 		if (TutorialNum != 0) {
 			DrawTexture(shader, tex, mTutorialButtonLeft->GetPosition());
@@ -203,6 +252,7 @@ void UIScreen::Draw(Shader* shader)
 		
 
 	}
+
 	if (mCloseButton)
 	{
 
@@ -215,12 +265,17 @@ void UIScreen::Draw(Shader* shader)
 
 
 	}
+
 	if (Game::GameState::EItem == mGame->GetState()) {
 
 		Texture* mEquipped = new Texture();
 		mEquipped = mFont->RenderText("Equipped", Color::White, 30);
 		DrawTexture(shader, mEquipped, Vector2(-250.0f, -80.0f));
 	}
+
+
+
+
 }
 
 void UIScreen::ProcessInput(const uint8_t* keys)
@@ -588,7 +643,7 @@ void UIScreen::DrawButtonRight(const std::string& name, std::function<void()> on
 {
 	Vector2 dims(static_cast<float>(mTutorialRightButtonOn->GetWidth()),
 		static_cast<float>(mTutorialRightButtonOn->GetHeight()));
-	Button* b = new Button(name, mFont, onClick, Vector2(120.0f, -170.0f), dims, 0);
+	Button* b = new Button(name, mFont, onClick, Vector2(170.0f, -200.0f), dims, 0);
 	mTutorialButtonRight = b;
 }
 
@@ -596,7 +651,7 @@ void UIScreen::DrawButtonLeft(const std::string& name, std::function<void()> onC
 {
 	Vector2 dims(static_cast<float>(mTutorialLeftButtonOn->GetWidth()),
 		static_cast<float>(mTutorialLeftButtonOn->GetHeight()));
-	Button* b = new Button(name, mFont, onClick, Vector2(-120.0f, -170.0f), dims, 0);
+	Button* b = new Button(name, mFont, onClick, Vector2(-170.0f, -200.0f), dims, 0);
 	mTutorialButtonLeft = b;
 }
 
@@ -604,7 +659,7 @@ void UIScreen::DrawCloseButton(const std::string& name, std::function<void()> on
 {
 	Vector2 dims(static_cast<float>(mCloseButtonOn->GetWidth()),
 		static_cast<float>(mCloseButtonOn->GetHeight()));
-	Button* b = new Button(name, mFont, onClick, Vector2(250.0f, 200.0f), dims, 0);
+	Button* b = new Button(name, mFont, onClick, Vector2(320.0f, 250.0f), dims, 0);
 	mCloseButton = b;
 }
 void UIScreen::SetRelativeMouseMode(bool relative)

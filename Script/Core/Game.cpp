@@ -8,34 +8,41 @@
 
 #include "Game.h"
 #include <algorithm>
-#include "Renderer.h"
-#include "AudioSystem.h"
-#include "PhysWorld.h"
-#include "Actor.h"
-#include "UIScreen.h"
-#include "HUD.h"
-#include "MeshComponent.h"
-#include "FollowActor.h"
-#include "EnemyActor.h"
-#include "BossActor.h"
-#include "PlaneActor.h"
-#include "PauseMenu.h"
+#include <iostream>
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
-#include "Font.h"
-#include <rapidjson/document.h>
-#include "Skeleton.h"
-#include "Animation.h"
-#include "PointLightComponent.h"
-#include "LevelLoader.h"
-#include "DialogBox.h"
-#include "MainmenuUI.h"
-#include "ItemMenu.h"
-#include "GameOver.h"
-#include "GameClear.h"
-#include <iostream>
+
 #include "imgui_impl_sdl2.h"
+#include <rapidjson/document.h>
+
+#include "Actor.h"
+#include "Animation.h"
+#include "AudioSystem.h"
+#include "BossActor.h"
+#include "DialogBox.h"
+#include "DropItemActor.h"
+#include "EnemyActor.h"
+#include "ExplosionActor.h"
+#include "FollowActor.h"
+#include "Font.h"
+#include "GameClear.h"
+#include "GameOver.h"
+#include "HUD.h"
+#include "ItemMenu.h"
+#include "LevelLoader.h"
+#include "MainmenuUI.h"
+#include "MeshComponent.h"
+#include "PauseMenu.h"
+#include "PlaneActor.h"
+#include "PointLightComponent.h"
+#include "Renderer.h"
+#include "Skeleton.h"
+#include "SoundEvent.h"
 #include "Tutorial.h"
+#include "TreeActor.h"
+#include "UIScreen.h"
+
 Game::Game()
 	:mRenderer(nullptr)
 	, mAudioSystem(nullptr)
@@ -203,6 +210,16 @@ void Game::HandleKeyPress(int key)
 		}
 		
 		break;
+	case SDLK_1:
+		if (mGameState == GameState::EGameplay) {
+			// Create pause menu
+			new TreeActor(this);
+
+			mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
+
+		}
+
+		break;
 	default:
 		break;
 	}
@@ -325,9 +342,7 @@ void Game::UpdateGame()
 		}
 
 		
-		// Disable relative mouse mode to show the cursor
 		SDL_SetRelativeMouseMode(SDL_FALSE);
-		// Optionally, ensure the cursor is explicitly enabled
 		SDL_ShowCursor(SDL_ENABLE);
 	}
 	// Update UI screens
@@ -389,7 +404,6 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	// 共通の初期化
 	if (!mUIStack.empty()) {
 		while (!mUIStack.empty()) {
 			delete mUIStack.back();
@@ -397,17 +411,16 @@ void Game::LoadData()
 		}
 	}
 
-	// 状態ごとの処理
 	if (mGameState == GameState::EGameplay) {
 		scoreNumber = 0;
 		LoadText("Assets/Text/Main.gptext");
 		mHUD = new HUD(this);
-		// ゲームプレイ用のレベルロード
 		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");
 		class Tutorial* mTutorial = new Tutorial(this);
 		gameOverFlag = false;
 		gameClearFlag = false;
 	}
+
 	else if (mGameState == GameState::EMainMenu) {
 		LoadText("Assets/Text/Mainmenu.gptext");
 		mHUD = new HUD(this);
@@ -421,14 +434,11 @@ void Game::LoadData()
 
 void Game::UnloadData()
 {
-	// Delete actors
-	// Because ~Actor calls RemoveActor, have to use a different style loop
 	while (!mActors.empty())
 	{
 		delete mActors.back();
 	}
 
-	// Clear the UI stack
 	while (!mUIStack.empty())
 	{
 		delete mUIStack.back();
@@ -440,20 +450,17 @@ void Game::UnloadData()
 		mRenderer->UnloadData();
 	}
 
-	// Unload fonts
 	for (auto f : mFonts)
 	{
 		f.second->Unload();
 		delete f.second;
 	}
 
-	// Unload skeletons
 	for (auto s : mSkeletons)
 	{
 		delete s.second;
 	}
 
-	// Unload animations
 	for (auto a : mAnims)
 	{
 		delete a.second;
@@ -478,7 +485,7 @@ void Game::Shutdown()
 
 void Game::AddActor(Actor* actor)
 {
-	// If we're updating actors, need to add to pending
+
 	if (mUpdatingActors)
 	{
 		mPendingActors.emplace_back(actor);
@@ -491,20 +498,17 @@ void Game::AddActor(Actor* actor)
 
 void Game::RemoveActor(Actor* actor)
 {
-	// Is it in pending actors?
 	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
 	if (iter != mPendingActors.end())
 	{
-		// Swap to end of vector and pop off (avoid erase copies)
+	
 		std::iter_swap(iter, mPendingActors.end() - 1);
 		mPendingActors.pop_back();
 	}
 
-	// Is it in actors?
 	iter = std::find(mActors.begin(), mActors.end(), actor);
 	if (iter != mActors.end())
 	{
-		// Swap to end of vector and pop off (avoid erase copies)
 		std::iter_swap(iter, mActors.end() - 1);
 		mActors.pop_back();
 	}
@@ -541,7 +545,7 @@ Font* Game::GetFont(const std::string& fileName)
 
 void Game::LoadText(const std::string& fileName)
 {
-	// Clear the existing map, if already loaded
+
 	mText.clear();
 
 	rapidjson::Document doc;
@@ -551,7 +555,6 @@ void Game::LoadText(const std::string& fileName)
 		return;
 	}
 	
-	// Parse the text map
 	const rapidjson::Value& actions = doc["TextMap"];
 	for (rapidjson::Value::ConstMemberIterator itr = actions.MemberBegin();
 		itr != actions.MemberEnd(); ++itr)
@@ -567,7 +570,6 @@ void Game::LoadText(const std::string& fileName)
 const std::string& Game::GetText(const std::string& key)
 {
 	static std::string errorMsg("Loading");
-	// Find this text in the map, if it exists
 	auto iter = mText.find(key);
 	if (iter != mText.end())
 	{
@@ -696,6 +698,17 @@ void Game::RemoveExplosion(ExplosionActor* explosion)
 {
 	auto iter = std::find(mExplosions.begin(), mExplosions.end(), explosion);
 	mExplosions.erase(iter);
+}
+
+void Game::AddTree(TreeActor* tree)
+{
+	mTrees.emplace_back(tree);
+}
+
+void Game::RemoveTree(TreeActor* tree)
+{
+	auto iter = std::find(mTrees.begin(), mTrees.end(), tree);
+	mTrees.erase(iter);
 }
 
 void Game::GetData() {
