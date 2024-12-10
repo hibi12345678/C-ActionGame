@@ -1,8 +1,13 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "PauseMenu.h"
-#include "Game.h"
+#include <SDL.h>
 #include "DialogBox.h"
-#include <SDL/SDL.h>
+#include "Game.h"
 #include "Renderer.h"
+
+
 PauseMenu::PauseMenu(Game* game)
 	:UIScreen(game)
 	,flag(false)

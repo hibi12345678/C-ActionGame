@@ -6,26 +6,45 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
+#include <string>
+#include <vector>
 #include "Component.h"
 #include "SoundEvent.h"
-#include <vector>
-#include <string>
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class AudioComponent : public Component
 {
 public:
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	AudioComponent(class Actor* owner, int updateOrder = 200);
+	//デストラクタ
 	~AudioComponent();
 
+	//Update
 	void Update(float deltaTime) override;
 	void OnUpdateWorldTransform() override;
+
+	//Getter,Setter
+	TypeID GetType() const override { return TAudioComponent; }
 
 	SoundEvent PlayEvent(const std::string& name);
 	void StopAllEvents();
 
-	TypeID GetType() const override { return TAudioComponent; }
 private:
+	//=========================================================================
+	// private variables.
+	//=========================================================================
 	std::vector<SoundEvent> mEvents2D;
 	std::vector<SoundEvent> mEvents3D;
 };

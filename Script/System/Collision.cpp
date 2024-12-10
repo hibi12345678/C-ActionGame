@@ -14,9 +14,14 @@
 // Users of this code must verify correctness for their application.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Collision.h"
 #include <algorithm>
 #include <array>
+
 
 LineSegment::LineSegment(const Vector3& start, const Vector3& end)
 	:mStart(start)

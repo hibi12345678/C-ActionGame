@@ -6,7 +6,13 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "HUD.h"
+#include <algorithm>
+#include <iostream>
 #include "Texture.h"
 #include "Shader.h"
 #include "Game.h"
@@ -14,12 +20,10 @@
 #include "PhysWorld.h"
 #include "FollowActor.h"
 #include "BossActor.h"
-#include <algorithm>
 #include "GBuffer.h"
 #include "TargetComponent.h"
-#include <iostream>
 #include "Font.h"
-#include "FollowActor.h"
+
 
 HUD::HUD(Game* game)
 	:UIScreen(game)

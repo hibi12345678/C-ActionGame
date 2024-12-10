@@ -1,8 +1,12 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "UIActor.h"
-#include "UIMeshComponent.h"
-#include "Mesh.h"
 #include "Game.h"
+#include "Mesh.h"
 #include "Renderer.h"
+#include "UIMeshComponent.h"
+
 
 UIActor::UIActor(Game* game)
     : Actor(game)

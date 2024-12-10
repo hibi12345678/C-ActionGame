@@ -6,15 +6,20 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "MeshComponent.h"
-#include "Shader.h"
-#include "Mesh.h"
 #include "Actor.h"
 #include "Game.h"
+#include "LevelLoader.h"
+#include "Mesh.h"
 #include "Renderer.h"
+#include "Shader.h"
 #include "Texture.h"
 #include "VertexArray.h"
-#include "LevelLoader.h"
+
 
 MeshComponent::MeshComponent(Actor* owner, bool isSkeletal)
 	:Component(owner)

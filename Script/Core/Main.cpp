@@ -6,9 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Game.h"
-#include <SDL/SDL.h>
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
+#include <SDL.h>
 #include <iostream>
+#include "Game.h"
+
+
 int main(int argc, char** argv)
 {
 	Game game;

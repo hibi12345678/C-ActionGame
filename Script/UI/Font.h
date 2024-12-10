@@ -6,29 +6,47 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
+#include <SDL_ttf.h>
 #include <string>
 #include <unordered_map>
-#include <SDL/SDL_ttf.h>
 #include "Maths.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class Font
 {
 public:
+	//=========================================================================
+    // public methods.
+    //=========================================================================
+	//コンストラクタ
 	Font(class Game* game);
+
+	//デストラクタ
 	~Font();
-	
-	// Load/unload from a file
+
+	//初期化
 	bool Load(const std::string& fileName);
+
+	//終了処理
 	void Unload();
-	
-	// Given string and this font, draw to a texture
+
 	class Texture* RenderText(const std::string& textKey,
 							  const Vector3& color = Color::White,
 							  int pointSize = 30,
 	                          int num = 0);
+
 private:
-	// Map of point sizes to font data
+	//=========================================================================
+	// private variables.
+	//=========================================================================
 	std::unordered_map<int, TTF_Font*> mFontData;
 	class Game* mGame;
 };

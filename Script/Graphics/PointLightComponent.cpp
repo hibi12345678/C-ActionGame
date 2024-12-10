@@ -6,14 +6,19 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "PointLightComponent.h"
-#include "Shader.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "Mesh.h"
-#include "VertexArray.h"
 #include "Actor.h"
+#include "Game.h"
 #include "LevelLoader.h"
+#include "Mesh.h"
+#include "Renderer.h"
+#include "Shader.h"
+#include "VertexArray.h"
+
 
 PointLightComponent::PointLightComponent(Actor* owner)
 	:Component(owner)

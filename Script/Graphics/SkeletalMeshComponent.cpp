@@ -6,18 +6,24 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "SkeletalMeshComponent.h"
-#include "Shader.h"
-#include "Mesh.h"
 #include "Actor.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "Texture.h"
-#include "VertexArray.h"
 #include "Animation.h"
-#include "Skeleton.h"
+#include "Game.h"
 #include "LevelLoader.h"
 #include "Maths.h"
+#include "Mesh.h"
+#include "Renderer.h"
+#include "Shader.h"
+#include "Skeleton.h"
+#include "Texture.h"
+#include "VertexArray.h"
+
+
 SkeletalMeshComponent::SkeletalMeshComponent(Actor* owner)
 	:MeshComponent(owner, true)
 	,mSkeleton(nullptr)

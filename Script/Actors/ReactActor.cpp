@@ -1,8 +1,13 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "ReactActor.h"
-#include "Mesh.h"
 #include "Game.h"
-#include "Renderer.h"
+#include "Mesh.h"
 #include "MeshComponent.h"
+#include "Renderer.h"
+
+
 ReactActor::ReactActor(Game* game)
     : Actor(game)
 {

@@ -6,13 +6,21 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include <unordered_map>
 #include <string>
-#include "SoundEvent.h"
 #include "Maths.h"
+#include "SoundEvent.h"
 
-// Forward declarations to avoid including FMOD header
+
+
+///////////////////////////////////////////////////////////////////////////////
+//namespace FMOD
+///////////////////////////////////////////////////////////////////////////////
 namespace FMOD
 {
 	class System;
@@ -26,41 +34,59 @@ namespace FMOD
 	};
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class AudioSystem
 {
 public:
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	AudioSystem(class Game* game);
+	//デストラクタ
 	~AudioSystem();
+	
+	//Update
+	void Update(float deltaTime);
 
+	//初期化処理
 	bool Initialize();
-	void Shutdown();
-
-	// Load/unload banks
 	void LoadBank(const std::string& name);
+
+	//終了処理
+	void Shutdown();
 	void UnloadBank(const std::string& name);
 	void UnloadAllBanks();
 
-	SoundEvent PlayEvent(const std::string& name);
-
-	void Update(float deltaTime);
-
-	// For positional audio
-	void SetListener(const Matrix4& viewMatrix, const Vector3& currentPos, float deltaTime, const Vector3& listenerPosition);
-	// Control buses
+	//Getter,Setter
 	float GetBusVolume(const std::string& name) const;
 	bool GetBusPaused(const std::string& name) const;
 	void SetBusVolume(const std::string& name, float volume);
 	void SetBusPaused(const std::string& name, bool pause);
+	void SetListener(const Matrix4& viewMatrix, const Vector3& currentPos, float deltaTime, const Vector3& listenerPosition);
+
+
+
+	SoundEvent PlayEvent(const std::string& name);
+
 protected:
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
 	friend class SoundEvent;
 	FMOD::Studio::EventInstance* GetEventInstance(unsigned int id);
-private:
-	// Tracks the next ID to use for event instances
-	static unsigned int sNextID;
 
+private:
+	//=========================================================================
+	// private variables.
+	//=========================================================================
+	static unsigned int sNextID;
 	class Game* mGame;
 	// Map of loaded banks
-	std::unordered_map<std::string, FMOD::Studio::Bank*> mBanks;
+	std::unordered_map<std::string, FMOD::Studio::Bank*> mBanks; 
 	// Map of event name to EventDescription
 	std::unordered_map<std::string, FMOD::Studio::EventDescription*> mEvents;
 	// Map of event id to EventInstance

@@ -6,18 +6,24 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include <vector>
 #include <functional>
-#include "Maths.h"
 #include "Collision.h"
+#include "Maths.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class PhysWorld
 {
 public:
-	PhysWorld(class Game* game);
-
-	// Used to give helpful information about collision results
+	//CollisioinInfo Struct
 	struct CollisionInfo
 	{
 		// Point of collision
@@ -30,21 +36,27 @@ public:
 		class Actor* mActor;
 	};
 
-	// Test a line segment against boxes
-	// Returns true if it collides against a box
-	bool SegmentCast(const LineSegment& l, CollisionInfo& outColl);
+	//=========================================================================
+    // public methods.
+    //=========================================================================
+	//コンストラクタ
+	PhysWorld(class Game* game);
 
-	// Tests collisions using naive pairwise
+	//Getter,Setter
+	const std::vector<class BoxComponent*>& PhysWorld::GetBoxComponents() const { return mBoxes; }
+
+    //Add,Remove
+	void AddBox(class BoxComponent* box);
+	void RemoveBox(class BoxComponent* box);
+
+	bool SegmentCast(const LineSegment& l, CollisionInfo& outColl);
 	void TestPairwise(std::function<void(class Actor*, class Actor*)> f);
-	// Test collisions using sweep and prune
 	void TestSweepAndPrune(std::function<void(class Actor*, class Actor*)> f);
 
-	// Add/remove box components from world
-	void AddBox(class BoxComponent* box);
-
-	const std::vector<class BoxComponent*>& PhysWorld::GetBoxComponents() const{return mBoxes;}
-	void RemoveBox(class BoxComponent* box);
 private:
+	//=========================================================================
+	// private variables.
+	//=========================================================================
 	class Game* mGame;
 	std::vector<class BoxComponent*> mBoxes;
 };

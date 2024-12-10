@@ -6,19 +6,22 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#pragma once
-#include "UIScreen.h"
-#include <vector>
 
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
+#pragma once
+#include <vector>
+#include "UIScreen.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class HUD : public UIScreen
 {
 public:
-	// (Lower draw order corresponds with further back)
-	HUD(class Game* game);
-	~HUD();
-
-	void Update(float deltaTime) override;
-	void Draw(class Shader* shader) override;
+	//Enum State
 	enum State {
 		EMainMenu,
 		EGameplay,
@@ -26,15 +29,47 @@ public:
 		EItem,
 		EQuit
 	};
+
+	//=========================================================================
+	// public variables.
+	//=========================================================================
+	State currentState;
+
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
+	HUD(class Game* game);
+
+    //デストラクタ
+	~HUD();
+
+	//Update
+	void Update(float deltaTime) override;
+
+
+	//Getter,Setter
+	int GetItemNum() const { return itemNum; }
 	void SetItemNum(int num) { itemNum = num; }
-	int GetItemNum() const{return itemNum;}
+	
+	//Add,Remove
 	void AddTargetComponent(class TargetComponent* tc);
 	void RemoveTargetComponent(class TargetComponent* tc);
-	State currentState;
+
+	void Draw(class Shader* shader) override;
+
+
 	
 protected:
-	void UpdateRadar(float deltaTime);
-	class Game* mGame; // ゲームインスタンスのポインタを保持
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
+	bool mTargetEnemy; //ターゲット
+	int itemNum; //装備中のアイテム選択用変数
+	float mRadarRange; //レーダー範囲
+	float mRadarRadius; //レーダー半径
+
+	class Game* mGame; 
 	class Font* mFont;
 	class Texture* mHealthBar;
 	class Texture* mHealthRedBar;
@@ -58,13 +93,12 @@ protected:
 	class Texture* mCross;
 	class Texture* mFrame;
 	class Texture* mFrame2;
-	
 	std::vector<class TargetComponent*> mTargetComps;
 	std::vector<Vector2> mBlips;
 
-	float mRadarRange;
-	float mRadarRadius;
+	//=========================================================================
+	// protected methods.
+	//=========================================================================
+	void UpdateRadar(float deltaTime);
 
-	bool mTargetEnemy;
-	int itemNum;
 };

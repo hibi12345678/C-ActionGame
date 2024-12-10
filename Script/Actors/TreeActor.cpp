@@ -1,10 +1,13 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "TreeActor.h"
-
 #include "BoxComponent.h"
 #include "Game.h"
 #include "Mesh.h"
 #include "MeshComponent.h"
 #include "Renderer.h"
+
 
 TreeActor::TreeActor(Game* game)
 	:Actor(game)

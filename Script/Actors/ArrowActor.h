@@ -6,23 +6,47 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include "Actor.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class ArrowActor : public Actor
 {
 public:
+	//=========================================================================
+	// public methiods.
+	//=========================================================================
+	//コンストラクタ
 	ArrowActor(class Game* game);
+
+	//デストラクタ
 	~ArrowActor();
-	class BoxComponent* GetBox() { return mBoxComp; }
+
+	//Upadate
 	void UpdateActor(float deltaTime) override;
+
+	//Getter,Setter
 	void SetPlayer(Actor* player);
+	class BoxComponent* GetBox() { return mBoxComp; }
+
 	void HitTarget();
 
 private:
+	//=========================================================================
+    // private variables.
+    //=========================================================================
+	float mLifeSpan; //表示時間
+
 	class AudioComponent* mAudioComp;
 	class BoxComponent* mBoxComp;
 	class ArrowMove* mMyMove;
-	float mLifeSpan;
+	
 	
 };

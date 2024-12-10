@@ -6,11 +6,17 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "AudioSystem.h"
-#include <SDL/SDL_log.h>
-#include <fmod_studio.hpp>
 #include <fmod_errors.h>
+#include <fmod_studio.hpp>
+#include <SDL_log.h>
 #include <vector>
+
 
 unsigned int AudioSystem::sNextID = 0;
 

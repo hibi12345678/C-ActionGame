@@ -6,15 +6,23 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
-#include "BoneTransform.h"
 #include <string>
 #include <vector>
+#include "BoneTransform.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////]
 class Skeleton
 {
 public:
-	// Definition for each bone in the skeleton
+	// Bone Struct
 	struct Bone
 	{
 		BoneTransform mLocalBindPose;
@@ -22,10 +30,10 @@ public:
 		int mParent;
 	};
 
-	// Load from a file
-	bool Load(const std::string& fileName);
-
-	// Getter functions
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	// Getter,Setter
 	size_t GetNumBones() const { return mBones.size(); }
 	int GetBoneIndex(const std::string& boneName) const
 	{
@@ -43,15 +51,22 @@ public:
 	const std::vector<Bone>& GetBones() const { return mBones; }
 	const std::vector<Matrix4>& GetGlobalInvBindPoses() const { return mGlobalInvBindPoses; }
 	const std::string& GetFileName() const { return mFileName; }
+
+	//èâä˙âª
+	bool Load(const std::string& fileName);
+
 protected:
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
 	// Called automatically when the skeleton is loaded
 	// Computes the global inverse bind pose for each bone
 	void ComputeGlobalInvBindPose();
 private:
-	// The bones in the skeleton
+	//=========================================================================
+	// private variables.
+	//=========================================================================
 	std::vector<Bone> mBones;
-	// The global inverse bind poses for each bone
 	std::vector<Matrix4> mGlobalInvBindPoses;
 	std::string mFileName;
-	
 };

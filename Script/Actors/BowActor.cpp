@@ -6,14 +6,20 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "BowActor.h"
-#include "Renderer.h"
-#include "MeshComponent.h"
-#include "Mesh.h"
 #include "FollowActor.h"
-#include "SkeletalMeshComponent.h"
-#include "Maths.h"
 #include "Game.h"
+#include "Maths.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
+#include "Renderer.h"
+#include "SkeletalMeshComponent.h"
+
+
 BowActor::BowActor(Game* game, float scale, int num)
 	: ItemActorBase(game, scale, num)
 {	

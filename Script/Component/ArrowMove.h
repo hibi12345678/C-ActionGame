@@ -6,17 +6,37 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include "MoveComponent.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class ArrowMove : public MoveComponent
 {
 public:
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	ArrowMove(class Actor* owner);
 
-	void SetPlayer(Actor* player) { mPlayer = player; }
+	//Update
 	void Update(float deltaTime) override;
+
+	//Getter,Setter
+	void SetPlayer(Actor* player) { mPlayer = player; }
+
 protected:
-	class Actor* mPlayer;
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
 	Vector3 start;
+
+	class Actor* mPlayer;
 };

@@ -6,17 +6,26 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "ArrowActor.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "MeshComponent.h"
-#include "Mesh.h"
 #include "ArrowMove.h"
 #include "AudioComponent.h"
 #include "BoxComponent.h"
-#include "PlaneActor.h"
-#include "FollowActor.h"
 #include "EnemyActor.h"
+#include "FollowActor.h"
+#include "Game.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
+#include "PlaneActor.h"
+#include "Renderer.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 ArrowActor::ArrowActor(Game* game)
 	:Actor(game)
 	, mLifeSpan(2.0f)

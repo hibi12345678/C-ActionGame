@@ -6,9 +6,14 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Component.h"
 #include "Actor.h"
 #include "LevelLoader.h"
+
 
 const char* Component::TypeNames[NUM_COMPONENT_TYPES] = {
 	"Component",

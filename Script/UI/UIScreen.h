@@ -1,62 +1,73 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
-#include "Maths.h"
 #include <cstdint>
-#include <string>
 #include <functional>
+#include <string>
 #include <vector>
+#include "Maths.h"
 #include "SoundEvent.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class Button
 {
 public:
+	//=========================================================================
+	// public variables.
+	//=========================================================================
+	//コンストラクタ
 	Button(const std::string& name, class Font* font,
 		std::function<void()> onClick,
 		const Vector2& pos, const Vector2& dims,int texNumber);
+	//デストラクタ
 	~Button();
 
-	// Set the name of the button
-	void SetName(const std::string& name);
-	
-	// Getters/setters
+	// Getter,setter
 	class Texture* GetNameTex() { return mNameTex; }
 	const Vector2& GetPosition() const { return mPosition; }
-	void SetHighlighted(bool sel) { mHighlighted = sel; }
 	bool GetHighlighted() const { return mHighlighted; }
 	const int  GetTexNum() { return mTexNum; }
-	// Returns true if the point is within the button's bounds
+	void SetHighlighted(bool sel) { mHighlighted = sel; }
+	void SetName(const std::string& name);
+
 	bool ContainsPoint(const Vector2& pt) const;
-	// Called when button is clicked
 	void OnClick();
+
 private:
-	std::function<void()> mOnClick;
-	std::string mName;
+	//=========================================================================
+	// private variables.
+	//=========================================================================
+	bool mHighlighted; //ボタンの上にマウスが重なっているか
+	int mTexNum; 
+	Vector2 mPosition;
+	Vector2 mDimensions; //間隔
+
 	class Texture* mNameTex;
 	class Font* mFont;
-	Vector2 mPosition;
-	Vector2 mDimensions;
-	int mTexNum;
-	bool mHighlighted;
-
-
+	std::function<void()> mOnClick;
+	std::string mName;
 
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class UIScreen
 {
 public:
-	UIScreen(class Game* game);
-	virtual ~UIScreen();
-	// UIScreen subclasses can override these
-	virtual void Update(float deltaTime);
-	virtual void Draw(class Shader* shader);
-	virtual void ProcessInput(const uint8_t* keys);
-	virtual void StartInput(const uint8_t* keys);
-	virtual void HandleKeyPress(int key);
-	// Tracks if the UI is active or closing
+	//Enum UIState
 	enum UIState
 	{
 		EActive,
 		EClosing
 	};
+
+	//Enum State
 	enum State {
 		EMainMenu,
 		EGameplay,
@@ -64,28 +75,49 @@ public:
 		EItem,
 		EQuit
 	};
-	State currentState;
-	
-	// Set state to closing
 
+	//=========================================================================
+	// public variables.
+	//=========================================================================
+	State currentState;
+
+    //=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
+	UIScreen(class Game* game);
+
+	//デストラクタ
+	virtual ~UIScreen();
+
+    //Upadate
+	virtual void Update(float deltaTime);
+
+	//入力
+	virtual void ProcessInput(const uint8_t* keys);
+	virtual void StartInput(const uint8_t* keys);
+	virtual void HandleKeyPress(int key);
+
+	//終了処理
 	void Close();
-	// Get state of UI screen
+	void CloseText();
+	void CloseTutorial();
+
+	//Getter,Setter
 	UIState GetState() const { return mUIState; }
-	// Change the title text
+	int GetTutorialNum()const { return TutorialNum; }
 	void SetTitle(const std::string& text,
 				  const Vector3& color = Color::White,
 				  int pointSize = 60);
-	void AddText(const std::string& text, Vector2 pos, int pointSize,
-		const Vector3& color = Color::White, int num = 0
-		);
-	void CloseText();
-	void CloseTutorial();
 	void SetItemText(const std::string& text, Vector2 pos, int pointSize,
 		const Vector3& color = Color::White
 	);
-	// Add a button to this screen
+
+	//Add,Remove
+	void AddText(const std::string& text, Vector2 pos, int pointSize,
+		const Vector3& color = Color::White, int num = 0
+		);
 	void AddButton(const std::string& name, std::function<void()> onClick);
-	// Add a button to this screen
 	void StartButton(const std::string& name, std::function<void()> onClick);
 	void ItemButton(const std::string& name, int texNumber ,std::function<void()> onClick);
 	void DrawButtonRight(const std::string& name, std::function<void()> onClick);
@@ -93,17 +125,24 @@ public:
 	void DrawCloseButton(const std::string& name, std::function<void()> onClick);
 	void AddTutorialNum();
 	void RemoveTutorialNum();
-	int GetTutorialNum()const { return TutorialNum; }
-protected:
-	// Helper to draw a texture
-	void DrawTexture(class Shader* shader, class Texture* texture,
-					 const Vector2& offset = Vector2::Zero,
-					 float scale = 1.0f,
-					 bool flipY = false,
-	                 int a = 0);
-	// Sets the mouse mode to relative or not
-	void SetRelativeMouseMode(bool relative);
 
+	virtual void Draw(class Shader* shader);
+
+protected:
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
+	int texNum;
+	int TutorialNum; //チュートリアルの番号
+	bool mArrowFlag; //武器が変わるかの判定
+	Vector2 mTitlePos; //タイトル位置
+	Vector2 mNextButtonPos; //次のボタンの位置
+	Vector2 mNextItemButtonPos; //次のアイテムボタンの位置
+	Vector2 mNextTextPos; //次の画像の位置
+	Vector2 mBGPos; //背景位置
+
+	UIState mUIState;
+	SoundEvent mMusicEvent;
 	class Game* mGame;
 	class Font* mFont;
 	class Texture* mItemText;
@@ -132,31 +171,22 @@ protected:
 	class Texture* mTutorialTex1_2;
 	class Texture* mTutorialTex1_3;
 	class Texture* mTutorialTex2;
-
-
 	class Button* mTutorialButtonRight;
 	class Button* mTutorialButtonLeft;
 	class Button* mCloseButton;
-
-	Vector2 mTitlePos;
-	Vector2 mNextButtonPos;
-	Vector2 mNextItemButtonPos;
-	Vector2 mNextTextPos;
-	Vector2 mBGPos;
-	
-	UIState mUIState;
-	
-	SoundEvent mMusicEvent;
-
 	std::vector<Texture*> mText;
 	std::vector<Button*> mButtons;
 	std::vector<Button*> mStartButton;
 	std::vector<Button*> mItemButton;
 	std::vector<Button*> mTutorialButton;
 
-	int texNum;
-	int TutorialNum;
-
-	bool mArrowFlag;
-
+	//=========================================================================
+    // private methods.
+    //=========================================================================
+	void DrawTexture(class Shader* shader, class Texture* texture,
+		const Vector2& offset = Vector2::Zero,
+		float scale = 1.0f,
+		bool flipY = false,
+		int a = 0); //画像の描画
+	void SetRelativeMouseMode(bool relative); //マウスの状態を代入
 };

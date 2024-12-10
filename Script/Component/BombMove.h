@@ -6,18 +6,35 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include "MoveComponent.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class BombMove : public MoveComponent
 {
 public:
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	BombMove(class Actor* owner);
 
-	void SetPlayer(Actor* player) { mPlayer = player; }
+	//Update
 	void Update(float deltaTime) override;
 
-protected:
-	class Actor* mPlayer;
+	//Getter,Setter
+	void SetPlayer(Actor* player) { mPlayer = player; }
 
+protected:
+	//=========================================================================
+	// private variables.
+	//=========================================================================
+	class Actor* mPlayer;
 };

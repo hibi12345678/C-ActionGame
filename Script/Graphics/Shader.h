@@ -6,37 +6,51 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include <GL/glew.h>
 #include <string>
 #include "Maths.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class Shader
 {
 public:
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	Shader();
+	//デストラクタ
 	~Shader();
+
+	//初期化
 	bool Load(const std::string& vertName, const std::string& fragName);
 	bool TessellationLoad(const std::string& vertName,
 		const std::string& tessControlName,
 		const std::string& tessEvaluationName,
 		const std::string& fragName);
 	bool CompileTessellationShader(const std::string& shaderPath, GLenum shaderType, GLuint& shaderID);
+
+	//終了処理
 	void Unload();
-	// Set this as the active shader program
+
+	//Getter,Setter
+	GLuint GetID() { return mShaderProgram; }
 	void SetActive();
-	// Sets a Matrix uniform
 	void SetMatrixUniform(const char* name, const Matrix4& matrix);
-	// Sets an array of matrix uniforms
 	void SetMatrixUniforms(const char* name, Matrix4* matrices, unsigned count);
-	// Sets a Vector3 uniform
 	void SetVectorUniform(const char* name, const Vector3& vector);
 	void SetVector2Uniform(const char* name, const Vector2& vector);
-	// Sets a float uniform
 	void SetFloatUniform(const char* name, float value);
-	// Sets an integer uniform
 	void SetIntUniform(const char* name, int value);
-	GLuint GetID() { return mShaderProgram; }
+
 private:
 	// Tries to compile the specified shader
 	bool CompileShader(const std::string& fileName,
@@ -48,11 +62,14 @@ private:
 	// Tests whether vertex/fragment programs link
 	bool IsValidProgram();
 private:
-	// Store the shader object IDs
-	GLuint mVertexShader;
-	GLuint mFragShader;
-	GLuint mShaderProgram;
-	GLuint mTessEvaluationShader;
-	GLuint mTessControlShader;
+	//=========================================================================
+	// private variables.
+	//=========================================================================
+
+	GLuint mVertexShader; //頂点シェーダーのID
+	GLuint mFragShader; //フラグメントシェーダーのID
+	GLuint mShaderProgram; //シェーダープログラム
+	GLuint mTessEvaluationShader; //TESのID
+	GLuint mTessControlShader; //TCSのID
 
 };

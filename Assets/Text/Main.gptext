@@ -1,6 +1,6 @@
 {
 	"TextMap":{
-                "Title":"Action Game",
+                "Title":"Knight's Action",
 		"PauseTitle": "PAUSED",
 		"ResumeButton": "Resume",
                 "StartText": "Do you want to back to start?",

@@ -1,7 +1,10 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "GameOver.h"
-#include "Game.h"
+#include <SDL.h>
 #include "DialogBox.h"
-#include <SDL/SDL.h>
+
 
 GameOver::GameOver(Game* game)
 	:UIScreen(game)

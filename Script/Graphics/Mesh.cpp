@@ -6,15 +6,20 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Mesh.h"
+#include <SDL_log.h>
+#include <fstream>
+#include <rapidjson/document.h>
+#include "LevelLoader.h"
+#include "Maths.h"
 #include "Renderer.h"
 #include "Texture.h"
 #include "VertexArray.h"
-#include <rapidjson/document.h>
-#include <SDL/SDL_log.h>
-#include "Maths.h"
-#include "LevelLoader.h"
-#include <fstream>
+
 
 namespace
 {

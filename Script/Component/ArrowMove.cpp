@@ -6,12 +6,17 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "ArrowMove.h"
 #include "Actor.h"
+#include "ArrowActor.h"
+#include "FollowActor.h"
 #include "Game.h"
 #include "PhysWorld.h"
-#include "FollowActor.h"
-#include "ArrowActor.h"
+
 
 ArrowMove::ArrowMove(Actor* owner)
 	:MoveComponent(owner)

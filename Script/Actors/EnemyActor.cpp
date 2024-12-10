@@ -1,27 +1,29 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "EnemyActor.h"
-#include "SkeletalMeshComponent.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "FollowCamera.h"
-#include "MoveComponent.h"
-#include "LevelLoader.h"
-#include "BoxComponent.h"
-#include "PlaneActor.h"
-#include "AudioComponent.h"
-#include "MeshComponent.h"
-#include "Mesh.h"
-#include "ReactActor.h"
-#include "SmokeActor.h"
-#include "DropItemActor.h"
-#include "FollowActor.h"
-#include <cmath>
-#include <cstdlib> 
-#include <ctime>   
-#include "Random.h"
-#include "TargetComponent.h"
 #include "ArrowActor.h"
+#include "AudioComponent.h"
 #include "BombActor.h"
+#include "BoxComponent.h"
+#include "DropItemActor.h"
 #include "ExplosionActor.h"
+#include "FollowActor.h"
+#include "FollowCamera.h"
+#include "Game.h"
+#include "LevelLoader.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
+#include "MoveComponent.h"
+#include "PlaneActor.h"
+#include "Random.h"
+#include "ReactActor.h"
+#include "Renderer.h"
+#include "SmokeActor.h"
+#include "SkeletalMeshComponent.h"
+#include "TargetComponent.h"
+
+
 EnemyActor::EnemyActor(Game* game)
 	:Actor(game)
 	, mMoving(false)

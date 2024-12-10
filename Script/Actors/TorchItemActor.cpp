@@ -6,15 +6,21 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "TorchItemActor.h"
-#include "Renderer.h"
-#include "MeshComponent.h"
+#include "Game.h"
+#include "Maths.h"
 #include "Mesh.h"
+#include "MeshComponent.h"
 #include "PointLightComponent.h"
+#include "Renderer.h"
 #include "FollowActor.h"
 #include "SkeletalMeshComponent.h"
-#include "Maths.h"
-#include "Game.h"
+
+
 TorchItemActor::TorchItemActor(Game* game, float scale, int num)
 	: ItemActorBase(game, scale, num)
 {

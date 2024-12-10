@@ -6,11 +6,17 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "BoxComponent.h"
 #include "Actor.h"
 #include "Game.h"
-#include "PhysWorld.h"
 #include "LevelLoader.h"
+#include "PhysWorld.h"
+
 
 BoxComponent::BoxComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)

@@ -6,19 +6,24 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "BombActor.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "MeshComponent.h"
-#include "Mesh.h"
-#include "BombMove.h"
 #include "AudioComponent.h"
+#include "BombMove.h"
 #include "BoxComponent.h"
-#include "PlaneActor.h"
 #include "ExplosionActor.h"
 #include "FollowActor.h"
+#include "Game.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
+#include "PlaneActor.h"
+#include "Renderer.h"
 #include "SkeletalMeshComponent.h"
-#include "Actor.h"
+
+
 BombActor::BombActor(Game* game, float scale, int num)
 	: ItemActorBase(game, scale, num)
 	, mLifeSpan(6.0f)

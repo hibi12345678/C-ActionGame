@@ -6,46 +6,66 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
-#include "MeshComponent.h"
-#include "MatrixPalette.h"
 #include <string>
 #include <vector>
 #include "Maths.h"
+#include "MeshComponent.h"
+#include "MatrixPalette.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class SkeletalMeshComponent : public MeshComponent
 {
 public:
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	SkeletalMeshComponent(class Actor* owner);
-	// Draw this mesh component
-	void Draw(class Shader* shader) override;
 
+	//Update
 	void Update(float deltaTime) override;
 
-	// Setters
-	void SetSkeleton(class Skeleton* sk) { mSkeleton = sk; }
-
-	// Play an animation. Returns the length of the animation
-	float PlayAnimation(class Animation* anim, float playRate = 1.0f);
+	// Getter,Setter
+	Vector3 GetBonePosition(const std::string& boneName) const;
+	Quaternion GetBoneRotation(const std::string& boneName) const;
 	float GetAnimTime() { return mAnimTime; }
 	TypeID GetType() const override { return TSkeletalMeshComponent; }
+	void SetSkeleton(class Skeleton* sk) { mSkeleton = sk; }
 
+	//Load,Save
 	void LoadProperties(const rapidjson::Value& inObj) override;
 	void SaveProperties(rapidjson::Document::AllocatorType& alloc,
 		rapidjson::Value& inObj) const override;
 
-	// ボーン名からそのボーンの現在の位置を取得する関数
-	Vector3 GetBonePosition(const std::string& boneName) const;
-	// ボーン名からそのボーンの現在の回転を取得する関数
-	Quaternion GetBoneRotation(const std::string& boneName) const;
-protected:
-	void ComputeMatrixPalette();
+	void Draw(class Shader* shader) override;
+	float PlayAnimation(class Animation* anim, float playRate = 1.0f);
 
+protected:
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
 	MatrixPalette mPalette;
 	class Skeleton* mSkeleton;
 	class Animation* mAnimation;
-	float mAnimPlayRate;
-	float mAnimTime;
+	float mAnimPlayRate; //アニメーション再生倍率
+	float mAnimTime; //アニメーション時間
+
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
+	void ComputeMatrixPalette();
 
 private:
-	std::vector<Matrix4> mCurrentPoses; 
+	//=========================================================================
+	// private variables.
+	//=========================================================================
+	std::vector<Matrix4> mCurrentPoses; //アニメーション中のボーンの各ローカル座標
 };

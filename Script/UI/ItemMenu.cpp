@@ -1,7 +1,10 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "ItemMenu.h"
+#include <SDL.h>
 #include "Game.h"
 #include "DialogBox.h"
-#include <SDL/SDL.h>
 #include "UIScreen.h"
 #include "HUD.h"
 #include "Renderer.h"
@@ -12,6 +15,8 @@
 #include "BombActor.h"
 #include "BowActor.h"
 #include "UIActor.h"
+
+
 ItemMenu::ItemMenu(Game* game)
 	:UIScreen(game)
 	

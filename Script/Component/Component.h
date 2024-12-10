@@ -6,13 +6,22 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#pragma once
-#include "Maths.h"
-#include <rapidjson/document.h>
 
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
+#pragma once
+#include <rapidjson/document.h>
+#include "Maths.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class Component
 {
 public:
+	//Enum TypeID
 	enum TypeID
 	{
 		TComponent = 0,
@@ -34,39 +43,46 @@ public:
 
 	static const char* TypeNames[NUM_COMPONENT_TYPES];
 
-	// Constructor
-	// (the lower the update order, the earlier the component updates)
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+    //コンストラクタ
 	Component(class Actor* owner, int updateOrder = 100);
-	// Destructor
+
+	//デストラクタ
 	virtual ~Component();
-	// Update this component by delta time
+
+	//Update
 	virtual void Update(float deltaTime);
-	// Process input for this component
+
+	//入力
 	virtual void ProcessInput(const uint8_t* keyState) {}
-	// Called when world transform changes
+
+	//座標
 	virtual void OnUpdateWorldTransform();
 
+	//Getter,Setter
 	class Actor* GetOwner() { return mOwner; }
 	int GetUpdateOrder() const { return mUpdateOrder; }
-
 	virtual TypeID GetType() const = 0;
 
 	// Load/Save
 	virtual void LoadProperties(const rapidjson::Value& inObj);
 	virtual void SaveProperties(rapidjson::Document::AllocatorType& alloc,
 		rapidjson::Value& inObj) const;
-
-	// Create a component with specified properties
 	template <typename T>
 	static Component* Create(class Actor* actor, const rapidjson::Value& inObj)
 	{
-		// Dynamically allocate component of type T
+	
 		T* t = new T(actor);
-		// Call LoadProperties on new component
 		t->LoadProperties(inObj);
 		return t;
 	}
+
 protected:
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
 	// Owning actor
 	class Actor* mOwner;
 	// Update order of component

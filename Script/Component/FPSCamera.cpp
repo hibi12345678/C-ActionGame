@@ -6,8 +6,13 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "FPSCamera.h"
 #include "Actor.h"
+
 
 FPSCamera::FPSCamera(Actor* owner)
 	:CameraComponent(owner)

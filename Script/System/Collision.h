@@ -6,10 +6,18 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#pragma once
-#include "Maths.h"
-#include <vector>
 
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
+#pragma once
+#include <vector>
+#include "Maths.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//Line Segment Struct
+///////////////////////////////////////////////////////////////////////////////
 struct LineSegment
 {
 	LineSegment(const Vector3& start, const Vector3& end);
@@ -24,6 +32,9 @@ struct LineSegment
 	Vector3 mEnd;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//Plane Struct
+///////////////////////////////////////////////////////////////////////////////
 struct Plane
 {
 	Plane(const Vector3& normal, float d);
@@ -36,6 +47,9 @@ struct Plane
 	float mD;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//Sphere Struct
+///////////////////////////////////////////////////////////////////////////////
 struct Sphere
 {
 	Sphere(const Vector3& center, float radius);
@@ -45,6 +59,9 @@ struct Sphere
 	float mRadius;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//AABB Struct
+///////////////////////////////////////////////////////////////////////////////
 struct AABB
 {
 	AABB(const Vector3& min, const Vector3& max);
@@ -60,6 +77,9 @@ struct AABB
 	Vector3 mMax;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//OBB Struct
+///////////////////////////////////////////////////////////////////////////////
 struct OBB
 {
 	Vector3 mCenter;
@@ -67,6 +87,9 @@ struct OBB
 	Vector3 mExtents;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//Capsule Struct
+///////////////////////////////////////////////////////////////////////////////
 struct Capsule
 {
 	Capsule(const Vector3& start, const Vector3& end, float radius);
@@ -78,6 +101,9 @@ struct Capsule
 	float mRadius;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+//ConvexPolygon Struct
+///////////////////////////////////////////////////////////////////////////////
 struct ConvexPolygon
 {
 	bool Contains(const Vector2& point) const;
@@ -85,6 +111,10 @@ struct ConvexPolygon
 	std::vector<Vector2> mVertices;
 };
 
+
+//=========================================================================
+// Global methods.
+//=========================================================================
 // Intersection functions
 bool Intersect(const Sphere& a, const Sphere& b);
 bool Intersect(const AABB& a, const AABB& b);

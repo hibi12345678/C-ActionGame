@@ -1,7 +1,11 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "GameClear.h"
-#include "Game.h"
+#include <SDL.h>
 #include "DialogBox.h"
-#include <SDL/SDL.h>
+#include "Game.h"
+
 
 GameClear::GameClear(Game* game)
 	:UIScreen(game)

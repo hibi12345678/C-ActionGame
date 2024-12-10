@@ -6,11 +6,16 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "CameraComponent.h"
 #include "Actor.h"
-#include "Renderer.h"
-#include "Game.h"
 #include "AudioSystem.h"
+#include "Game.h"
+#include "Renderer.h"
+
 
 CameraComponent::CameraComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)

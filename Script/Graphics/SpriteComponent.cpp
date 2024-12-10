@@ -6,6 +6,10 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "SpriteComponent.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -13,6 +17,7 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "LevelLoader.h"
+
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	:Component(owner)

@@ -1,12 +1,17 @@
-﻿#include "Terrain.h"
-#include "Texture.h"
-#include "stb_image.h"
+﻿//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
+#include "Terrain.h"
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
-#include "Renderer.h"
+#include <stb_image.h>
+#include <cstdio>
 #include "Game.h"
-#include <cstdio> 
+#include "Renderer.h"
+#include "Texture.h"
+
+
 Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
 
     int width= 2624;

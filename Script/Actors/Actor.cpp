@@ -6,10 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Actor.h"
-#include "Game.h"
 #include "Component.h"
+#include "Game.h"
 #include "LevelLoader.h"
+
 
 const char* Actor::TypeNames[NUM_ACTOR_TYPES] = {
 	"Actor",

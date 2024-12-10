@@ -1,11 +1,16 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "ItemActorBase.h"
-#include "Game.h"
 #include "FollowActor.h"
-#include "SkeletalMeshComponent.h"
+#include "Game.h"
 #include "Maths.h"
-#include "MeshComponent.h"
 #include "Mesh.h"
+#include "MeshComponent.h"
 #include "Renderer.h"
+#include "SkeletalMeshComponent.h"
+
+
 ItemActorBase::ItemActorBase(Game* game, float scale, int num)
     : Actor(game)
     , mNum(num)
@@ -36,8 +41,8 @@ void ItemActorBase::UpdateActor(float deltaTime)
 
 	SetRotation(Rotation);
 	Vector3 playerPosition = game->GetPlayer()->GetPosition();
-	Matrix4 playerTransform = Matrix4::CreateFromQuaternion(playerRotation); // 回転行列を取得
-	Vector3 globalWeaponPos = Vector3::Transform(Position, playerTransform); // ローカル座標を変換
-	globalWeaponPos += playerPosition; // プレイヤーの位置を加算
+	Matrix4 playerTransform = Matrix4::CreateFromQuaternion(playerRotation); 
+	Vector3 globalWeaponPos = Vector3::Transform(Position, playerTransform); 
+	globalWeaponPos += playerPosition;
 	SetPosition(globalWeaponPos);
 }

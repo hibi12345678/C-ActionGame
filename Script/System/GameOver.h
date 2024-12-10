@@ -1,16 +1,32 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
-#include "UIScreen.h"
 #include "Game.h"
+#include "UIScreen.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class GameOver : public UIScreen
 {
 public:
-	GameOver(class Game* game);
-	~GameOver();
+	//Enum State
 	enum State {
 		EMainMenu,
 		EGameplay,
 		EPaused,
 		EQuit
 	};
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
+	GameOver(class Game* game);
+	//デストラクタ
+	~GameOver();
+
+	//入力
 	void HandleKeyPress(int key) override;
 };

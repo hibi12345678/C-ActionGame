@@ -6,37 +6,43 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Renderer.h"
-#include "Texture.h"
-#include "Mesh.h"
-#include <algorithm>
-#include "Shader.h"
-#include "VertexArray.h"
-#include "FollowActor.h"
-#include "SpriteComponent.h"
-#include "MeshComponent.h"
-#include "UIMeshComponent.h"
-#include "UIScreen.h"
-#include "Game.h"
-#include <GL/glew.h>
-#include "SkeletalMeshComponent.h"
-#include "GBuffer.h"
-#include "PointLightComponent.h"
-#include "stb_image.h"
-#include <SOIL/SOIL.h>
-#include <iostream>
-#include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl3.h"
-#include "MoveComponent.h"
-#include "TorchItemActor.h"
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <glm.hpp>
+#include <GL/glew.h>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+#include <imgui.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_sdl2.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SOIL/SOIL.h>
+#include <stb_image.h>
+#include <algorithm>
+#include <iostream>
+#include "FollowActor.h"
+#include "Game.h"
+#include "GBuffer.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
+#include "MoveComponent.h"
+#include "PointLightComponent.h"
+#include "Shader.h"
+#include "SkeletalMeshComponent.h"
+#include "SpriteComponent.h"
 #include "Terrain.h"
+#include "Texture.h"
 #include "TreeActor.h"
+#include "TorchItemActor.h"
+#include "UIMeshComponent.h"
+#include "UIScreen.h"
+#include "VertexArray.h"
+
+
 Renderer::Renderer(Game* game)
 	:mGame(game)
 	,mSpriteShader(nullptr)
