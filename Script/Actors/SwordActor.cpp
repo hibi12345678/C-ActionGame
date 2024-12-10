@@ -1,11 +1,16 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "SwordActor.h"
 #include "Game.h"
-#include "Renderer.h"
-#include "MeshComponent.h"
+#include "Maths.h"
 #include "Mesh.h"
+#include "MeshComponent.h"
+#include "Renderer.h"
 #include "FollowActor.h"
 #include "SkeletalMeshComponent.h"
-#include "Maths.h"
+
+
 SwordActor::SwordActor(Game* game, float scale, int num)
 	: ItemActorBase(game, scale, num) 
 

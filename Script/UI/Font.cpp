@@ -6,10 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Font.h"
-#include "Texture.h"
 #include <vector>
 #include "Game.h"
+#include "Texture.h"
+
 
 Font::Font(class Game* game)
 	:mGame(game)

@@ -6,36 +6,55 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#pragma once
-#include "Component.h"
-#include "SDL/SDL.h"
 
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
+#pragma once
+#include <SDL.h>
+#include "Component.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class SpriteComponent : public Component
 {
 public:
-	// (Lower draw order corresponds with further back)
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	
+	//コンストラクタ
 	SpriteComponent(class Actor* owner, int drawOrder = 100);
+
+	//デストラクタ
 	~SpriteComponent();
 
-	virtual void Draw(class Shader* shader);
-	virtual void SetTexture(class Texture* texture);
-
+	//Getter,Setter
 	int GetDrawOrder() const { return mDrawOrder; }
 	int GetTexHeight() const { return mTexHeight; }
 	int GetTexWidth() const { return mTexWidth; }
-
-	void SetVisible(bool visible) { mVisible = visible; }
 	bool GetVisible() const { return mVisible; }
-
 	TypeID GetType() const override { return TSpriteComponent; }
+	virtual void SetTexture(class Texture* texture);
+	void SetVisible(bool visible) { mVisible = visible; }
 
+	//Load,Save
 	void LoadProperties(const rapidjson::Value& inObj) override;
 	void SaveProperties(rapidjson::Document::AllocatorType& alloc,
 		rapidjson::Value& inObj) const override;
+
+	virtual void Draw(class Shader* shader);
+
 protected:
-	class Texture* mTexture;
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
+	bool mVisible;
 	int mDrawOrder;
 	int mTexWidth;
 	int mTexHeight;
-	bool mVisible;
+
+	class Texture* mTexture;
 };

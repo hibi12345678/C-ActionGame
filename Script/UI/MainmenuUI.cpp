@@ -1,8 +1,12 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "MainmenuUI.h"
-#include "Game.h"
+#include <SDL.h>
 #include "DialogBox.h"
-#include <SDL/SDL.h>
+#include "Game.h"
 #include "UIScreen.h"
+
 MainmenuUI::MainmenuUI(Game* game)
 	:UIScreen(game)
 {

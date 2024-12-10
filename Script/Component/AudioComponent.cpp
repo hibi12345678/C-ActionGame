@@ -6,10 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "AudioComponent.h"
 #include "Actor.h"
-#include "Game.h"
 #include "AudioSystem.h"
+#include "Game.h"
+
 
 AudioComponent::AudioComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)

@@ -6,11 +6,16 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Skeleton.h"
 #include <rapidjson/document.h>
-#include <SDL/SDL_log.h>
+#include <SDL_log.h>
 #include "MatrixPalette.h"
 #include "LevelLoader.h"
+
 
 bool Skeleton::Load(const std::string& fileName)
 {

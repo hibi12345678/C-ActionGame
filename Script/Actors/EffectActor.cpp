@@ -1,8 +1,12 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "EffectActor.h"
-#include "MeshComponent.h"
-#include "Mesh.h"
 #include "Game.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
 #include "Renderer.h"
+
 
 EffectActor::EffectActor(Game* game, const std::string& meshPath, float lifeSpan, float scale)
     : Actor(game)

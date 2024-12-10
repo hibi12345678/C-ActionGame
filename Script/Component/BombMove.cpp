@@ -6,12 +6,16 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "BombMove.h"
 #include "Actor.h"
+#include "ArrowActor.h"
+#include "FollowActor.h"
 #include "Game.h"
 #include "PhysWorld.h"
-#include "FollowActor.h"
-#include "ArrowActor.h"
 
 
 BombMove::BombMove(Actor* owner)

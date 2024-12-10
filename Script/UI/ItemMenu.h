@@ -1,12 +1,19 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
-#include "UIScreen.h"
 #include "Game.h"
 #include "SoundEvent.h"
+#include "UIScreen.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class ItemMenu : public UIScreen
 {
 public:
-	ItemMenu(class Game* game);
-	~ItemMenu();
+	//Enum ItemState
 	enum ItemState
 	{
 		ESword,
@@ -14,11 +21,25 @@ public:
 		EBow,
 		EBomb
 	};
-	void HandleKeyPress(int key);
-private:
-	ItemMenu::ItemState menuState;
-	
-	SoundEvent mMusicEvent;
 
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
+	ItemMenu(class Game* game);
+
+	//デストラクタ
+	~ItemMenu();
+
+	//入力
+	void HandleKeyPress(int key);
+
+private:
+	//=========================================================================
+	// private variables.
+	//=========================================================================
+	ItemMenu::ItemState menuState; //アイテムステート
+
+	SoundEvent mMusicEvent; //ステートがMainMenuかGamePalyか
 	class UIActor* uiActor;
 };

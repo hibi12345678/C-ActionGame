@@ -1,24 +1,29 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "FollowActor.h"
-#include "EnemyActor.h"
-#include "SkeletalMeshComponent.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "FollowCamera.h"
-#include "FPSCamera.h"
-#include "MoveComponent.h"
-#include "LevelLoader.h"
-#include "BoxComponent.h"
-#include "PlaneActor.h"
+#include "Animation.h"
+#include "ArrowActor.h"
 #include "AudioComponent.h"
 #include "AudioSystem.h"
-#include "BossActor.h"
-#include "DropItemActor.h"
-#include "PointLightComponent.h"
-#include "ArrowActor.h"
 #include "BombActor.h"
+#include "BossActor.h"
+#include "BoxComponent.h"
+#include "DropItemActor.h"
+#include "EnemyActor.h"
 #include "ExplosionActor.h"
+#include "FPSCamera.h"
+#include "FollowCamera.h"
+#include "Game.h"
+#include "LevelLoader.h"
+#include "MoveComponent.h"
+#include "PlaneActor.h"
+#include "PointLightComponent.h"
+#include "Renderer.h"
 #include "SwordActor.h"
-#include "Animation.h"
+#include "SkeletalMeshComponent.h"
+
+
 FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -528,6 +533,9 @@ void FollowActor::FixCollisions()
 							mBlockTimer = 0.5f;
 							mStamina -= 0.3f;
 							mAudioComp->PlayEvent("event:/Block");
+							if (mDamageTimer < 0.5f) {
+								mDamageTimer = 0.5f;
+							}
 						}
 					}
 					else if (!Intersect(blockBox, enemyAttackBox)) {

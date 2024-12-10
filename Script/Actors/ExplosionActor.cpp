@@ -6,14 +6,19 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "ExplosionActor.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "MeshComponent.h"
-#include "Mesh.h"
 #include "AudioComponent.h"
 #include "BoxComponent.h"
-#include "AudioComponent.h"
+#include "Game.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
+#include "Renderer.h"
+
+
 ExplosionActor::ExplosionActor(Game* game)
 	:Actor(game)
 	, mLifeSpan(0.8f)

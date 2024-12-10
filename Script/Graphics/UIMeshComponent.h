@@ -1,26 +1,42 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include "Component.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class UIMeshComponent : public Component
 {
 public:
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	UIMeshComponent(class Actor* owner, bool isSkeletal = false);
+
+	//デストラクタ
 	~UIMeshComponent();
-	// Draw this mesh component
-	virtual void Draw(class Shader* shader);
-	// Set the mesh/texture index used by mesh component
+
+	//Getter,Setter
+	TypeID GetType() const override { return TMeshComponent; }
+	bool GetVisible() const { return mVisible; }
 	virtual void SetMesh(class Mesh* mesh) { mMesh = mesh; }
 	void SetTextureIndex(size_t index) { mTextureIndex = index; }
-
 	void SetVisible(bool visible) { mVisible = visible; }
-	bool GetVisible() const { return mVisible; }
 
-
-	TypeID GetType() const override { return TMeshComponent; }
+	virtual void Draw(class Shader* shader);
 
 protected:
-	class Mesh* mMesh;
+	//=========================================================================
+	// protected variables.
+	//=========================================================================
+	bool mVisible; //表示時間
+	bool mIsSkeletal; //スケルトンを持っているか
+
 	size_t mTextureIndex;
-	bool mVisible;
-	bool mIsSkeletal;
+
+	class Mesh* mMesh;
 };

@@ -5,11 +5,11 @@
 // Released under the BSD License
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-
 #include "Texture.h"
-#include <SOIL/SOIL.h>
 #include <GL/glew.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
+#include <SOIL/SOIL.h>
+
 
 Texture::Texture()
 :mTextureID(0)

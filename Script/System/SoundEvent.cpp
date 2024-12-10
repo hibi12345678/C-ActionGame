@@ -6,9 +6,14 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "SoundEvent.h"
-#include "AudioSystem.h"
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include <fmod_studio.hpp>
+#include "AudioSystem.h"
+#include "SoundEvent.h"
+
 
 SoundEvent::SoundEvent(class AudioSystem* system, unsigned int id)
 	:mSystem(system)

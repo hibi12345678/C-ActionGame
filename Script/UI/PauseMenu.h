@@ -1,18 +1,40 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
-#include "UIScreen.h"
 #include "Game.h"
+#include "UIScreen.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class PauseMenu : public UIScreen
 {
 public:
-	PauseMenu(class Game* game);
-	~PauseMenu();
+	//Enum State
 	enum State {
-		EMainMenu,
+	EMainMenu,
 		EGameplay,
 		EPaused,
+		ETutorial,
+		EItem,
 		EQuit
-	};
+    };
+
+	//=========================================================================
+    // public methods.
+    //=========================================================================
+	//コンストラクタ
+	PauseMenu(class Game* game);
+
+	//デストラクタ
+	~PauseMenu();
+
+	//入力
 	void HandleKeyPress(int key) override;
-	State currentState;
+
+private:
+	State currentState; //現在のゲーム状態
 	bool flag;
 };

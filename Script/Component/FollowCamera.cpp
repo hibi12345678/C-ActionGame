@@ -6,14 +6,19 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "FollowCamera.h"
-#include "Actor.h"
-#include "LevelLoader.h"
-#include "AudioSystem.h"
-#include "Game.h"
-#include "AudioComponent.h"
 #include <vector>
+#include "Actor.h"
+#include "AudioSystem.h"
 #include "FollowActor.h"
+#include "Game.h"
+#include "LevelLoader.h"
+
+
 FollowCamera::FollowCamera(Actor* owner)
 	:CameraComponent(owner)
 	, mSpringConstant(128.0)

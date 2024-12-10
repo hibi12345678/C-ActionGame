@@ -6,18 +6,24 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "DropItemActor.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "MeshComponent.h"
-#include "Mesh.h"
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include "AudioComponent.h"
 #include "BoxComponent.h"
 #include "FollowActor.h"
-#include <cmath>
-#include <cstdlib> 
-#include <ctime>   
+#include "Game.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
 #include "Random.h"
+#include "Renderer.h"
+
+
 DropItemActor::DropItemActor(Game* game)
 	:Actor(game)
 	, mLifeSpan(10.0f)
@@ -28,9 +34,6 @@ DropItemActor::DropItemActor(Game* game)
 {
 	
 	mc = new MeshComponent(this);
-	// Add a box component\	
-
-	
 	game->AddDropItem(this);
 	randomValue = rand() % 2;
 	if (randomValue ==0) {

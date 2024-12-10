@@ -1,24 +1,45 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include "Actor.h"
-#include "MeshComponent.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class DropItemActor : public Actor
 {
 public:
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	DropItemActor(class Game* game);
+
+	//デストラクタ
 	~DropItemActor();
-	class BoxComponent* GetBox() { return mBox; }
-	void FixCollisions();
+
+	//Update
 	void UpdateActor(float deltaTime) override;
+
+	//Getter,Setter
+	class BoxComponent* GetBox() { return mBox; }
 	int GetItemNum() { return itemValue; }
+
+	void FixCollisions();
+
 private:
-	class MeshComponent* mc;
-	class BoxComponent* mBox;
-	float mLifeSpan;
-	float blinkTime;
-	float blinkInterval; // 0.5秒ごとに点滅
+	//=========================================================================
+    // private variables.
+    //=========================================================================
 	bool isVisible;
 	int randomValue;
-	int itemValue;
+	int itemValue; 
+	float mLifeSpan; //表示時間
+	float blinkTime; //点滅時間
+	float blinkInterval; //点滅間隔
 	
+	class MeshComponent* mc;
+	class BoxComponent* mBox;
 };

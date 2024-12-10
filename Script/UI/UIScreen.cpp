@@ -6,21 +6,27 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "UIScreen.h"
-#include "Texture.h"
-#include "Shader.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "Font.h"
 #include <SOIL/SOIL.h>
 #include "AudioSystem.h"
+#include "Font.h"
+#include "Game.h"
+#include "Renderer.h"
+#include "Shader.h"
+#include "Texture.h"
+
+
 UIScreen::UIScreen(Game* game)
 	:mGame(game)
 	,mTitle(nullptr)
 	,mBackground(nullptr)
 	,mTitlePos(0.0f, 200.0f)
 	,mNextButtonPos(0.0f, 100.0f)
-	, mNextItemButtonPos(-200.0f, 100.0f)
+	,mNextItemButtonPos(-200.0f, 100.0f)
 	,mNextTextPos(0.0f, -100.0f)
 	,mBGPos(0.0f, 150.0f)
 	,mUIState(EActive)

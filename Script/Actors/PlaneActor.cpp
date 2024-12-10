@@ -6,12 +6,18 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "PlaneActor.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "MeshComponent.h"
 #include "BoxComponent.h"
+#include "Game.h"
 #include "Mesh.h"
+#include "MeshComponent.h"
+#include "Renderer.h"
+
 
 PlaneActor::PlaneActor(Game* game)
 	:Actor(game)

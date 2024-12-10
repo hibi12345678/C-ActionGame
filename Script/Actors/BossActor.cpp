@@ -1,11 +1,16 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "BossActor.h"
-#include "SkeletalMeshComponent.h"
-#include "Game.h"
-#include "MeshComponent.h"
-#include "Mesh.h"
-#include "TargetComponent.h"
 #include "EnemyActor.h"
+#include "Game.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
 #include "Renderer.h"
+#include "SkeletalMeshComponent.h"
+#include "TargetComponent.h"
+
+
 BossActor::BossActor(Game* game)
 	:EnemyActor(game)
 

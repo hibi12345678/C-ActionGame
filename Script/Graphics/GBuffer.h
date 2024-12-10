@@ -6,13 +6,21 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include <vector>
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class GBuffer
 {
 public:
-	// Different types of data stored in the G-buffer
+	//Enum Type
 	enum Type
 	{
 		EDiffuse = 0,
@@ -21,22 +29,29 @@ public:
 		NUM_GBUFFER_TEXTURES
 	};
 
+	//=========================================================================
+	// public methods.
+	//=========================================================================
+	//コンストラクタ
 	GBuffer();
+	//デストラクタ
 	~GBuffer();
 
-	// Create/destroy the G-buffer
+	//初期化
 	bool Create(int width, int height);
+
+	//終了処理
 	void Destroy();
-	
-	// Get the texture for a specific type of data
+
+	//Getter,Setter
 	class Texture* GetTexture(Type type);
-	// Get the framebuffer object ID
 	unsigned int GetBufferID() const { return mBufferID; }
-	// Setup all the G-buffer textures for sampling
 	void SetTexturesActive();
+
 private:
-	// Textures associated with G-buffer
-	std::vector<class Texture*> mTextures;
-	// Frame buffer object ID
+	//=========================================================================
+	// private variables.
+	//=========================================================================
 	unsigned int mBufferID;
+	std::vector<class Texture*> mTextures;
 };

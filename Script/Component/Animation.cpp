@@ -6,11 +6,16 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Animation.h"
-#include "Skeleton.h"
+#include <SDL_log.h>
 #include <rapidjson/document.h>
-#include <SDL/SDL_log.h>
 #include "LevelLoader.h"
+#include "Skeleton.h"
+
 
 bool Animation::Load(const std::string& fileName)
 {

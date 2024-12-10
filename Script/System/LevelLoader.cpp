@@ -5,29 +5,35 @@
 // Released under the BSD License
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "LevelLoader.h"
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/stringbuffer.h>
+#include <SDL.h>
 #include <fstream>
 #include <vector>
-#include <SDL/SDL.h>
-#include "Game.h"
-#include "Renderer.h"
 #include "Actor.h"
-#include "FollowActor.h"
-#include "EnemyActor.h"
-#include "PlaneActor.h"
-#include "Component.h"
 #include "AudioComponent.h"
 #include "BoxComponent.h"
 #include "CameraComponent.h"
+#include "Component.h"
+#include "EnemyActor.h"
+#include "FollowActor.h"
 #include "FollowCamera.h"
+#include "Game.h"
 #include "MeshComponent.h"
 #include "MoveComponent.h"
+#include "PlaneActor.h"
+#include "PointLightComponent.h"
+#include "Renderer.h"
 #include "SkeletalMeshComponent.h"
 #include "SpriteComponent.h"
-#include "PointLightComponent.h"
 #include "TargetComponent.h"
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/prettywriter.h>
+
 
 const int LevelVersion = 1;
 

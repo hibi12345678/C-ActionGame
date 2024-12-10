@@ -6,10 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "DialogBox.h"
+#include <SDL.h>
 #include "Game.h"
 #include "Renderer.h"
-#include <SDL/SDL.h>
+
 
 DialogBox::DialogBox(Game* game, const std::string& text,
 	std::function<void()> onOK)

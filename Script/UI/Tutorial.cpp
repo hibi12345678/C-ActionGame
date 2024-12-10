@@ -1,17 +1,22 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Tutorial.h"
-#include "Game.h"
-#include "DialogBox.h"
-#include <SDL/SDL.h>
-#include "UIScreen.h"
-#include "HUD.h"
-#include "Renderer.h"
+#include <SDL.h>
 #include "AudioSystem.h"
-#include "FollowActor.h"
-#include "TorchItemActor.h"
-#include "SwordActor.h"
 #include "BombActor.h"
 #include "BowActor.h"
+#include "DialogBox.h"
+#include "FollowActor.h"
+#include "Game.h"
+#include "HUD.h"
+#include "Renderer.h"
+#include "SwordActor.h"
+#include "TorchItemActor.h"
 #include "UIActor.h"
+#include "UIScreen.h"
+
+
 Tutorial::Tutorial(Game* game)
 	:UIScreen(game)
 

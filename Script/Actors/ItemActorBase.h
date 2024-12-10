@@ -1,28 +1,45 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
 #include "Actor.h"
-#pragma once
-#include "Actor.h"
-#include "MeshComponent.h"
 #include "Maths.h"
+#include "MeshComponent.h"
 
+
+///////////////////////////////////////////////////////////////////////////////
+//class
+///////////////////////////////////////////////////////////////////////////////
 class ItemActorBase : public Actor
 {
 public:
-    ItemActorBase(class Game* game, float scale ,int num);
-    virtual void UpdateActor(float deltaTime) override;
+    //Enum State
     enum State
     {
         EActive,
         EPaused,
         EDead
     };
-protected:
 
-    class MeshComponent* mc;
+    //=========================================================================
+    // public methods.
+    //=========================================================================   
+    //コンストラクタ
+    ItemActorBase(class Game* game, float scale ,int num);
+
+    //Update
+    virtual void UpdateActor(float deltaTime) override;
+
+protected:
+    //=========================================================================
+    // private variables.
+    //=========================================================================
+    int mNum; //選択アイテム用整数
     float scale;
-    int mNum;
     Vector3 Position;
-    Actor::State mState;  // Actor::State を使用
     Quaternion Rotation;
 
+    Actor::State mState;  // Actor::State
+
+    class MeshComponent* mc;
 };

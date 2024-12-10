@@ -6,16 +6,17 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Game.h"
 #include <algorithm>
 #include <iostream>
-
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
-
-#include "imgui_impl_sdl2.h"
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <imgui_impl_sdl2.h>
 #include <rapidjson/document.h>
-
 #include "Actor.h"
 #include "Animation.h"
 #include "AudioSystem.h"
@@ -42,6 +43,7 @@
 #include "Tutorial.h"
 #include "TreeActor.h"
 #include "UIScreen.h"
+
 
 Game::Game()
 	:mRenderer(nullptr)
@@ -417,6 +419,22 @@ void Game::LoadData()
 		mHUD = new HUD(this);
 		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");
 		class Tutorial* mTutorial = new Tutorial(this);
+		// Create pause menu
+		for (int i = 0; i < 11; ++i) {  // 木を5個配置する例
+			float xPosition = -2200.0f + (i * 400.0f);  // Y座標を-1300から400ずつ増やす
+			TreeActor* tree = new TreeActor(this);
+			tree->SetPosition(Vector3(xPosition, -1500.0f, -100.0f));  // X, Y, Z座標を設定
+		}
+		for (int i = 0; i < 11; ++i) {  // 木を5個配置する例
+			float xPosition = -2200.0f + (i * 400.0f);  // Y座標を-1300から400ずつ増やす
+			TreeActor* tree = new TreeActor(this);
+			tree->SetPosition(Vector3( 1500.0f, xPosition, -100.0f));  // X, Y, Z座標を設定
+		}
+		for (int i = 0; i < 11; ++i) {  // 木を5個配置する例
+			float xPosition = -2200.0f + (i * 400.0f);  // Y座標を-1300から400ずつ増やす
+			TreeActor* tree = new TreeActor(this);
+			tree->SetPosition(Vector3( -1500.0f, xPosition, -100.0f));  // X, Y, Z座標を設定
+		}
 		gameOverFlag = false;
 		gameClearFlag = false;
 	}

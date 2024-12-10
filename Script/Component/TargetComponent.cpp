@@ -6,14 +6,18 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "BoxComponent.h"
-#include "Actor.h"
-#include "Game.h"
-#include "PhysWorld.h"
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "TargetComponent.h"
-#include "Math.h"
+#include "Actor.h"
+#include "BoxComponent.h"
 #include "Game.h"
 #include "HUD.h"
+#include "Math.h"
+#include "PhysWorld.h"
+
 
 TargetComponent::TargetComponent(Actor * owner)
 	:Component(owner)

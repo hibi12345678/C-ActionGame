@@ -6,10 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "PhysWorld.h"
+#include <SDL.h>
 #include <algorithm>
 #include "BoxComponent.h"
-#include <SDL/SDL.h>
+
 
 PhysWorld::PhysWorld(Game* game)
 	:mGame(game)

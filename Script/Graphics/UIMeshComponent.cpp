@@ -1,12 +1,16 @@
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "UIMeshComponent.h"
-#include "Shader.h"
-#include "Mesh.h"
 #include "Actor.h"
 #include "Game.h"
+#include "LevelLoader.h"
+#include "Mesh.h"
 #include "Renderer.h"
+#include "Shader.h"
 #include "Texture.h"
 #include "VertexArray.h"
-#include "LevelLoader.h"
+
 
 UIMeshComponent::UIMeshComponent(Actor* owner, bool isSkeletal)
 	:Component(owner)

@@ -6,12 +6,18 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "Shader.h"
-#include "Texture.h"
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+#include "Texture.h"
+
+
 Shader::Shader()
 	: mShaderProgram(0)
 	, mVertexShader(0)

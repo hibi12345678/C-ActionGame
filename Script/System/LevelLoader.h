@@ -6,28 +6,40 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #pragma once
-#include <string>
 #include <rapidjson/document.h>
 #include <functional>
+#include <string>
 #include <unordered_map>
 #include "Maths.h"
+
 
 using ActorFunc = std::function<class Actor*(class Game*, const rapidjson::Value&)>;
 using ComponentFunc = std::function<
 	class Component*(class Actor*, const rapidjson::Value&)
 >;
 
+///////////////////////////////////////////////////////////////////////////////
+//LevelLoder class
+///////////////////////////////////////////////////////////////////////////////
 class LevelLoader
 {
 public:
-	// Load the level -- returns true if successful
+	//=========================================================================
+	// public methods.
+	//=========================================================================
 	static bool LoadLevel(class Game* game, const std::string& fileName);
-	// Loads a JSON file into a RapidJSON document
 	static bool LoadJSON(const std::string& fileName, rapidjson::Document& outDoc);
-	// Save the level
 	static void SaveLevel(class Game* game, const std::string& fileName);
+
 protected:
+    //=========================================================================
+	// private methods.
+	//=========================================================================
 	// Helper to load global properties
 	static void LoadGlobalProperties(class Game* game, const rapidjson::Value& inObject);
 	// Helper to load in actors
@@ -48,6 +60,10 @@ protected:
 		const class Actor* actor, rapidjson::Value& inArray);
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
+//JsonHelper class
+///////////////////////////////////////////////////////////////////////////////
 class JsonHelper
 {
 public:
