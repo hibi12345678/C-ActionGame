@@ -21,7 +21,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//class
+//Game class
 ///////////////////////////////////////////////////////////////////////////////
 class Game
 {
@@ -33,6 +33,9 @@ public:
         EPaused,
         ETutorial,
         EItem,
+        ELoadStage,
+        EGameOver,
+        EGameClear,
         EQuit
     };
 
@@ -78,6 +81,7 @@ public:
     std::vector<class BombActor*>& GetBomb() { return mBombs; }
     std::vector<class ExplosionActor*>& GetExplosion() { return mExplosions; }
     std::vector<class TreeActor*>& GetTree() { return mTrees; }
+    std::vector<class StageChange*>& GetStageChange() { return mStageChanges; }
     class Font* GetFont(const std::string& fileName);
     class Skeleton* GetSkeleton(const std::string& fileName);
     class Animation* GetAnimation(const std::string& fileName);
@@ -86,10 +90,12 @@ public:
     class AudioSystem* GetAudioSystem() { return mAudioSystem; }
     class PhysWorld* GetPhysWorld() { return mPhysWorld; }
     class HUD* GetHUD() { return mHUD; }
+    class GameTimer* GetTimer() { return timer; }
     void SetState(GameState state) { mGameState = state; }
     void SetScore(int score) { scoreNumber = score; }
     void SetFollowActor(class FollowActor* actor) { mFollowActor = actor; }
     void SetBossActor(class BossActor* actor) { mBossActor = actor; }
+    void SetStageNumber(int num) { stageNumber = num; }
 
     //Add,Remove
     void PushUI(class UIScreen* screen);
@@ -110,9 +116,11 @@ public:
     void RemoveExplosion(class ExplosionActor* explosion);
     void AddTree(class TreeActor* tree);
     void RemoveTree(class TreeActor* tree);
-
+    void AddStageChange(class StageChange* sc);
+    void RemoveStageChange(class StageChange* sc);
 
     void GenerateOutput();
+    void LoadStage();
     void GetData();
 
 private:
@@ -125,6 +133,7 @@ private:
     bool gameClearFlag; //ゲームクリア判定
     bool mUpdatingActors; 
     int scoreNumber; //スコア
+    int stageNumber; //ステージナンバー
     float mBossTime; //ボスが出現するまでの時間
     Uint32 mTicksCount;
 
@@ -138,6 +147,7 @@ private:
     class FollowActor* mFollowActor;
     class BossActor* mBossActor;
     class SpriteComponent* mCrosshair;
+    class GameTimer* timer;
     std::vector<class Actor*> mActors;
     std::vector<class UIScreen*> mUIStack;
     std::vector<class PlaneActor*> mPlanes;
@@ -148,6 +158,7 @@ private:
     std::vector<class ExplosionActor*> mExplosions;
     std::vector<class TreeActor*> mTrees;
     std::vector<class Actor*> mPendingActors;
+    std::vector <class StageChange* > mStageChanges;
     std::unordered_map<std::string, class Font*> mFonts;
     std::unordered_map<std::string, class Skeleton*> mSkeletons;
     std::unordered_map<std::string, class Animation*> mAnims;

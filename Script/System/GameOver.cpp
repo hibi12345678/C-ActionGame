@@ -4,16 +4,24 @@
 #include "GameOver.h"
 #include <SDL.h>
 #include "DialogBox.h"
+#include "GameTimer.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// GameOver class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 GameOver::GameOver(Game* game)
 	:UIScreen(game)
 {
 
-
+	mGame->GetTimer()->StopTimer();
 	SDL_ShowCursor(SDL_ENABLE);
 	SetRelativeMouseMode(false);
-	SetTitle("GameOver");
+	AddText("GameOver", Vector2(0.0f,300.0f),72,Color::Red,1);
 	
 	AddButton("StartButton", [this]() {
 		new DialogBox(mGame, "StartText",
@@ -31,11 +39,19 @@ GameOver::GameOver(Game* game)
 
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 GameOver::~GameOver()
 {
 	mGame->SetState(Game::GameState::EMainMenu);
 }
 
+
+//-----------------------------------------------------------------------------
+//   入力処理
+//-----------------------------------------------------------------------------
 void GameOver::HandleKeyPress(int key)
 {
 	UIScreen::HandleKeyPress(key);

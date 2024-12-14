@@ -10,10 +10,15 @@
 #include "SkeletalMeshComponent.h"
 #include "TargetComponent.h"
 
+///////////////////////////////////////////////////////////////////////////////
+// BossActor class
+///////////////////////////////////////////////////////////////////////////////
 
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 BossActor::BossActor(Game* game)
 	:EnemyActor(game)
-
 {
 	name = "EnemyBoss";
 	SetScale(2.0f);
@@ -25,7 +30,9 @@ BossActor::BossActor(Game* game)
 	new TargetComponent(this);
 }
 
-
+//-----------------------------------------------------------------------------
+// Update
+//-----------------------------------------------------------------------------
 void BossActor::UpdateActor(float deltaTime) {
 
 	EnemyActor::UpdateActor(deltaTime);

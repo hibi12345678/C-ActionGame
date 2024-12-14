@@ -5,16 +5,25 @@
 #include <SDL.h>
 #include "DialogBox.h"
 #include "Game.h"
+#include "GameTimer.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// GameClear class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 GameClear::GameClear(Game* game)
 	:UIScreen(game)
 {
 
-
+	mGame->GetTimer()->StopTimer();
 	SDL_ShowCursor(SDL_ENABLE);
 	SetRelativeMouseMode(false);
-	SetTitle("GameClear");
+	AddText("GameClear", Vector2(0.0f, 250.0f), 72, Color::Yellow, 1);
+	AddText("GameClear", Vector2(0.0f, 250.0f), 72, Color::Yellow, 1);
 	
 	AddButton("StartButton", [this]() {
 		new DialogBox(mGame, "StartText",
@@ -32,15 +41,23 @@ GameClear::GameClear(Game* game)
 
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 GameClear::~GameClear()
 {
 	mGame->SetState(Game::GameState::EMainMenu);
 }
 
+
+
+//-----------------------------------------------------------------------------
+//   入力処理
+//-----------------------------------------------------------------------------
 void GameClear::HandleKeyPress(int key)
 {
 	UIScreen::HandleKeyPress(key);
-
 
 }
 

@@ -17,17 +17,24 @@
 #include "UIScreen.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Tutorial class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 Tutorial::Tutorial(Game* game)
 	:UIScreen(game)
 
 {
+	//チュートリアル
 	mGame->SetState(Game::GameState::ETutorial);
 	SDL_ShowCursor(SDL_ENABLE);
 	SetRelativeMouseMode(false);
-	//SetTitle("Item");
 	HUD* hudInstance = mGame->GetHUD();
 	Renderer* r = mGame->GetRenderer();
-	r->SetAmbientLight(Vector3(0.0f, 0.0f, 0.0f));
+	r->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
 	DrawButtonRight("A", [this]() {
 		AddTutorialNum();
 		});
@@ -39,11 +46,15 @@ Tutorial::Tutorial(Game* game)
 		CloseTutorial();
 		});
 }
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 Tutorial::~Tutorial()
 {
 	mGame->SetState(Game::GameState::EGameplay);
 	Renderer* r = mGame->GetRenderer();
-	r->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
+	r->SetAmbientLight(Vector3(0.7f, 0.7f, 0.7f));
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_GetRelativeMouseState(nullptr, nullptr);

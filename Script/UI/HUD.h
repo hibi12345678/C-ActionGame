@@ -16,7 +16,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//class
+//HUD class
 ///////////////////////////////////////////////////////////////////////////////
 class HUD : public UIScreen
 {
@@ -56,10 +56,9 @@ public:
 	void AddTargetComponent(class TargetComponent* tc);
 	void RemoveTargetComponent(class TargetComponent* tc);
 
+
 	void Draw(class Shader* shader) override;
 
-
-	
 protected:
 	//=========================================================================
 	// protected variables.
@@ -93,8 +92,10 @@ protected:
 	class Texture* mCross;
 	class Texture* mFrame;
 	class Texture* mFrame2;
+	class Texture* mLine;
 	std::vector<class TargetComponent*> mTargetComps;
 	std::vector<Vector2> mBlips;
+
 
 	//=========================================================================
 	// protected methods.

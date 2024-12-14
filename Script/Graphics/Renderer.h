@@ -21,7 +21,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//class
+//DirectionalLight class
 ///////////////////////////////////////////////////////////////////////////////
 struct DirectionalLight
 {
@@ -71,6 +71,7 @@ public:
 	float GetScreenWidth() const { return mScreenWidth; }
 	float GetScreenHeight() const { return mScreenHeight; }
 	class GBuffer* GetGBuffer() { return mGBuffer;}
+	class Terrain* GetTerrain() { return mTerrain; }
 	const std::vector<class PointLightComponent*>& GetPointLights() const { return mPointLights; }
 	void SetViewMatrix(const Matrix4& view) { mView = view; }
 	void SetAmbientLight(const Vector3& ambient) { mAmbientLight = ambient; }

@@ -3,20 +3,29 @@
 //-----------------------------------------------------------------------------
 #include "ItemMenu.h"
 #include <SDL.h>
-#include "Game.h"
-#include "DialogBox.h"
-#include "UIScreen.h"
-#include "HUD.h"
-#include "Renderer.h"
 #include "AudioSystem.h"
-#include "FollowActor.h"
-#include "TorchItemActor.h"
-#include "SwordActor.h"
 #include "BombActor.h"
 #include "BowActor.h"
+#include "DialogBox.h"
+#include "FollowActor.h"
+#include "Game.h"
+#include "GameTimer.h"
+#include "HUD.h"
+#include "Renderer.h"
+#include "SwordActor.h"
+#include "TorchItemActor.h"
+#include "UIScreen.h"
 #include "UIActor.h"
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+//ItemMenu class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 ItemMenu::ItemMenu(Game* game)
 	:UIScreen(game)
 	
@@ -27,11 +36,12 @@ ItemMenu::ItemMenu(Game* game)
 	SetTitle("Item");
 	HUD* hudInstance = mGame->GetHUD();
 	Renderer* r = mGame->GetRenderer();
-	r->SetAmbientLight(Vector3(0.2, 0.2, 0.2));
+	r->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
 	FollowActor* player = mGame->GetPlayer();
 	menuState = static_cast<ItemMenu::ItemState>(player->GetItemState());
 	
 	uiActor = new UIActor(mGame);
+	//選択したボタンに応じたテキスト
 	static const std::vector<std::pair<std::string, FollowActor::ItemState>> items = {
 		{"SwordText", FollowActor::ESword},
 		{"TorchText", FollowActor::ETorch},
@@ -55,11 +65,16 @@ ItemMenu::ItemMenu(Game* game)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 ItemMenu::~ItemMenu()
 {
 	mGame->SetState(Game::GameState::EGameplay);
+	mGame->GetTimer()->StartTimer();
 	Renderer* r = mGame->GetRenderer();
-	r->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
+	r->SetAmbientLight(Vector3(0.7f, 0.7f, 0.7f));
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_GetRelativeMouseState(nullptr, nullptr);
@@ -67,7 +82,7 @@ ItemMenu::~ItemMenu()
 
 	FollowActor::ItemState currentState = mGame->GetPlayer()->GetItemState();
 	uiActor->SetState(Actor::EDead);
-
+	//アイテムメニューを閉じたら武器を生成する
 	if (menuState != currentState) {
 		switch (currentState) {
 		case FollowActor::ESword:
@@ -89,6 +104,10 @@ ItemMenu::~ItemMenu()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   入力処理
+//-----------------------------------------------------------------------------
 void ItemMenu::HandleKeyPress(int key)
 {
 	UIScreen::HandleKeyPress(key);

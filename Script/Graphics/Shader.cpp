@@ -18,6 +18,13 @@
 #include "Texture.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Shader class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 Shader::Shader()
 	: mShaderProgram(0)
 	, mVertexShader(0)
@@ -26,11 +33,19 @@ Shader::Shader()
 	
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 Shader::~Shader()
 {
 
 }
 
+
+//-----------------------------------------------------------------------------
+//  ファイルの初期化
+//-----------------------------------------------------------------------------
 bool Shader::Load(const std::string& vertName, const std::string& fragName)
 {
 	// Compile vertex and pixel shaders
@@ -60,6 +75,10 @@ bool Shader::Load(const std::string& vertName, const std::string& fragName)
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+//  テッセレーションの初期化（未使用）
+//-----------------------------------------------------------------------------
 bool Shader::TessellationLoad(const std::string& vertName,
 	const std::string& tessControlName,
 	const std::string& tessEvaluationName,
@@ -92,6 +111,9 @@ bool Shader::TessellationLoad(const std::string& vertName,
 }
 
 
+//-----------------------------------------------------------------------------
+//  シェーダーの解放処理
+//-----------------------------------------------------------------------------
 void Shader::Unload()
 {
 	// Delete the program/shaders
@@ -100,12 +122,19 @@ void Shader::Unload()
 	glDeleteShader(mFragShader);
 }
 
+
+//-----------------------------------------------------------------------------
+//  シェーダーのアクティブ化
+//-----------------------------------------------------------------------------
 void Shader::SetActive()
 {
 	// Set this program as the active one
 	glUseProgram(mShaderProgram);
 }
 
+//-----------------------------------------------------------------------------
+//  Matrix4の情報をシェーダーに送信
+//-----------------------------------------------------------------------------
 void Shader::SetMatrixUniform(const char* name, const Matrix4& matrix)
 {
 	// Find the uniform by this name
@@ -114,6 +143,9 @@ void Shader::SetMatrixUniform(const char* name, const Matrix4& matrix)
 	glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.GetAsFloatPtr());
 }
 
+//-----------------------------------------------------------------------------
+//  Matrix4の情報をシェーダーに送信
+//-----------------------------------------------------------------------------
 void Shader::SetMatrixUniforms(const char* name, Matrix4* matrices, unsigned count)
 {
 	GLuint loc = glGetUniformLocation(mShaderProgram, name);
@@ -121,6 +153,9 @@ void Shader::SetMatrixUniforms(const char* name, Matrix4* matrices, unsigned cou
 	glUniformMatrix4fv(loc, count, GL_TRUE, matrices->GetAsFloatPtr());
 }
 
+//-----------------------------------------------------------------------------
+// 　Vector3の情報をシェーダーに送信
+//-----------------------------------------------------------------------------
 void Shader::SetVectorUniform(const char* name, const Vector3& vector)
 {
 	GLuint loc = glGetUniformLocation(mShaderProgram, name);
@@ -128,6 +163,9 @@ void Shader::SetVectorUniform(const char* name, const Vector3& vector)
 	glUniform3fv(loc, 1, vector.GetAsFloatPtr());
 }
 
+//-----------------------------------------------------------------------------
+//  vector2の情報をシェーダーに送信
+//-----------------------------------------------------------------------------
 void Shader::SetVector2Uniform(const char* name, const Vector2& vector)
 {
 	GLuint loc = glGetUniformLocation(mShaderProgram, name);
@@ -135,6 +173,10 @@ void Shader::SetVector2Uniform(const char* name, const Vector2& vector)
 	glUniform2fv(loc, 1, vector.GetAsFloatPtr());
 }
 
+
+//-----------------------------------------------------------------------------
+//  float型の情報をシェーダーに送信
+//-----------------------------------------------------------------------------
 void Shader::SetFloatUniform(const char* name, float value)
 {
 	GLuint loc = glGetUniformLocation(mShaderProgram, name);
@@ -142,6 +184,10 @@ void Shader::SetFloatUniform(const char* name, float value)
 	glUniform1f(loc, value);
 }
 
+
+//-----------------------------------------------------------------------------
+//  int型の情報をシェーダーに送信
+//-----------------------------------------------------------------------------
 void Shader::SetIntUniform(const char* name, int value)
 {
 	GLuint loc = glGetUniformLocation(mShaderProgram, name);
@@ -149,6 +195,9 @@ void Shader::SetIntUniform(const char* name, int value)
 	glUniform1i(loc, value);
 }
 
+//-----------------------------------------------------------------------------
+//  シェーダーをコンパイル
+//-----------------------------------------------------------------------------
 bool Shader::CompileShader(const std::string& fileName,
 				   GLenum shaderType,
 				   GLuint& outShader)
@@ -185,6 +234,9 @@ bool Shader::CompileShader(const std::string& fileName,
 }
 
 
+//-----------------------------------------------------------------------------
+//  テッセレーションシェーダーをコンパイル
+//-----------------------------------------------------------------------------
 bool Shader::CompileTessellationShader(const std::string& fileName,
 	GLenum shaderType,
 	GLuint& outShader)
@@ -230,6 +282,11 @@ bool Shader::CompileTessellationShader(const std::string& fileName,
 
 	return true;
 }
+
+
+//-----------------------------------------------------------------------------
+//  コンパイルできたか
+//-----------------------------------------------------------------------------
 bool Shader::IsCompiled(GLuint shader)
 {
 	GLint status;
@@ -248,6 +305,10 @@ bool Shader::IsCompiled(GLuint shader)
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+//  シェーダーがリンクできているか
+//-----------------------------------------------------------------------------
 bool Shader::IsValidProgram()
 {
 	

@@ -19,6 +19,14 @@
 #include "LevelLoader.h"
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+// FollowCamera class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 FollowCamera::FollowCamera(Actor* owner)
 	:CameraComponent(owner)
 	, mSpringConstant(128.0)
@@ -28,8 +36,13 @@ FollowCamera::FollowCamera(Actor* owner)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void FollowCamera::Update(float deltaTime)
 {
+	//カメラ位置の計算(頭上後方）
 	Vector3 cameraPos = ComputeCameraPos() ;
 	mPitch += mPitchSpeed * deltaTime;
 	mPitch = Math::Clamp(mPitch, -mMaxPitch * 0.7f, mMaxPitch*0.6f);
@@ -37,19 +50,22 @@ void FollowCamera::Update(float deltaTime)
 	Vector3 viewForward = Vector3::Transform(
 		mOwner->GetForward(), q);
 	Vector3 target = mOwner->GetPosition() + viewForward * mTargetDist * 10.0f;
-	// Also rotate up by pitch quaternion
 	Vector3 up = Vector3::Transform(Vector3::UnitZ, q);
 
-	// Create look at matrix, set as view
+	//カメラの注視位置をRendererに送る
 	Matrix4 view = Matrix4::CreateLookAt(cameraPos, target, up);
 	SetViewMatrix(view);
 
-	// Set listener attributes to the player's position, not the camera's
+	//音を効く位置をカメラでは鳴くキャラクター中心にする
 	Game* game = mOwner->GetGame();
 	Vector3 playerPosition = mOwner->GetPosition();
 	game->GetAudioSystem()->SetListener(view, Vector3::Zero, 1.0f, playerPosition);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Jsonファイルからデータの読み取り
+//-----------------------------------------------------------------------------
 void FollowCamera::LoadProperties(const rapidjson::Value& inObj)
 {
 	CameraComponent::LoadProperties(inObj);
@@ -62,6 +78,10 @@ void FollowCamera::LoadProperties(const rapidjson::Value& inObj)
 	JsonHelper::GetFloat(inObj, "springConstant", mSpringConstant);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Jsonファイルからデータの書き込み
+//-----------------------------------------------------------------------------
 void FollowCamera::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	CameraComponent::SaveProperties(alloc, inObj);
@@ -73,6 +93,10 @@ void FollowCamera::SaveProperties(rapidjson::Document::AllocatorType& alloc, rap
 	JsonHelper::AddFloat(alloc, inObj, "springConstant", mSpringConstant);
 }
 
+
+//-----------------------------------------------------------------------------
+// 　カメラ位置の計算mん
+//-----------------------------------------------------------------------------
 Vector3 FollowCamera::ComputeCameraPos() const
 {
 	// Set camera position behind and above owner

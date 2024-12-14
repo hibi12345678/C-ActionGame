@@ -13,18 +13,26 @@
 #include "HUD.h"
 #include <algorithm>
 #include <iostream>
-#include "Texture.h"
-#include "Shader.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "PhysWorld.h"
-#include "FollowActor.h"
 #include "BossActor.h"
-#include "GBuffer.h"
-#include "TargetComponent.h"
+#include "FollowActor.h"
 #include "Font.h"
+#include "Game.h"
+#include "GameTimer.h"
+#include "GBuffer.h"
+#include "PhysWorld.h"
+#include "Renderer.h"
+#include "Shader.h"
+#include "TargetComponent.h"
+#include "Texture.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// HUD class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 HUD::HUD(Game* game)
 	:UIScreen(game)
 	, mRadarRange(2000.0f)
@@ -32,8 +40,6 @@ HUD::HUD(Game* game)
 	, mTargetEnemy(false)
 	, mGame(game)
 	, itemNum(0)
-
-	
 {
 	Renderer* r = mGame->GetRenderer();
 	mRadar = r->GetTexture("Assets/Texture/Radar.png");
@@ -58,19 +64,32 @@ HUD::HUD(Game* game)
 	mCross = mGame->GetRenderer()->GetTexture("Assets/Texture/×.png");
 	mFrame = mGame->GetRenderer()->GetTexture("Assets/Texture/Frame.png");
 	mFrame2 = mGame->GetRenderer()->GetTexture("Assets/Texture/Frame2.png");
+	mLine = mGame->GetRenderer()->GetTexture("Assets/Texture/Line.png");
 	
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 HUD::~HUD()
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void HUD::Update(float deltaTime)
 {
 	UIScreen::Update(deltaTime);
 	UpdateRadar(deltaTime);
 }
 
+
+//-----------------------------------------------------------------------------
+//  描画処理
+//-----------------------------------------------------------------------------
 void HUD::Draw(Shader* shader)
 {
 	
@@ -82,6 +101,8 @@ void HUD::Draw(Shader* shader)
 		{
 			DrawTexture(shader, mBlipTex, cRadarPos + blip, 1.0f);
 		}
+
+
 		DrawTexture(shader, mRadarArrow, cRadarPos);
 		FollowActor* followActor = mGame->GetPlayer();
 		if (followActor != nullptr) {
@@ -124,19 +145,23 @@ void HUD::Draw(Shader* shader)
 				DrawTexture(shader, tex, Vector2(460.0f, -352.0f));
 			}
 			
+
+			else {
+				
+			}
+
+			Texture* tex = new Texture();
+			int mTime = mGame->GetTimer()->GetElapsedTime();
+			std::string str = std::to_string(mTime);
+			tex = mFont->RenderText(str, Color::White, 24, 1);
+			DrawTexture(shader, tex, Vector2(385.0, 350.0f));
 		}
 		else {
 			
 		}	
 
-		Texture* tex = new Texture();
-		int mNum = mGame->GetScore();
-		std::string str = std::to_string(mNum);
-		tex = mFont->RenderText(str, Color::White, 24,1);
-		DrawTexture(shader, tex, Vector2(385.0, 350.0f));
-		Texture* scoretex = new Texture();
-		scoretex = mFont->RenderText("Score", Color::White, 24);
-		DrawTexture(shader, scoretex, Vector2(300.0, 350.0f));
+
+
 
 		if (mGame->GetScore() == 4) {
 
@@ -177,14 +202,51 @@ void HUD::Draw(Shader* shader)
 		}
 	}
 
+	if (Game::GameState::EGameOver == mGame->GetState()) {
+		Texture* tex = new Texture();
+
+		int mTime = mGame->GetTimer()->GetElapsedTime();
+		std::string str = std::to_string(mTime);
+		tex = mFont->RenderText(str, Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(50.0f, 200.0f));
+		Texture* scoretex = new Texture();
+
+		scoretex = mFont->RenderText("Time", Color::White, 44, 1);
+		DrawTexture(shader, scoretex, Vector2(-50.0f, 200.0f));
+		DrawTexture(shader, mLine, Vector2(0.0f, 170.0f), 2.0f);
+
+	}
+
+	if (Game::GameState::EGameClear == mGame->GetState()) {
+		Texture* tex = new Texture();
+
+		int mTime = mGame->GetTimer()->GetElapsedTime();
+		std::string str = std::to_string(mTime);
+		tex = mFont->RenderText(str, Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(50.0f, 200.0f));
+		Texture* scoretex = new Texture();
+
+		scoretex = mFont->RenderText("Clear Time", Color::White, 44, 1);
+		DrawTexture(shader, scoretex, Vector2(-100.0f, 200.0f));
+		DrawTexture(shader, mLine, Vector2(0.0f, 170.0f), 2.0f);
+
+	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  TargetComponent vectorに追加
+//-----------------------------------------------------------------------------
 void HUD::AddTargetComponent(TargetComponent* tc)
 {
 	mTargetComps.emplace_back(tc);
 
 }
 
+
+//-----------------------------------------------------------------------------
+//  TargetComponent vectorから削除
+//-----------------------------------------------------------------------------
 void HUD::RemoveTargetComponent(TargetComponent* tc)
 {
 	auto iter = std::find(mTargetComps.begin(), mTargetComps.end(),
@@ -193,6 +255,10 @@ void HUD::RemoveTargetComponent(TargetComponent* tc)
 }
 
 
+
+//-----------------------------------------------------------------------------
+//  Raderの描画処理
+//-----------------------------------------------------------------------------
 void HUD::UpdateRadar(float deltaTime)
 {
 	
@@ -211,7 +277,7 @@ void HUD::UpdateRadar(float deltaTime)
 		
 		for (auto tc : mTargetComps)
 		{
-			
+
 			Vector3 targetPos = tc->GetOwner()->GetPosition();
 			Vector2 actorPos2D(targetPos.y, targetPos.x);
 			Vector2 playerToTarget = actorPos2D - playerPos2D;

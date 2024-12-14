@@ -31,6 +31,7 @@
 #include "MeshComponent.h"
 #include "MoveComponent.h"
 #include "PointLightComponent.h"
+#include "PlaneActor.h"
 #include "Shader.h"
 #include "SkeletalMeshComponent.h"
 #include "SpriteComponent.h"
@@ -43,6 +44,14 @@
 #include "VertexArray.h"
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Renderer class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 Renderer::Renderer(Game* game)
 	:mGame(game)
 	,mSpriteShader(nullptr)
@@ -55,10 +64,18 @@ Renderer::Renderer(Game* game)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 Renderer::~Renderer()
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//   skyboxの頂点情報
+//-----------------------------------------------------------------------------
 float skyboxVertices[] =
 {
 	//   Coordinates
@@ -72,6 +89,9 @@ float skyboxVertices[] =
 	-1.0f,  1.0f, -1.0f
 };
 
+//-----------------------------------------------------------------------------
+//   skyboxのインデックスバッファ
+//-----------------------------------------------------------------------------
 unsigned int skyboxIndices[] =
 {
 	// Right
@@ -93,6 +113,11 @@ unsigned int skyboxIndices[] =
 	3, 7, 6,
 	6, 2, 3
 };
+
+
+//-----------------------------------------------------------------------------
+//   skyboxの各面の画像
+//-----------------------------------------------------------------------------
 std::string facesCubemap[6] =
 { 
 	"Assets/Texture/SkyboxRight.jpg",
@@ -103,6 +128,10 @@ std::string facesCubemap[6] =
 	"Assets/Texture/SkyboxBack.jpg"
 };
 
+
+//-----------------------------------------------------------------------------
+//   初期化処理
+//-----------------------------------------------------------------------------
 bool Renderer::Initialize(float screenWidth, float screenHeight)
 {
 
@@ -148,6 +177,8 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 		SDL_Quit();
 		return -1;
 	}
+
+
 	// Initialize GLEW
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
@@ -155,9 +186,9 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 		SDL_Log("Failed to initialize GLEW.");
 		return false;
 	}
+
+	//Iｍguiの初期化
 	InitializeImGui(mImGuiWindow, mImGuiContext);
-	// On some platforms, GLEW will emit a benign error code,
-	// so clear it
 	glGetError();
 
 	// Make sure we can create/compile shaders
@@ -166,14 +197,14 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 		SDL_Log("Failed to load shaders.");
 		return false;
 	}
+
 	// OpenGLのバージョンを取得
 	const GLubyte* version = glGetString(GL_VERSION);
 	std::cout << "OpenGL Version: " << version << std::endl;
 	// Create quad for drawing sprites
 	CreateSpriteVerts();
-
 	
-	// Create G-buffer
+	// G-buffer生成
 	mGBuffer = new GBuffer();
 	int width = static_cast<int>(mScreenWidth);
 	int height = static_cast<int>(mScreenHeight);
@@ -187,7 +218,7 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 	mPointLightMesh = GetMesh("Assets/Object/PointLight.gpmesh");
 
 	
-
+	//Skyboxの初期化
 	glGenVertexArrays(1, &skyboxVAO);
 	glGenBuffers(1, &skyboxVBO);
 	glGenBuffers(1, &skyboxEBO);
@@ -241,11 +272,16 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 		}
 	}
 
+	//terrainの初期化
 	mTerrain = new Terrain(mTessellationShader,mView,mProjection);
 
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+//   終了処理
+//-----------------------------------------------------------------------------
 void Renderer::Shutdown()
 {
 
@@ -276,10 +312,12 @@ void Renderer::Shutdown()
 	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
-	
-
 }
 
+
+//-----------------------------------------------------------------------------
+//   終了処理
+//-----------------------------------------------------------------------------
 void Renderer::UnloadData()
 {
 	// Destroy textures
@@ -299,14 +337,19 @@ void Renderer::UnloadData()
 	mMeshes.clear();
 }
 
+
+//-----------------------------------------------------------------------------
+//   描画処理の呼び出し
+//-----------------------------------------------------------------------------
 void Renderer::Draw()
 {
 	//Draw the GameScene
 	// Draw the 3D scene to the G-buffer
 	Draw3DScene(mGBuffer->GetBufferID(), mView, mProjection, true);
-
+	//Draw Terrain
 	mTerrain->GenerateTerrain(mView, mProjection);
 
+	//Draw SkyBox
 	DrawSkybox();
 	// Set the frame buffer back to zero (screen's frame buffer)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -358,7 +401,7 @@ void Renderer::Draw()
 	if (ImGui::ColorPicker3("BG color", bgColor, ImGuiColorEditFlags_PickerHueWheel)) {
 		glClearColor(bgColor[0], bgColor[1], bgColor[2], 1.0f);
 	}
-	SetAmbientLight(Vector3(bgColor[0], bgColor[1], bgColor[2]));
+	//SetAmbientLight(Vector3(bgColor[0], bgColor[1], bgColor[2]));
 	ImGui::End();  
 
 	auto& trees = mGame->GetTree();
@@ -464,6 +507,10 @@ void Renderer::Draw()
 	SDL_GL_SwapWindow(mWindow);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Sprite vectorに追加
+//-----------------------------------------------------------------------------
 void Renderer::AddSprite(SpriteComponent* sprite)
 {
 	// Find the insertion point in the sorted vector
@@ -484,12 +531,20 @@ void Renderer::AddSprite(SpriteComponent* sprite)
 	mSprites.insert(iter, sprite);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Sprite vectorへ追加
+//-----------------------------------------------------------------------------
 void Renderer::RemoveSprite(SpriteComponent* sprite)
 {
 	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 	mSprites.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Sprite vectorから削除
+//-----------------------------------------------------------------------------
 void Renderer::AddMeshComp(MeshComponent* mesh)
 {
 	if (mesh->GetIsSkeletal())
@@ -503,6 +558,10 @@ void Renderer::AddMeshComp(MeshComponent* mesh)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   SkeltialMesh vectorから削除
+//-----------------------------------------------------------------------------
 void Renderer::RemoveMeshComp(MeshComponent* mesh)
 {
 	if (mesh->GetIsSkeletal())
@@ -518,28 +577,48 @@ void Renderer::RemoveMeshComp(MeshComponent* mesh)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   UIMeshComps vectorへ追加
+//-----------------------------------------------------------------------------
 void Renderer::AddUIMeshComp(UIMeshComponent* mesh)
 {
      mUIMeshComps.emplace_back(mesh);
 }
 
+
+//-----------------------------------------------------------------------------
+//  UIMeshComps vectorから削除
+//-----------------------------------------------------------------------------
 void Renderer::RemoveUIMeshComp(UIMeshComponent* mesh)
 {
 	auto iter = std::find(mUIMeshComps.begin(), mUIMeshComps.end(), mesh);
 	mUIMeshComps.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//   PointLight vectorへ追加
+//-----------------------------------------------------------------------------
 void Renderer::AddPointLight(PointLightComponent * light)
 {
 	mPointLights.emplace_back(light);
 }
 
+
+//-----------------------------------------------------------------------------
+//  PointLight vectorから削除
+//-----------------------------------------------------------------------------
 void Renderer::RemovePointLight(PointLightComponent * light)
 {
 	auto iter = std::find(mPointLights.begin(), mPointLights.end(), light);
 	mPointLights.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//  textureの取得
+//-----------------------------------------------------------------------------
 Texture* Renderer::GetTexture(const std::string& fileName)
 {
 	Texture* tex = nullptr;
@@ -564,6 +643,10 @@ Texture* Renderer::GetTexture(const std::string& fileName)
 	return tex;
 }
 
+
+//-----------------------------------------------------------------------------
+//  メッシュ情報の取得
+//-----------------------------------------------------------------------------
 Mesh* Renderer::GetMesh(const std::string & fileName)
 {
 	Mesh* m = nullptr;
@@ -588,6 +671,10 @@ Mesh* Renderer::GetMesh(const std::string & fileName)
 	return m;
 }
 
+
+//-----------------------------------------------------------------------------
+//  3Dオブジェクトの描画
+//-----------------------------------------------------------------------------
 void Renderer::Draw3DScene(unsigned int framebuffer, const Matrix4& view, const Matrix4& proj, bool lit)
 {
 	// Set the current frame buffer
@@ -637,6 +724,11 @@ void Renderer::Draw3DScene(unsigned int framebuffer, const Matrix4& view, const 
 	
 }
 
+
+
+//-----------------------------------------------------------------------------
+//  SkyBoxの描画
+//-----------------------------------------------------------------------------
 void Renderer::DrawSkybox() {
 
 	
@@ -663,6 +755,9 @@ void Renderer::DrawSkybox() {
 }
 
 
+//-----------------------------------------------------------------------------
+//  衝突判定デバッグ用のAABBの描画
+//-----------------------------------------------------------------------------
 void Renderer::DrawAABB()
 {
 	if (!mBoxFlag) return;
@@ -727,6 +822,10 @@ void Renderer::DrawAABB()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  UI用
+//-----------------------------------------------------------------------------
 void Renderer::DrawUIObj() {
 
 	// 深度テスト無効化
@@ -759,6 +858,11 @@ void Renderer::DrawUIObj() {
 	glDepthFunc(GL_LESS); // 通常の深度テストに戻す
 	glUseProgram(0);
 }
+
+
+//-----------------------------------------------------------------------------
+//  GBufferの描画
+//-----------------------------------------------------------------------------
 void Renderer::DrawFromGBuffer()
 {
 	// Clear the current framebuffer
@@ -810,6 +914,10 @@ void Renderer::DrawFromGBuffer()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// シェーダーの初期化
+//-----------------------------------------------------------------------------
 bool Renderer::LoadShaders()
 {
 	// Create sprite shader
@@ -914,6 +1022,10 @@ bool Renderer::LoadShaders()
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// 頂点情報の定義
+//-----------------------------------------------------------------------------
 void Renderer::CreateSpriteVerts()
 {
 	float vertices[] = {
@@ -931,6 +1043,10 @@ void Renderer::CreateSpriteVerts()
 	mSpriteVerts = new VertexArray(vertices, 4, VertexArray::PosNormTex, indices, 6);
 }
 
+
+//-----------------------------------------------------------------------------
+// Light情報をシェーダーに送る
+//-----------------------------------------------------------------------------
 void Renderer::SetLightUniforms(Shader* shader, const Matrix4& view)
 {
 	// Camera position is from inverted view
@@ -948,6 +1064,10 @@ void Renderer::SetLightUniforms(Shader* shader, const Matrix4& view)
 		mDirLight.mSpecColor);
 }
 
+
+//-----------------------------------------------------------------------------
+// スクリーン座標（2D座標）を3D空間の座標に変換
+//-----------------------------------------------------------------------------
 Vector3 Renderer::Unproject(const Vector3& screenPoint) const
 {
 	// Convert screenPoint to device coordinates (between -1 and +1)
@@ -960,6 +1080,7 @@ Vector3 Renderer::Unproject(const Vector3& screenPoint) const
 	unprojection.Invert();
 	return Vector3::TransformWithPerspDiv(deviceCoord, unprojection);
 }
+
 
 void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
 {
@@ -974,7 +1095,11 @@ void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
 	outDir.Normalize();
 }
 
+
+//-----------------------------------------------------------------------------
 // ImGui初期化関数
+//-----------------------------------------------------------------------------
+
 void Renderer::InitializeImGui(SDL_Window* imguiWindow, SDL_GLContext imguiContext) {
 	// ImGuiの設定
 	IMGUI_CHECKVERSION();
@@ -990,6 +1115,10 @@ void Renderer::InitializeImGui(SDL_Window* imguiWindow, SDL_GLContext imguiConte
 
 }
 
+
+//-----------------------------------------------------------------------------
+// Matrix4からGLMに変換
+//-----------------------------------------------------------------------------
 glm::mat4 Renderer::ConvertToGLM(const Matrix4& matrix)
 {
 	glm::mat4 glmMatrix;

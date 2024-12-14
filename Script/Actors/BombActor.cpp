@@ -24,6 +24,12 @@
 #include "SkeletalMeshComponent.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// BombActor class
+///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 BombActor::BombActor(Game* game, float scale, int num)
 	: ItemActorBase(game, scale, num)
 	, mLifeSpan(6.0f)
@@ -50,6 +56,10 @@ BombActor::BombActor(Game* game, float scale, int num)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void BombActor::UpdateActor(float deltaTime)
 {
 
@@ -86,7 +96,6 @@ void BombActor::UpdateActor(float deltaTime)
 			if (blinkTime >= blinkInterval)
 			{
 
-
 				mAudioComp->PlayEvent("event:/Alert");
 				// タイマーをリセット
 				blinkTime = 0.0f;
@@ -100,16 +109,27 @@ void BombActor::UpdateActor(float deltaTime)
 
 }
 
+
+//-----------------------------------------------------------------------------
+//  BombActorのSetPlayerを呼び出す
+//-----------------------------------------------------------------------------
 void BombActor::SetPlayer(Actor* player)
 {
 	mMyMove->SetPlayer(player);
 }
 
+
+//-----------------------------------------------------------------------------
+// TargetにHitしたら音を出す
+//-----------------------------------------------------------------------------
 void BombActor::HitTarget()
 {
 	mAudioComp->PlayEvent("event:/Ding");
 }
 
+//-----------------------------------------------------------------------------
+// 衝突処理
+//-----------------------------------------------------------------------------
 void BombActor::FixCollisions()
 {
 	// Need to recompute my world transform to update world box

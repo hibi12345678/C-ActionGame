@@ -25,6 +25,34 @@
             "properties": {
                 "state": "active",
                 "position": [
+                    -1300.0,
+                    2500.0,
+                    100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.2
+                ],
+                "scale": 1.0
+            },
+            "components": [ {
+                    "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/StageArrow.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }       
+            ]
+        },{
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
                     0.0,
                     0.0,
                     -100.0

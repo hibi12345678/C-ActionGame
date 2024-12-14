@@ -14,13 +14,25 @@
 #include "Actor.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// FPSCamera class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 FPSCamera::FPSCamera(Actor* owner)
 	:CameraComponent(owner)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void FPSCamera::Update(float deltaTime)
 {
+    //FollowActorの位置にカメラを配置
 	Vector3 cameraPos = mOwner->GetPosition() + Vector3(0.0,0.0,130.0);
 	mPitch += mPitchSpeed * deltaTime;
 	mPitch = Math::Clamp(mPitch, -mMaxPitch, mMaxPitch);
@@ -28,10 +40,10 @@ void FPSCamera::Update(float deltaTime)
 	Vector3 viewForward = Vector3::Transform(
 		mOwner->GetForward(), q);
 	Vector3 target = cameraPos + viewForward * 100.0f;
-	// Also rotate up by pitch quaternion
+
 	Vector3 up = Vector3::Transform(Vector3::UnitZ, q);
 
-	// Create look at matrix, set as view
+	//ViewをRendererに送る
 	Matrix4 view = Matrix4::CreateLookAt(cameraPos, target, up);
 	SetViewMatrix(view);
 

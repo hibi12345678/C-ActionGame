@@ -21,6 +21,13 @@
 #include "SkeletalMeshComponent.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// TorchActor class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 TorchItemActor::TorchItemActor(Game* game, float scale, int num)
 	: ItemActorBase(game, scale, num)
 {
@@ -40,6 +47,10 @@ TorchItemActor::TorchItemActor(Game* game, float scale, int num)
 	
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void TorchItemActor::UpdateActor(float deltaTime)
 {
 	ItemActorBase::UpdateActor(deltaTime);
@@ -52,7 +63,6 @@ void TorchItemActor::UpdateActor(float deltaTime)
 		mPointLights.clear();
 		SetState(Actor::EDead);
 	}
-
 
 }
 

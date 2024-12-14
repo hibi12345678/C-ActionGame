@@ -16,16 +16,31 @@
 #include "Game.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// AudioComponent class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 AudioComponent::AudioComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 AudioComponent::~AudioComponent()
 {
 	StopAllEvents();
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void AudioComponent::Update(float deltaTime)
 {
 	Component::Update(deltaTime);
@@ -75,7 +90,7 @@ void AudioComponent::OnUpdateWorldTransform()
 SoundEvent AudioComponent::PlayEvent(const std::string& name)
 {
 	SoundEvent e = mOwner->GetGame()->GetAudioSystem()->PlayEvent(name);
-	// Is this 2D or 3D?
+	//2D or 3D?
 	if (e.Is3D())
 	{
 		mEvents3D.emplace_back(e);
@@ -91,7 +106,7 @@ SoundEvent AudioComponent::PlayEvent(const std::string& name)
 
 void AudioComponent::StopAllEvents()
 {
-	// Stop all sounds
+	//全ての音の停止
 	for (auto& e : mEvents2D)
 	{
 		e.Stop();
@@ -100,7 +115,7 @@ void AudioComponent::StopAllEvents()
 	{
 		e.Stop();
 	}
-	// Clear events
+	//eventの生成
 	mEvents2D.clear();
 	mEvents3D.clear();
 }
