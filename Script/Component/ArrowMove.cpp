@@ -18,33 +18,42 @@
 #include "PhysWorld.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// ArrowMove class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 ArrowMove::ArrowMove(Actor* owner)
 	:MoveComponent(owner)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void ArrowMove::Update(float deltaTime)
 { 
-	// Construct segment in direction of travel
 	const float segmentLength = 30.0f;
 	Vector3 start = mOwner->GetPosition();
 	Vector3 dir = mOwner->GetForward();
 	Vector3 end = start + dir * segmentLength;
 
-	// Create line segment
+	//LineSegmentの生成
 	LineSegment l(start, end);
 
-	// Test segment vs world
+	//LineSegmentとBoxの衝突判定を確認
 	PhysWorld* phys = mOwner->GetGame()->GetPhysWorld();
 	PhysWorld::CollisionInfo info;
-	// (Don't collide vs player)
+
 	if (phys->SegmentCast(l, info) && info.mActor != mPlayer)
 	{
 		mOwner->SetState(Actor::EDead);
 
 	}
 	
-
-	// Base class update moves based on forward speed
+	//MoveComponentのUpdate
 	MoveComponent::Update(deltaTime);
 }

@@ -17,7 +17,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//class
+//FollowActor class
 ///////////////////////////////////////////////////////////////////////////////
 class FollowActor : public Actor
 {
@@ -87,6 +87,7 @@ public:
 	Vector3 GetPos() const { return pos; }
 	class BoxComponent* GetBox() { return mBoxComp; }
 	class BoxComponent* GetAttackBox() { return mAttackBoxComp; }
+	float GetPlayTime() { return mPlayTime;}
 	void SetVisible(bool visible);
 	void SetState(State state) { mState = state; }
 	void SetItemState(ItemState state) { mItemState = state; }
@@ -133,6 +134,7 @@ private:
 	float mAnimTime; //アニメーション時間
 	float inertiaStrafe; //慣性横方向速度 
 	float inertiaForward; //慣性正面方向速度
+	float mPlayTime;
 	Vector3 pos;
 
 	State mState; 

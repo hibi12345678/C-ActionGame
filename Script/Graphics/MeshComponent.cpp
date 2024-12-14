@@ -21,6 +21,14 @@
 #include "VertexArray.h"
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+// MeshComponent class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 MeshComponent::MeshComponent(Actor* owner, bool isSkeletal)
 	:Component(owner)
 	,mMesh(nullptr)
@@ -32,34 +40,47 @@ MeshComponent::MeshComponent(Actor* owner, bool isSkeletal)
 	mOwner->GetGame()->GetRenderer()->AddMeshComp(this);
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 MeshComponent::~MeshComponent()
 {
 	mOwner->GetGame()->GetRenderer()->RemoveMeshComp(this);
 }
 
+
+//-----------------------------------------------------------------------------
+//  メッシュ情報をシェーダーに送って描画する
+//-----------------------------------------------------------------------------
 void MeshComponent::Draw(Shader* shader)
 {
 	if (mMesh)
 	{
-		// Set the world transform
+		//ワールド座標をシェーダーに送信
 		shader->SetMatrixUniform("uWorldTransform", 
 			mOwner->GetWorldTransform());
-		// Set specular power
+		//鏡面反射率をシェーダーに送信
 		shader->SetFloatUniform("uSpecPower", mMesh->GetSpecPower());
-		// Set the active texture
+		//textureをアクティブ
 		Texture* t = mMesh->GetTexture(mTextureIndex);
 		if (t)
 		{
 			t->SetActive();
 		}
-		// Set the mesh's vertex array as active
+		// メッシュを頂点配列に
 		VertexArray* va = mMesh->GetVertexArray();
 		va->SetActive();
-		// Draw
+		//　描画
 		glDrawElements(GL_TRIANGLES, va->GetNumIndices(), GL_UNSIGNED_INT, nullptr);
 	}
 }
 
+
+
+//-----------------------------------------------------------------------------
+//  jsonファイルからデータの読み取り
+//-----------------------------------------------------------------------------
 void MeshComponent::LoadProperties(const rapidjson::Value& inObj)
 {
 	Component::LoadProperties(inObj);
@@ -80,6 +101,10 @@ void MeshComponent::LoadProperties(const rapidjson::Value& inObj)
 	JsonHelper::GetBool(inObj, "isSkeletal", mIsSkeletal);
 }
 
+
+//-----------------------------------------------------------------------------
+//  jsonファイルへの書き込み
+//-----------------------------------------------------------------------------
 void MeshComponent::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	Component::SaveProperties(alloc, inObj);

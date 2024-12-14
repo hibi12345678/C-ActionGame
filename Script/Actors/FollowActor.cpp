@@ -22,8 +22,15 @@
 #include "Renderer.h"
 #include "SwordActor.h"
 #include "SkeletalMeshComponent.h"
+#include "StageChange.h"
 
+///////////////////////////////////////////////////////////////////////////////
+// FollowActor class
+///////////////////////////////////////////////////////////////////////////////
 
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -44,14 +51,15 @@ FollowActor::FollowActor(Game* game)
 	, isVisible(true)
 	, blockPressed(false)
 	, mBlockTimer(0.0f)
-	, mBombCount(9)
-	, mArrowCount(9)
+	, mBombCount(0)
+	, mArrowCount(0)
 	, mFPSCamera(nullptr)
 	, changeTimer(0.0f)
 	, deathFlag(true)
 	, jumpFlag(false)
 	, mAnimState(AnimationState::Idle)
 	, mAnimTime(0.0f)
+	, mPlayTime(0.0f)
 
 {
 	mMeshComp = new SkeletalMeshComponent(this);
@@ -61,16 +69,21 @@ FollowActor::FollowActor(Game* game)
 	game->SetFollowActor(this);
 	// Add a box component
 	mBoxComp = new BoxComponent(this);
+
 	AABB myBox(Vector3(-25.0f, -25.0f, 0.0f),
 		Vector3(25.0f, 25.0f, 150.0f));
 	mBoxComp->SetObjectBox(myBox);
-	mBoxComp->SetShouldRotate(true);
+	mBoxComp->SetShouldRotate(false);
 
 	blockPressed = false;
 	SwordActor* sword1 = new SwordActor(game, 1.0f, 0);
 	SwordActor* sword2 = new SwordActor(game, 1.0f, 1);
 }
 
+
+//-----------------------------------------------------------------------------
+//   入力処理
+//-----------------------------------------------------------------------------
 void FollowActor::ActorInput(const uint8_t* keys)
 {
 
@@ -79,7 +92,6 @@ void FollowActor::ActorInput(const uint8_t* keys)
 
 	if (keys[SDL_SCANCODE_W] && mAttackTimer <= 0.0f)
 	{
-
 
 		forwardSpeed += 200.0f;
 		if (jumpFlag)
@@ -262,12 +274,14 @@ void FollowActor::ActorInput(const uint8_t* keys)
 			Bomb();
 		}
 	}
+
 	// Did we just start moving?
 	if (!mMoving && (!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)))
 	{
 		mMoving = true;
 
 	}
+
 	// Or did we just stop moving?
 	else if (mMoving && Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && !mAttackBoxComp && !mBlockBoxComp && mState == EGrounded)
 	{
@@ -312,8 +326,14 @@ void FollowActor::ActorInput(const uint8_t* keys)
 
 }
 
+
+//-----------------------------------------------------------------------------
+// Update
+//-----------------------------------------------------------------------------
 void FollowActor::UpdateActor(float deltaTime) {
 
+	
+	mPlayTime += deltaTime;
 	UpdateState(deltaTime);
 	UpdateStamina(deltaTime);
 	UpdateMovement(deltaTime);
@@ -323,7 +343,22 @@ void FollowActor::UpdateActor(float deltaTime) {
 	HandleVisibility(deltaTime);
 }
 
+
+//-----------------------------------------------------------------------------
+// UpdateTimer
+//-----------------------------------------------------------------------------
 void FollowActor::UpdateTimers(float deltaTime) {
+
+	if (mHealth <= 0.0f && deathFlag && GetGame()->GetState()==Game::GameState::EGameplay) {
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_dying.gpanim"), 1.0f);
+		mAnimState = AnimationState::Die;
+		mHealth = 0.0f;
+		GetGame()->SetState(Game::GameState::EGameOver);
+		deathFlag = false;
+
+		//mState = EDead;
+
+	}
 	changeTimer += deltaTime;
 	if (mAttackTimer > 0.0f) {
 		mAttackTimer -= deltaTime;
@@ -353,12 +388,20 @@ void FollowActor::UpdateTimers(float deltaTime) {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// スタミナ
+//-----------------------------------------------------------------------------
 void FollowActor::UpdateStamina(float deltaTime) {
 	if (mState == EGrounded && mStamina < 1.0f) {
 		mStamina = std::min(mStamina + 0.005f, 1.0f);
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　垂直方向の処理
+//-----------------------------------------------------------------------------
 void FollowActor::UpdateMovement(float deltaTime) {
 	if (mState == EJump) {
 		jumpSpeed += 50000.0f * deltaTime; // 重力
@@ -373,6 +416,10 @@ void FollowActor::UpdateMovement(float deltaTime) {
 	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
 }
 
+
+//-----------------------------------------------------------------------------
+//  ItemState処理
+//-----------------------------------------------------------------------------
 void FollowActor::UpdateState(float deltaTime) {
 
 	if (mItemState == EBow && mArrowCount <= 0) {
@@ -382,14 +429,13 @@ void FollowActor::UpdateState(float deltaTime) {
 		EquipSword();
 	}
 
-	if (mDamageTimer <= 0.0f && mHealth <= 0.0f && deathFlag) {
-		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_dying.gpanim"), 1.0f);
-		mAnimState = AnimationState::Die;
-		deathFlag = false;
-		mState = EDead;
-	}
+
 }
 
+
+//-----------------------------------------------------------------------------
+//　剣と盾を装備させる
+//-----------------------------------------------------------------------------
 void FollowActor::EquipSword() {
 	mItemState = ESword;
 	SwordActor* sword1 = new SwordActor(GetGame(), 1.0f, 0);
@@ -397,6 +443,10 @@ void FollowActor::EquipSword() {
 	mAudioComp->PlayEvent("event:/Equipped");
 }
 
+
+//-----------------------------------------------------------------------------
+//  ダメージのクールタイ処理と可視状態の切り替え
+//-----------------------------------------------------------------------------
 void FollowActor::UpdateDamage(float deltaTime) {
 
 	if (mDamageTimer >= 3.0f) {
@@ -411,6 +461,10 @@ void FollowActor::UpdateDamage(float deltaTime) {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  可視状態をtrueにする
+//-----------------------------------------------------------------------------
 void FollowActor::HandleVisibility(float deltaTime) {
 	if (mDamageTimer <= 0.0f) {
 		if (!mFPSCamera) {
@@ -420,11 +474,19 @@ void FollowActor::HandleVisibility(float deltaTime) {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  可視状態の処理
+//-----------------------------------------------------------------------------
 void FollowActor::SetVisible(bool visible)
 {
 	mMeshComp->SetVisible(visible);
 }
 
+
+//-----------------------------------------------------------------------------
+//  剣の攻撃処理
+//-----------------------------------------------------------------------------
 void FollowActor::Attack() {
 	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_attack.gpanim"), 1.2f);
 	mAnimState = AnimationState::Attack;
@@ -438,6 +500,10 @@ void FollowActor::Attack() {
 	mAudioComp->PlayEvent("event:/SwordAttack");
 }
 
+
+//-----------------------------------------------------------------------------
+// 　弓の攻撃処理
+//-----------------------------------------------------------------------------
 void FollowActor::Shoot()
 {
 	mArrowCount--;
@@ -458,6 +524,10 @@ void FollowActor::Shoot()
 	mAudioComp->PlayEvent("event:/Arrow");
 }
 
+
+//-----------------------------------------------------------------------------
+//  ボムの攻撃処理
+//-----------------------------------------------------------------------------
 void FollowActor::Bomb()
 {
 	mBombCount--;
@@ -473,6 +543,10 @@ void FollowActor::Bomb()
 	mAudioComp->PlayEvent("event:/Throw");
 }
 
+
+//-----------------------------------------------------------------------------
+// ブロック処理
+//-----------------------------------------------------------------------------
 void FollowActor::Block() {
 	if (mBlockBoxComp == nullptr) {
 		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_block.gpanim"), 1.0f);
@@ -485,22 +559,34 @@ void FollowActor::Block() {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  jsonファイルからの読み取り
+//-----------------------------------------------------------------------------
 void FollowActor::LoadProperties(const rapidjson::Value& inObj)
 {
 	Actor::LoadProperties(inObj);
 	JsonHelper::GetBool(inObj, "moving", mMoving);
 }
 
+
+//-----------------------------------------------------------------------------
+//  jsonファイルへの書き込み
+//-----------------------------------------------------------------------------
 void FollowActor::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	Actor::SaveProperties(alloc, inObj);
 	JsonHelper::AddBool(alloc, inObj, "moving", mMoving);
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突処理
+//-----------------------------------------------------------------------------
 void FollowActor::FixCollisions()
 {
-	ComputeWorldTransform();
-
+ 	ComputeWorldTransform();
+	mBoxComp->OnUpdateWorldTransform();
 	const AABB& playerBox = mBoxComp->GetWorldBox();
 	const AABB& attackBox = mAttackBoxComp->GetWorldBox();
 	const AABB& blockBox = mBlockBoxComp->GetWorldBox();
@@ -511,15 +597,33 @@ void FollowActor::FixCollisions()
 	auto& enemy = GetGame()->GetEnemys();
 	auto& item = GetGame()->GetDropItem();
 	auto& explosion = GetGame()->GetExplosion();
+	auto& stageChange = GetGame()->GetStageChange();
+
 	for (auto pa : planes)
 	{
 		const AABB& planeBox = pa->GetBox()->GetWorldBox();
 		ResolveCollision(playerBox, planeBox, pos, mBoxComp);
 	}
 
+	for (auto sc : stageChange)
+	{
+		const AABB& scBox = sc->GetBox()->GetWorldBox();
+		if (Intersect(playerBox, scBox))
+		{
+			sc->GetPosition();
+			
+
+			if (Game::GameState::EGameplay == GetGame()->GetState()) {
+				GetGame()->SetState(Game::GameState::ELoadStage);
+				GetGame()->LoadStage();
+			}
+		}
+
+	}
+
 	for (auto en : enemy)
 	{
-		if (en != nullptr) {
+		if (en != nullptr && Game::GameState::EGameOver != GetGame()->GetState()) {
 			const AABB& enemyBox = en->GetBox()->GetWorldBox();
 			ResolveCollision(playerBox, enemyBox, pos, mBoxComp);
 
@@ -622,6 +726,10 @@ void FollowActor::FixCollisions()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突時の重なりを避ける処理
+//-----------------------------------------------------------------------------
 void FollowActor::ResolveCollision(const AABB& aBox, const AABB& bBox, Vector3& pos, BoxComponent* boxComponent)
 {
 	if (Intersect(aBox, bBox))

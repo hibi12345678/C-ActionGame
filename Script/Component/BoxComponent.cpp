@@ -18,6 +18,14 @@
 #include "PhysWorld.h"
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+// BoxComponent class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 BoxComponent::BoxComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
 	,mObjectBox(Vector3::Zero, Vector3::Zero)
@@ -27,11 +35,19 @@ BoxComponent::BoxComponent(Actor* owner, int updateOrder)
 	mOwner->GetGame()->GetPhysWorld()->AddBox(this);
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 BoxComponent::~BoxComponent()
 {
 	mOwner->GetGame()->GetPhysWorld()->RemoveBox(this);
 }
 
+
+//-----------------------------------------------------------------------------
+// BoxComponentをワールド座標への変換
+//-----------------------------------------------------------------------------
 void BoxComponent::OnUpdateWorldTransform()
 {
 	// Reset to object space box
@@ -49,6 +65,10 @@ void BoxComponent::OnUpdateWorldTransform()
 	mWorldBox.mMax += mOwner->GetPosition();
 }
 
+
+//-----------------------------------------------------------------------------
+// jsonファイルからデータの読み取り
+//-----------------------------------------------------------------------------
 void BoxComponent::LoadProperties(const rapidjson::Value& inObj)
 {
 	Component::LoadProperties(inObj);
@@ -60,6 +80,10 @@ void BoxComponent::LoadProperties(const rapidjson::Value& inObj)
 	JsonHelper::GetBool(inObj, "shouldRotate", mShouldRotate);
 }
 
+
+//-----------------------------------------------------------------------------
+// jsonファイルへの書き込み
+//-----------------------------------------------------------------------------
 void BoxComponent::SaveProperties(rapidjson::Document::AllocatorType & alloc, rapidjson::Value & inObj) const
 {
 	Component::SaveProperties(alloc, inObj);

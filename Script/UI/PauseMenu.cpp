@@ -5,14 +5,23 @@
 #include <SDL.h>
 #include "DialogBox.h"
 #include "Game.h"
+#include "GameTimer.h"
 #include "Renderer.h"
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+// App class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 PauseMenu::PauseMenu(Game* game)
 	:UIScreen(game)
 	,flag(false)
 {
-
+	
 	currentState = static_cast<PauseMenu::State>(mGame->GetState());
 	flag = false;
 	mGame->SetState(Game::GameState::EPaused);
@@ -21,10 +30,12 @@ PauseMenu::PauseMenu(Game* game)
 	mBGPos = Vector2(0.0f, 50.0f);
 	mBackground = mGame->GetRenderer()->GetTexture("Assets/Texture/DialogBG2.png");
 	SetTitle("PauseTitle");  
-
+	//再開
 	AddButton("ResumeButton", [this]() {
 		Close();
 	});
+
+	//スタートメニュー
 	if (currentState == EGameplay) {
 		AddButton("StartButton", [this]() {
 			new DialogBox(mGame, "StartText",
@@ -34,6 +45,7 @@ PauseMenu::PauseMenu(Game* game)
 			});
 	}
 	
+	//ゲームを終了する
 	AddButton("QuitButton", [this]() { 
 		new DialogBox(mGame, "QuitText",
 			[this]() {
@@ -43,9 +55,14 @@ PauseMenu::PauseMenu(Game* game)
 
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 PauseMenu::~PauseMenu()
 {
-	
+	mGame->GetTimer()->StartTimer();
+	//状態遷移
 	if(currentState == EMainMenu)
 	  mGame->SetState(Game::GameState::EMainMenu);
 
@@ -65,6 +82,10 @@ PauseMenu::~PauseMenu()
 
 }
 
+
+//-----------------------------------------------------------------------------
+//    入力処理
+//-----------------------------------------------------------------------------
 void PauseMenu::HandleKeyPress(int key)
 {
 	UIScreen::HandleKeyPress(key);

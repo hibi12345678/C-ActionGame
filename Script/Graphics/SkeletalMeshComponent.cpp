@@ -24,12 +24,23 @@
 #include "VertexArray.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// SkeltalMeshComponent class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 SkeletalMeshComponent::SkeletalMeshComponent(Actor* owner)
 	:MeshComponent(owner, true)
 	,mSkeleton(nullptr)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  アニメーションがあるActor情報をシェーダーに送る
+//-----------------------------------------------------------------------------
 void SkeletalMeshComponent::Draw(Shader* shader)
 {
 	if (mMesh)
@@ -56,6 +67,10 @@ void SkeletalMeshComponent::Draw(Shader* shader)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// Update
+//-----------------------------------------------------------------------------
 void SkeletalMeshComponent::Update(float deltaTime)
 {
 	if (mAnimation && mSkeleton)
@@ -72,6 +87,10 @@ void SkeletalMeshComponent::Update(float deltaTime)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// アニメーションの再生
+//-----------------------------------------------------------------------------
 float SkeletalMeshComponent::PlayAnimation(Animation* anim, float playRate)
 {
 	mAnimation = anim;
@@ -85,6 +104,10 @@ float SkeletalMeshComponent::PlayAnimation(Animation* anim, float playRate)
 	return mAnimation->GetDuration();
 }
 
+
+//-----------------------------------------------------------------------------
+// jsonファイルからデータの読み取り
+//-----------------------------------------------------------------------------
 void SkeletalMeshComponent::LoadProperties(const rapidjson::Value& inObj)
 {
 	MeshComponent::LoadProperties(inObj);
@@ -105,6 +128,10 @@ void SkeletalMeshComponent::LoadProperties(const rapidjson::Value& inObj)
 	JsonHelper::GetFloat(inObj, "animTime", mAnimTime);
 }
 
+
+//-----------------------------------------------------------------------------
+// jsonファイルへの書き込み
+//-----------------------------------------------------------------------------
 void SkeletalMeshComponent::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	MeshComponent::SaveProperties(alloc, inObj);
@@ -123,6 +150,10 @@ void SkeletalMeshComponent::SaveProperties(rapidjson::Document::AllocatorType& a
 	JsonHelper::AddFloat(alloc, inObj, "animTime", mAnimTime);
 }
 
+
+//-----------------------------------------------------------------------------
+// アニメーションデータを基に、各ボーンの変換行列を計算し、マトリックスパレットを構築する
+//-----------------------------------------------------------------------------
 void SkeletalMeshComponent::ComputeMatrixPalette()
 {
 	const std::vector<Matrix4>& globalInvBindPoses = mSkeleton->GetGlobalInvBindPoses();
@@ -137,6 +168,10 @@ void SkeletalMeshComponent::ComputeMatrixPalette()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// 指定した名前のボーンのローカル位置情報を取得
+//-----------------------------------------------------------------------------
 Vector3 SkeletalMeshComponent::GetBonePosition(const std::string& boneName) const
 {
 	int boneIndex = mSkeleton->GetBoneIndex(boneName);
@@ -151,6 +186,10 @@ Vector3 SkeletalMeshComponent::GetBonePosition(const std::string& boneName) cons
 
 }
 
+
+//-----------------------------------------------------------------------------
+// 指定した名前のボーンのローカル回転情報を取得
+//-----------------------------------------------------------------------------
 Quaternion SkeletalMeshComponent::GetBoneRotation(const std::string& boneName) const
 {
 	int boneIndex = mSkeleton->GetBoneIndex(boneName);

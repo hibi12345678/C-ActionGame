@@ -24,6 +24,13 @@
 #include "TargetComponent.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// EnemyActor class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 EnemyActor::EnemyActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
@@ -59,24 +66,33 @@ EnemyActor::EnemyActor(Game* game)
     game->AddEnemy(this);
 }
 
+
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 EnemyActor::~EnemyActor()
 {
-	if (name == "Enemy") {
-		GetGame()->RemoveEnemy(this);
-	}	
+	
+	GetGame()->RemoveEnemy(this);
+		
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void EnemyActor::UpdateActor(float deltaTime){
 
 	forwardSpeed = 0.0f;
 	strafeSpeed = 0.0f;
-	// ポインタを受け取る場合
 	auto* player = GetGame()->GetPlayer();
 	Vector3 playerPosition = player->GetPosition();
 	Vector3 pos = GetPosition();
 	diff = playerPosition - pos;
 	float distanceSq = diff.LengthSq();
 
+	//距離によって状態遷移
 	if (mHealth > 0.0f) {
 		if (diff.LengthSq() > 1000000.0f) {
 			mMoveState = EPatrol;
@@ -96,6 +112,7 @@ void EnemyActor::UpdateActor(float deltaTime){
 		mMoving = true;
 		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/"+name+"_walk.gpanim"), 1.0f);
 	}
+
 	else if (mMoving && Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && groundFlag == true && !mAttackBoxComp)
 	{
 		mMoving = false;
@@ -103,6 +120,7 @@ void EnemyActor::UpdateActor(float deltaTime){
 			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_idle.gpanim"), 1.0f);
 		}
 	}
+
 	if (mState == EJump) {
 
 		jumpSpeed += 50000.0f * deltaTime; 
@@ -110,17 +128,22 @@ void EnemyActor::UpdateActor(float deltaTime){
 			mState = EFall;
 		}
 	}
+
 	else if (mState == EFall) {
 		jumpSpeed += 15000.0f * deltaTime;
 	}
+
 	else if (mState == EGrounded) {
 		jumpSpeed = 0.0f;
 
 	}
+
+	//攻撃時静止させる
 	if (mAttackBoxComp != nullptr) {
 		forwardSpeed = 0.0f;
 		strafeSpeed = 0.0f;
 	}
+
 	mMoveComp->SetForwardSpeed(forwardSpeed);
 	mMoveComp->SetStrafeSpeed(strafeSpeed);
 	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
@@ -130,11 +153,19 @@ void EnemyActor::UpdateActor(float deltaTime){
 
 }
 
+
+//-----------------------------------------------------------------------------
+//   可視状態の切り替え
+//-----------------------------------------------------------------------------
 void EnemyActor::SetVisible(bool visible)
 {
 	mMeshComp->SetVisible(visible);
 }
 
+
+//-----------------------------------------------------------------------------
+//  MoveStateの切り替え処理
+//-----------------------------------------------------------------------------
 void EnemyActor::UpdateMoveState(float deltaTime) {
 	if (mHealth <= 0.0f) {
 		return;
@@ -155,6 +186,10 @@ void EnemyActor::UpdateMoveState(float deltaTime) {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　PatrolStateの処理
+//-----------------------------------------------------------------------------
 void EnemyActor::UpdatePatrolState(float deltaTime) {
 	mReactFlag = false;
 	mMoveTimer -= deltaTime;
@@ -165,11 +200,15 @@ void EnemyActor::UpdatePatrolState(float deltaTime) {
 
 	if (mMoveTimer <= 0.0f) {
 		SetRandomRotation();
-		randomValue = GenerateRandomValue(2); // 0から2のランダムな整数
+		randomValue = GenerateRandomValue(2); // 0から1のランダムな整数
 		mMoveTimer = 3.0f + static_cast<float>(randomValue);
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　BattleStateの処理
+//-----------------------------------------------------------------------------
 void EnemyActor::UpdateBattleState(float deltaTime) {
 	if (!mReactFlag) {
 		mReactFlag = true;
@@ -193,6 +232,10 @@ void EnemyActor::UpdateBattleState(float deltaTime) {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　AttackStateの処理
+//-----------------------------------------------------------------------------
 void EnemyActor::UpdateAttackState(float deltaTime) {
 	forwardSpeed += 100.0f;
 	AlignToTarget(); // ターゲットに向けて回転
@@ -215,25 +258,40 @@ void EnemyActor::UpdateAttackState(float deltaTime) {
 			randomValue = GenerateRandomValue(4);
 			mMoveTimer = 2.0f + static_cast<float>(randomValue);
 		}
-	}
-	
+	} 
 }
 
+
+//-----------------------------------------------------------------------------
+//　PatrolState時のランダムな回転
+//-----------------------------------------------------------------------------
 void EnemyActor::SetRandomRotation() {
 	SetRotation(Quaternion::CreateFromAxisAngle(Random::GetFloatRange(0.0f, Math::TwoPi)));
 }
 
+
+//-----------------------------------------------------------------------------
+//　BattleState時のReactActor生成
+//-----------------------------------------------------------------------------
 void EnemyActor::CreateReactActor() {
 	ReactActor* react = new ReactActor(GetGame());
 	react->SetPosition(GetPosition() + Vector3(0.0f, 0.0f, 250.0f));
 }
 
+
+//-----------------------------------------------------------------------------
+//　FollowActorの方向を向く
+//-----------------------------------------------------------------------------
 void EnemyActor::AlignToTarget() {
 	float angle = atan2(diff.y, diff.x);
 	Quaternion rotation = Quaternion::CreateFromAxisAngle(angle);
 	SetRotation(rotation);
 }
 
+
+//-----------------------------------------------------------------------------
+//　攻撃処理
+//-----------------------------------------------------------------------------
 void EnemyActor::Attack() {
 
 	mAttackBoxComp = new BoxComponent(this);
@@ -248,6 +306,10 @@ void EnemyActor::Attack() {
 	mAudioComp->PlayEvent("event:/EnemyAttack");
 }
 
+
+//-----------------------------------------------------------------------------
+//　ジャンプ攻撃処理
+//-----------------------------------------------------------------------------
 void EnemyActor::AttackGround() {
 
 	mBoxTimer = 2.1f;
@@ -257,6 +319,10 @@ void EnemyActor::AttackGround() {
 	mAudioComp->PlayEvent("event:/EnemyAttack2");
 }
 
+
+//-----------------------------------------------------------------------------
+//　各Timerの処理
+//-----------------------------------------------------------------------------
 void EnemyActor::UpdateTimers(float deltaTime) {
 
 	if (mAttackTimer > 0.0f) {
@@ -280,6 +346,10 @@ void EnemyActor::UpdateTimers(float deltaTime) {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　攻撃を受けた時の点滅処理
+//-----------------------------------------------------------------------------
 void EnemyActor::HandleBlinking(float deltaTime) {
 	blinkTime += deltaTime;
 
@@ -290,6 +360,10 @@ void EnemyActor::HandleBlinking(float deltaTime) {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　死亡処理
+//-----------------------------------------------------------------------------
 void EnemyActor::HandleDeath() {
 	if (mHealth <= 0.0f) {
 		if (deathFlag) {
@@ -302,12 +376,16 @@ void EnemyActor::HandleDeath() {
 			DropItemActor* dropitem = new DropItemActor(GetGame());
 			dropitem->SetPosition(GetPosition());
 			
-			mState = EDead;
+			Actor::SetState(Actor::EDead);
 		}
 		mHealth = 0.0f;
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　攻撃判定管理
+//-----------------------------------------------------------------------------
 void EnemyActor::HandleAttackBox() {
 	if (mBoxTimer <= 0.0f) {
 		CleanUpAttackBox();
@@ -317,6 +395,10 @@ void EnemyActor::HandleAttackBox() {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　攻撃判定削除
+//-----------------------------------------------------------------------------
 void EnemyActor::CleanUpAttackBox() {
 	delete mAttackBoxComp;
 	mAttackBoxComp = nullptr;
@@ -326,6 +408,10 @@ void EnemyActor::CleanUpAttackBox() {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　攻撃判定生成処理
+//-----------------------------------------------------------------------------
 void EnemyActor::AddAttackBox() {
 	mAttackBoxComp = new BoxComponent(this);
 	AABB myBox(Vector3(-150.0f, -125.0f, 0.0f), Vector3(150.0f, 125.0f, 10.0f));
@@ -337,21 +423,33 @@ void EnemyActor::AddAttackBox() {
 	groundFlag = true;
 }
 
+
+//-----------------------------------------------------------------------------
+//　Jsonファイルからのデータの読み取り
+//-----------------------------------------------------------------------------
 void EnemyActor::LoadProperties(const rapidjson::Value& inObj)
 {
 	Actor::LoadProperties(inObj);
 	JsonHelper::GetBool(inObj, "moving", mMoving);
 }
 
+
+//-----------------------------------------------------------------------------
+//　Jsonファイルへのデータの書き込み
+//-----------------------------------------------------------------------------
 void EnemyActor::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	Actor::SaveProperties(alloc, inObj);
 	JsonHelper::AddBool(alloc, inObj, "moving", mMoving);
 }
 
+
+//-----------------------------------------------------------------------------
+//　衝突処理
+//-----------------------------------------------------------------------------
 void EnemyActor::FixCollisions()
 {
-
+	
     ComputeWorldTransform();
 	const AABB& playerBox = mBox->GetWorldBox();
 	const AABB& attackBox = mAttackBoxComp->GetWorldBox();
@@ -424,6 +522,10 @@ void EnemyActor::FixCollisions()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//　衝突時に重ならないように
+//-----------------------------------------------------------------------------
 void EnemyActor::ResolveCollision(const AABB& aBox, const AABB& bBox, Vector3& pos, BoxComponent* boxComponent)
 {
 	if (Intersect(aBox, bBox))

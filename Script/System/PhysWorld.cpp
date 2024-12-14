@@ -16,11 +16,22 @@
 #include "BoxComponent.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// PhysWorld class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 PhysWorld::PhysWorld(Game* game)
 	:mGame(game)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//    Boxとの交差判定
+//-----------------------------------------------------------------------------
 bool PhysWorld::SegmentCast(const LineSegment& l, CollisionInfo& outColl)
 {
 	bool collided = false;
@@ -50,6 +61,10 @@ bool PhysWorld::SegmentCast(const LineSegment& l, CollisionInfo& outColl)
 	return collided;
 }
 
+
+//-----------------------------------------------------------------------------
+//  すべてのBoxComponentのペアを比較し、それらが交差しているかどうか
+//-----------------------------------------------------------------------------
 void PhysWorld::TestPairwise(std::function<void(Actor*, Actor*)> f)
 {
 	// Naive implementation O(n^2)
@@ -69,6 +84,10 @@ void PhysWorld::TestPairwise(std::function<void(Actor*, Actor*)> f)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//    イープアンドプルーンアルゴリズム
+//-----------------------------------------------------------------------------
 void PhysWorld::TestSweepAndPrune(std::function<void(Actor*, Actor*)> f)
 {
 	// Sort by min.x
@@ -101,11 +120,19 @@ void PhysWorld::TestSweepAndPrune(std::function<void(Actor*, Actor*)> f)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//    Box vextor　への追加
+//-----------------------------------------------------------------------------
 void PhysWorld::AddBox(BoxComponent* box)
 {
 	mBoxes.emplace_back(box);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Box vextor　から削除
+//-----------------------------------------------------------------------------
 void PhysWorld::RemoveBox(BoxComponent* box)
 {
 	auto iter = std::find(mBoxes.begin(), mBoxes.end(), box);

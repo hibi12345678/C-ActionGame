@@ -17,6 +17,14 @@
 #include "LevelLoader.h"
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Skelton class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//  ファイルパスからskleファイルのロード
+//-----------------------------------------------------------------------------
 bool Skeleton::Load(const std::string& fileName)
 {
 	mFileName = fileName;
@@ -29,7 +37,6 @@ bool Skeleton::Load(const std::string& fileName)
 
 	int ver = doc["version"].GetInt();
 
-	// Check the metadata
 	if (ver != 1)
 	{
 		SDL_Log("Skeleton %s unknown format", fileName.c_str());
@@ -110,7 +117,6 @@ bool Skeleton::Load(const std::string& fileName)
 		mBones.emplace_back(temp);
 	}
 
-	// Now that we have the bones
 	ComputeGlobalInvBindPose();
 
 	return true;

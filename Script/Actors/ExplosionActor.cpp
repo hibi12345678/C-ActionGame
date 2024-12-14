@@ -19,6 +19,13 @@
 #include "Renderer.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// ExplosionActor class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 ExplosionActor::ExplosionActor(Game* game)
 	:Actor(game)
 	, mLifeSpan(0.8f)
@@ -36,31 +43,34 @@ ExplosionActor::ExplosionActor(Game* game)
 	mAudioComp = new AudioComponent(this);
 	mAudioComp->PlayEvent("event:/Explosion");
 }
+
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 ExplosionActor::~ExplosionActor()
 {
 	GetGame()->RemoveExplosion(this);
 }
+
+//-----------------------------------------------------------------------------
+// Update
+//-----------------------------------------------------------------------------
 void ExplosionActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
 
 	mLifeSpan -= deltaTime;
 
-
 	if (mLifeSpan > 0.5f)
 	{
 		SetScale(125 - mLifeSpan * 100 );
-		
-		
-		
 	}
 	if (mLifeSpan <= 0.5f)
 	{
-
 		SetScale(mLifeSpan * 100 + 25);
 		if (mLifeSpan < 0.0f)
 		{
-			
 			SetState(EDead);
 		}
 	}

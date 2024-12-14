@@ -18,8 +18,19 @@
 #include <vector>
 
 
+//-----------------------------------------------------------------------------
+// クラスの静的メンバ変数
+//-----------------------------------------------------------------------------
 unsigned int AudioSystem::sNextID = 0;
 
+
+///////////////////////////////////////////////////////////////////////////////
+// App class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 AudioSystem::AudioSystem(Game* game)
 	:mGame(game)
 	,mSystem(nullptr)
@@ -27,10 +38,18 @@ AudioSystem::AudioSystem(Game* game)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 AudioSystem::~AudioSystem()
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  初期化処理
+//-----------------------------------------------------------------------------
 bool AudioSystem::Initialize()
 {
 	// Initialize debug logging
@@ -70,6 +89,10 @@ bool AudioSystem::Initialize()
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+//  終了処理
+//-----------------------------------------------------------------------------
 void AudioSystem::Shutdown()
 {
 	// Unload all banks
@@ -81,6 +104,10 @@ void AudioSystem::Shutdown()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  Bankファイルの取得
+//-----------------------------------------------------------------------------
 void AudioSystem::LoadBank(const std::string& name)
 {
 	// Prevent double-loading
@@ -143,6 +170,10 @@ void AudioSystem::LoadBank(const std::string& name)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  Bankのメモリの開放
+//-----------------------------------------------------------------------------
 void AudioSystem::UnloadBank(const std::string& name)
 {
 	// Ignore if not loaded
@@ -206,6 +237,10 @@ void AudioSystem::UnloadBank(const std::string& name)
 	mBanks.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//  全てのBankメモリの解放
+//-----------------------------------------------------------------------------
 void AudioSystem::UnloadAllBanks()
 {
 	for (auto& iter : mBanks)
@@ -219,6 +254,10 @@ void AudioSystem::UnloadAllBanks()
 	mEvents.clear();
 }
 
+
+//-----------------------------------------------------------------------------
+//  Eventの再生
+//-----------------------------------------------------------------------------
 SoundEvent AudioSystem::PlayEvent(const std::string& name)
 {
 	unsigned int retID = 0;
@@ -241,6 +280,10 @@ SoundEvent AudioSystem::PlayEvent(const std::string& name)
 	return SoundEvent(this, retID);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void AudioSystem::Update(float deltaTime)
 {
 	// Find any stopped event instances
@@ -269,6 +312,10 @@ void AudioSystem::Update(float deltaTime)
 	mSystem->update();
 }
 
+
+//-----------------------------------------------------------------------------
+//  namespace
+//-----------------------------------------------------------------------------
 namespace
 {
 	FMOD_VECTOR VecToFMOD(const Vector3& in)
@@ -283,6 +330,10 @@ namespace
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  音を聞く位置の設定
+//-----------------------------------------------------------------------------
 void AudioSystem::SetListener(const Matrix4& viewMatrix, const Vector3& currentPos, float deltaTime, const Vector3& listenerPosition)
 {
 	// Invert the view matrix to get the correct vectors
@@ -309,6 +360,10 @@ void AudioSystem::SetListener(const Matrix4& viewMatrix, const Vector3& currentP
 	mPreviousPos = currentPos;
 }
 
+
+//-----------------------------------------------------------------------------
+// Volumeの取得
+//-----------------------------------------------------------------------------
 float AudioSystem::GetBusVolume(const std::string& name) const
 {
 	float retVal = 0.0f;

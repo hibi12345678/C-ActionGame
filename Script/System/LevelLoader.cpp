@@ -34,7 +34,9 @@
 #include "SpriteComponent.h"
 #include "TargetComponent.h"
 
-
+//-----------------------------------------------------------------------------
+// Constant Values.
+//-----------------------------------------------------------------------------
 const int LevelVersion = 1;
 
 // Declare map of actors to spawn functions
@@ -61,6 +63,10 @@ std::unordered_map<std::string, std::pair<int, ComponentFunc>> LevelLoader::sCom
 	{ "TargetComponent",{ Component::TTargetComponent, &Component::Create<TargetComponent> } }
 };
 
+
+//-----------------------------------------------------------------------------
+// LevelÉtÉ@ÉCÉãÉpÉXÇÃéÊìæ
+//-----------------------------------------------------------------------------
 bool LevelLoader::LoadLevel(Game* game, const std::string& fileName)
 {
 	rapidjson::Document doc;
@@ -94,6 +100,10 @@ bool LevelLoader::LoadLevel(Game* game, const std::string& fileName)
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// jsonÉtÉ@ÉCÉãÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 bool LevelLoader::LoadJSON(const std::string& fileName, rapidjson::Document& outDoc)
 {
 	// Load the file from disk into an ifstream in binary mode,
@@ -126,6 +136,10 @@ bool LevelLoader::LoadJSON(const std::string& fileName, rapidjson::Document& out
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// jsonÉtÉ@ÉCÉãÇ÷ÇÃèëÇ´çûÇ›
+//-----------------------------------------------------------------------------
 void LevelLoader::SaveLevel(Game* game, const std::string& fileName)
 {
 	// Create the document and root object
@@ -160,6 +174,10 @@ void LevelLoader::SaveLevel(Game* game, const std::string& fileName)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// ä¬ã´åıÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void LevelLoader::LoadGlobalProperties(Game* game, const rapidjson::Value& inObject)
 {
 	// Get ambient light
@@ -181,6 +199,10 @@ void LevelLoader::LoadGlobalProperties(Game* game, const rapidjson::Value& inObj
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// ActorÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void LevelLoader::LoadActors(Game* game, const rapidjson::Value& inArray)
 {
 	// Loop through array of actors
@@ -218,6 +240,10 @@ void LevelLoader::LoadActors(Game* game, const rapidjson::Value& inArray)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// ComponentÉNÉâÉXÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void LevelLoader::LoadComponents(Actor* actor, const rapidjson::Value& inArray)
 {
 	// Loop through array of components
@@ -257,6 +283,10 @@ void LevelLoader::LoadComponents(Actor* actor, const rapidjson::Value& inArray)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// ä¬ã´åıÇÃèëÇ´çûÇ›
+//-----------------------------------------------------------------------------
 void LevelLoader::SaveGlobalProperties(rapidjson::Document::AllocatorType& alloc,
 	Game* game, rapidjson::Value& inObject)
 {
@@ -272,6 +302,10 @@ void LevelLoader::SaveGlobalProperties(rapidjson::Document::AllocatorType& alloc
 	inObject.AddMember("directionalLight", dirObj, alloc);
 }
 
+
+//-----------------------------------------------------------------------------
+// ActorÇÃèëÇ´çûÇ›
+//-----------------------------------------------------------------------------
 void LevelLoader::SaveActors(rapidjson::Document::AllocatorType& alloc,
 	Game* game, rapidjson::Value& inArray)
 {
@@ -300,6 +334,10 @@ void LevelLoader::SaveActors(rapidjson::Document::AllocatorType& alloc,
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// ComponentÉNÉâÉXÇÃèëÇ´çûÇ›
+//-----------------------------------------------------------------------------
 void LevelLoader::SaveComponents(rapidjson::Document::AllocatorType& alloc,
 	const Actor* actor, rapidjson::Value& inArray)
 {
@@ -323,6 +361,10 @@ void LevelLoader::SaveComponents(rapidjson::Document::AllocatorType& alloc,
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// Intå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 bool JsonHelper::GetInt(const rapidjson::Value& inObject, const char* inProperty, int& outInt)
 {
 	// Check if this property exists
@@ -344,6 +386,10 @@ bool JsonHelper::GetInt(const rapidjson::Value& inObject, const char* inProperty
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// floatå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 bool JsonHelper::GetFloat(const rapidjson::Value& inObject, const char* inProperty, float& outFloat)
 {
 	auto itr = inObject.FindMember(inProperty);
@@ -362,6 +408,10 @@ bool JsonHelper::GetFloat(const rapidjson::Value& inObject, const char* inProper
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// stringå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 bool JsonHelper::GetString(const rapidjson::Value& inObject, const char* inProperty, std::string& outStr)
 {
 	auto itr = inObject.FindMember(inProperty);
@@ -380,6 +430,10 @@ bool JsonHelper::GetString(const rapidjson::Value& inObject, const char* inPrope
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// boolå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 bool JsonHelper::GetBool(const rapidjson::Value& inObject, const char* inProperty, bool& outBool)
 {
 	auto itr = inObject.FindMember(inProperty);
@@ -398,6 +452,10 @@ bool JsonHelper::GetBool(const rapidjson::Value& inObject, const char* inPropert
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// Vector3å^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 bool JsonHelper::GetVector3(const rapidjson::Value& inObject, const char* inProperty, Vector3& outVector)
 {
 	auto itr = inObject.FindMember(inProperty);
@@ -427,6 +485,10 @@ bool JsonHelper::GetVector3(const rapidjson::Value& inObject, const char* inProp
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// Quaternionå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 bool JsonHelper::GetQuaternion(const rapidjson::Value& inObject, const char* inProperty, Quaternion& outQuat)
 {
 	auto itr = inObject.FindMember(inProperty);
@@ -453,6 +515,10 @@ bool JsonHelper::GetQuaternion(const rapidjson::Value& inObject, const char* inP
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// Intå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void JsonHelper::AddInt(rapidjson::Document::AllocatorType& alloc,
 	rapidjson::Value& inObject, const char* name, int value)
 {
@@ -460,6 +526,10 @@ void JsonHelper::AddInt(rapidjson::Document::AllocatorType& alloc,
 	inObject.AddMember(rapidjson::StringRef(name), v, alloc);
 }
 
+
+//-----------------------------------------------------------------------------
+// floatå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void JsonHelper::AddFloat(rapidjson::Document::AllocatorType& alloc,
 	rapidjson::Value& inObject, const char* name, float value)
 {
@@ -467,6 +537,10 @@ void JsonHelper::AddFloat(rapidjson::Document::AllocatorType& alloc,
 	inObject.AddMember(rapidjson::StringRef(name), v, alloc);
 }
 
+
+//-----------------------------------------------------------------------------
+// Stringå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void JsonHelper::AddString(rapidjson::Document::AllocatorType& alloc,
 	rapidjson::Value& inObject, const char* name, const std::string& value)
 {
@@ -476,6 +550,10 @@ void JsonHelper::AddString(rapidjson::Document::AllocatorType& alloc,
 	inObject.AddMember(rapidjson::StringRef(name), v, alloc);
 }
 
+
+//-----------------------------------------------------------------------------
+// Boolå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void JsonHelper::AddBool(rapidjson::Document::AllocatorType& alloc,
 	rapidjson::Value& inObject, const char* name, bool value)
 {
@@ -483,6 +561,10 @@ void JsonHelper::AddBool(rapidjson::Document::AllocatorType& alloc,
 	inObject.AddMember(rapidjson::StringRef(name), v, alloc);
 }
 
+
+//-----------------------------------------------------------------------------
+// Vector3å^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void JsonHelper::AddVector3(rapidjson::Document::AllocatorType& alloc,
 	rapidjson::Value& inObject, const char* name, const Vector3& value)
 {
@@ -497,6 +579,10 @@ void JsonHelper::AddVector3(rapidjson::Document::AllocatorType& alloc,
 	inObject.AddMember(rapidjson::StringRef(name), v, alloc);
 }
 
+
+//-----------------------------------------------------------------------------
+// Quaternionå^Ç≈ÇÃì«Ç›éÊÇË
+//-----------------------------------------------------------------------------
 void JsonHelper::AddQuaternion(rapidjson::Document::AllocatorType& alloc,
 	rapidjson::Value& inObject, const char* name, const Quaternion& value)
 {

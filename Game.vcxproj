@@ -49,13 +49,13 @@
     <None Include="Shaders\Sprite.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imgui_demo.cpp" />
-    <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="imgui\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="imgui\imgui_tables.cpp" />
-    <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="External\imgui-1.91.3-docking\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="External\imgui-1.91.3-docking\backends\imgui_impl_sdl2.cpp" />
+    <ClCompile Include="External\imgui-1.91.3-docking\imgui.cpp" />
+    <ClCompile Include="External\imgui-1.91.3-docking\imgui_demo.cpp" />
+    <ClCompile Include="External\imgui-1.91.3-docking\imgui_draw.cpp" />
+    <ClCompile Include="External\imgui-1.91.3-docking\imgui_tables.cpp" />
+    <ClCompile Include="External\imgui-1.91.3-docking\imgui_widgets.cpp" />
     <ClCompile Include="Script\Actors\Actor.cpp" />
     <ClCompile Include="Script\Actors\ArrowActor.cpp" />
     <ClCompile Include="Script\Actors\BombActor.cpp" />
@@ -71,6 +71,7 @@
     <ClCompile Include="Script\Actors\PlaneActor.cpp" />
     <ClCompile Include="Script\Actors\ReactActor.cpp" />
     <ClCompile Include="Script\Actors\SmokeActor.cpp" />
+    <ClCompile Include="Script\Actors\StageChange.cpp" />
     <ClCompile Include="Script\Actors\SwordActor.cpp" />
     <ClCompile Include="Script\Actors\TorchItemActor.cpp" />
     <ClCompile Include="Script\Actors\TreeActor.cpp" />
@@ -115,7 +116,6 @@
     <ClCompile Include="Script\UI\ItemMenu.cpp" />
     <ClCompile Include="Script\UI\MainmenuUI.cpp" />
     <ClCompile Include="Script\UI\PauseMenu.cpp" />
-    <ClCompile Include="Script\UI\Search.cpp" />
     <ClCompile Include="Script\UI\Texture.cpp" />
     <ClCompile Include="Script\UI\Tutorial.cpp" />
     <ClCompile Include="Script\UI\UIScreen.cpp" />
@@ -145,6 +145,7 @@
     <ClInclude Include="Script\Actors\PlaneActor.h" />
     <ClInclude Include="Script\Actors\ReactActor.h" />
     <ClInclude Include="Script\Actors\SmokeActor.h" />
+    <ClInclude Include="Script\Actors\StageChange.h" />
     <ClInclude Include="Script\Actors\SwordActor.h" />
     <ClInclude Include="Script\Actors\TorchItemActor.h" />
     <ClInclude Include="Script\Actors\TreeActor.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Script\System\Collision.h" />
     <ClInclude Include="Script\System\GameClear.h" />
     <ClInclude Include="Script\System\GameOver.h" />
+    <ClInclude Include="Script\System\GameTimer.h" />
     <ClInclude Include="Script\System\LevelLoader.h" />
     <ClInclude Include="Script\System\Maths.h" />
     <ClInclude Include="Script\System\MatrixPalette.h" />
@@ -236,14 +238,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\SDL\include\SDL;..\external\GLEW\include;..\external\glm;..\external\stb-master;..\external\SOIL\include;..\external\imgui-1.91.3-docking;..\external\imgui-1.91.3-docking\backends;Script\Actors;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>External\SDL\include;External\SDL\include\SDL;External\GLEW\include;External\glm;External\stb-master;External\SOIL\include;External\imgui-1.91.3-docking;External\imgui-1.91.3-docking\backends;External\rapidjson\include;External\FMOD Studio API Windows\api\studio\inc;External\FMOD Studio API Windows\api\lowlevel\inc;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;Script\Actors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\external\SDL\lib\x86;..\external\SOIL\lib\win\x86;..\external\GLEW\lib\win\x86;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>External\SDL\lib\x86;External\SOIL\lib\win\x86;External\GLEW\lib\win\x86;External\FMOD Studio API Windows\api\studio\lib;External\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;SOIL.lib;glew32.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -264,7 +266,7 @@ xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studi
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\external\SDL\include;..\external\SDL\include\SDL;..\external\GLEW\include;..\external\glm;..\external\stb-master;..\external\SOIL\include;..\external\imgui-1.91.3-docking;..\external\imgui-1.91.3-docking\backends;Script\Actors;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;..\external\rapidjson\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>External\SDL\include;External\SDL\include\SDL;External\GLEW\include;External\glm;External\stb-master;External\SOIL\include;External\imgui-1.91.3-docking;External\imgui-1.91.3-docking\backends;External\rapidjson\include;External\FMOD Studio API Windows\api\studio\inc;External\FMOD Studio API Windows\api\lowlevel\inc;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;Script\Actors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
@@ -273,7 +275,7 @@ xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\external\SDL\lib\x86;..\external\SOIL\lib\win\x86;..\external\GLEW\lib\win\x86;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>External\SDL\lib\x86;External\SOIL\lib\win\x86;External\GLEW\lib\win\x86;External\FMOD Studio API Windows\api\studio\lib;External\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;SOIL.lib;glew32.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

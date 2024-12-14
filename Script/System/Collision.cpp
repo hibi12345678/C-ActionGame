@@ -23,17 +23,32 @@
 #include <array>
 
 
+///////////////////////////////////////////////////////////////////////////////
+//  LineSegment class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 LineSegment::LineSegment(const Vector3& start, const Vector3& end)
 	:mStart(start)
 	,mEnd(end)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  線分上の指定された位置に対応する点を計算
+//-----------------------------------------------------------------------------
 Vector3 LineSegment::PointOnSegment(float t) const
 {
 	return mStart + (mEnd - mStart) * t;
 }
 
+
+//-----------------------------------------------------------------------------
+//  最短距離の2乗を計算
+//-----------------------------------------------------------------------------
 float LineSegment::MinDistSq(const Vector3& point) const
 {
 	// Construct vectors
@@ -64,6 +79,10 @@ float LineSegment::MinDistSq(const Vector3& point) const
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// 最短距離の2乗を計算
+//-----------------------------------------------------------------------------
 float LineSegment::MinDistSq(const LineSegment & s1, const LineSegment & s2)
 {
 	Vector3   u = s1.mEnd - s1.mStart;
@@ -134,6 +153,14 @@ float LineSegment::MinDistSq(const LineSegment & s1, const LineSegment & s2)
 	return dP.LengthSq();   // return the closest distance squared
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+//  Plane class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 Plane::Plane(const Vector3& normal, float d)
 	:mNormal(normal)
 	,mD(d)
@@ -151,18 +178,31 @@ Plane::Plane(const Vector3& a, const Vector3& b, const Vector3& c)
 	// d = -P dot n
 	mD = -Vector3::Dot(a, mNormal);
 }
-
+//-----------------------------------------------------------------------------
+//  点と平面との間の符号付き距離を計算
+//-----------------------------------------------------------------------------
 float Plane::SignedDist(const Vector3& point) const
 {
 	return Vector3::Dot(point, mNormal) - mD;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+//  Sphere class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 Sphere::Sphere(const Vector3& center, float radius)
 	:mCenter(center)
 	, mRadius(radius)
 {
 }
 
+//-----------------------------------------------------------------------------
+// 与えられた点が球体内に含まれているか
+//-----------------------------------------------------------------------------
 bool Sphere::Contains(const Vector3& point) const
 {
 	// Get distance squared between center and point
@@ -170,12 +210,24 @@ bool Sphere::Contains(const Vector3& point) const
 	return distSq <= (mRadius * mRadius);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+//  AABB class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 AABB::AABB(const Vector3& min, const Vector3& max)
 	: mMin(min)
 	, mMax(max)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  新しい最小値 と最大値を更新
+//-----------------------------------------------------------------------------
 void AABB::UpdateMinMax(const Vector3& point)
 {
 	// Update each component separately
@@ -188,6 +240,10 @@ void AABB::UpdateMinMax(const Vector3& point)
 	mMax.z = Math::Max(mMax.z, point.z);
 }
 
+
+//-----------------------------------------------------------------------------
+//   回転させ、新しい最小値 と最大値を更新
+//-----------------------------------------------------------------------------
 void AABB::Rotate(const Quaternion& q)
 {
 	// Construct the 8 points for the corners of the box
@@ -218,6 +274,10 @@ void AABB::Rotate(const Quaternion& q)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   point がAABBの内部にあるかどうかを判定
+//-----------------------------------------------------------------------------
 bool AABB::Contains(const Vector3& point) const
 {
 	bool outside = point.x < mMin.x ||
@@ -230,6 +290,10 @@ bool AABB::Contains(const Vector3& point) const
 	return !outside;
 }
 
+
+//-----------------------------------------------------------------------------
+//   ABBとの最短距離を計算し、その距離の二乗を返す
+//-----------------------------------------------------------------------------
 float AABB::MinDistSq(const Vector3& point) const
 {
 	// Compute differences for each axis
@@ -243,17 +307,33 @@ float AABB::MinDistSq(const Vector3& point) const
 	return dx * dx + dy * dy + dz * dz;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+//  Capsule class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 Capsule::Capsule(const Vector3& start, const Vector3& end, float radius)
 	:mSegment(start, end)
 	, mRadius(radius)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  Capsule上の指定された位置に対応する点を計算
+//-----------------------------------------------------------------------------
 Vector3 Capsule::PointOnSegment(float t) const
 {
 	return mSegment.PointOnSegment(t);
 }
 
+
+//-----------------------------------------------------------------------------
+//   point が内部にあるかどうかを判定
+//-----------------------------------------------------------------------------
 bool Capsule::Contains(const Vector3& point) const
 {
 	// Get minimal dist. sq. between point and line segment
@@ -261,6 +341,10 @@ bool Capsule::Contains(const Vector3& point) const
 	return distSq <= (mRadius * mRadius);
 }
 
+
+//-----------------------------------------------------------------------------
+//   point が内部にあるかどうかを判定
+//-----------------------------------------------------------------------------
 bool ConvexPolygon::Contains(const Vector2& point) const
 {
 	float sum = 0.0f;
@@ -286,6 +370,10 @@ bool ConvexPolygon::Contains(const Vector2& point) const
 	return Math::NearZero(sum - Math::TwoPi);
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突判定
+//-----------------------------------------------------------------------------
 bool Intersect(const Sphere& a, const Sphere& b)
 {
 	float distSq = (a.mCenter - b.mCenter).LengthSq();
@@ -293,6 +381,10 @@ bool Intersect(const Sphere& a, const Sphere& b)
 	return distSq <= (sumRadii * sumRadii);
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突判定
+//-----------------------------------------------------------------------------
 bool Intersect(const AABB& a, const AABB& b)
 {
 	bool no = a.mMax.x < b.mMin.x ||
@@ -305,6 +397,10 @@ bool Intersect(const AABB& a, const AABB& b)
 	return !no;
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突判定
+//-----------------------------------------------------------------------------
 bool Intersect(const Capsule& a, const Capsule& b)
 {
 	float distSq = LineSegment::MinDistSq(a.mSegment, 
@@ -313,12 +409,20 @@ bool Intersect(const Capsule& a, const Capsule& b)
 	return distSq <= (sumRadii * sumRadii);
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突判定
+//-----------------------------------------------------------------------------
 bool Intersect(const Sphere& s, const AABB& box)
 {
 	float distSq = box.MinDistSq(s.mCenter);
 	return distSq <= (s.mRadius * s.mRadius);
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突判定
+//-----------------------------------------------------------------------------
 bool Intersect(const LineSegment& l, const Sphere& s, float& outT)
 {
 	// Compute X, Y, a, b, c as per equations
@@ -357,6 +461,10 @@ bool Intersect(const LineSegment& l, const Sphere& s, float& outT)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突判定
+//-----------------------------------------------------------------------------
 bool Intersect(const LineSegment& l, const Plane& p, float& outT)
 {
 	// First test if there's a solution for t
@@ -393,6 +501,9 @@ bool Intersect(const LineSegment& l, const Plane& p, float& outT)
 	}
 }
 
+//-----------------------------------------------------------------------------
+//  線分が平面と交差するかどうか
+//-----------------------------------------------------------------------------
 bool TestSidePlane(float start, float end, float negd, const Vector3& norm,
 	std::vector<std::pair<float, Vector3>>& out)
 {
@@ -418,6 +529,10 @@ bool TestSidePlane(float start, float end, float negd, const Vector3& norm,
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  衝突判定
+//-----------------------------------------------------------------------------
 bool Intersect(const LineSegment& l, const AABB& b, float& outT,
 	Vector3& outNorm)
 {
@@ -462,6 +577,10 @@ bool Intersect(const LineSegment& l, const AABB& b, float& outT,
 	return false;
 }
 
+
+//-----------------------------------------------------------------------------
+//  2つの移動する球体が交差するかどうか
+//-----------------------------------------------------------------------------
 bool SweptSphere(const Sphere& P0, const Sphere& P1,
 	const Sphere& Q0, const Sphere& Q1, float& outT)
 {

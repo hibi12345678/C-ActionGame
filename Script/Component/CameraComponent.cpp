@@ -17,6 +17,13 @@
 #include "Renderer.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// CameraComponent class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 CameraComponent::CameraComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
 	, mPitchSpeed(0.0f)
@@ -25,6 +32,10 @@ CameraComponent::CameraComponent(Actor* owner, int updateOrder)
 {
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// View座標をRendererに送る
+///////////////////////////////////////////////////////////////////////////////
 void CameraComponent::SetViewMatrix(const Matrix4& view)
 {
 	// Pass view matrix to renderer and audio system

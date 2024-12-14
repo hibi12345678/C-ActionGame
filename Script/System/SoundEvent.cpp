@@ -15,6 +15,13 @@
 #include "SoundEvent.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// SoundEvent class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 SoundEvent::SoundEvent(class AudioSystem* system, unsigned int id)
 	:mSystem(system)
 	,mID(id)
@@ -27,11 +34,18 @@ SoundEvent::SoundEvent()
 {
 }
 
+//-----------------------------------------------------------------------------
+//    SoundEvent IsValid?
+//-----------------------------------------------------------------------------
 bool SoundEvent::IsValid()
 {
 	return (mSystem && mSystem->GetEventInstance(mID) != nullptr);
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent Restart
+//-----------------------------------------------------------------------------
 void SoundEvent::Restart()
 {
 	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;
@@ -41,6 +55,10 @@ void SoundEvent::Restart()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent Stop
+//-----------------------------------------------------------------------------
 void SoundEvent::Stop(bool allowFadeOut /* true */)
 {
 	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;
@@ -53,6 +71,10 @@ void SoundEvent::Stop(bool allowFadeOut /* true */)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent Paused
+//-----------------------------------------------------------------------------
 void SoundEvent::SetPaused(bool pause)
 {
 	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;
@@ -62,6 +84,10 @@ void SoundEvent::SetPaused(bool pause)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent SetVolume
+//-----------------------------------------------------------------------------
 void SoundEvent::SetVolume(float value)
 {
 	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;
@@ -71,6 +97,10 @@ void SoundEvent::SetVolume(float value)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent SetPitch
+//-----------------------------------------------------------------------------
 void SoundEvent::SetPitch(float value)
 {
 	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;
@@ -80,6 +110,10 @@ void SoundEvent::SetPitch(float value)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent SetParameter
+//-----------------------------------------------------------------------------
 void SoundEvent::SetParameter(const std::string& name, float value)
 {
 	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;
@@ -89,6 +123,11 @@ void SoundEvent::SetParameter(const std::string& name, float value)
 	}
 }
 
+
+
+//-----------------------------------------------------------------------------
+//    SoundEvent GetPaused
+//-----------------------------------------------------------------------------
 bool SoundEvent::GetPaused() const
 {
 	bool retVal = false;
@@ -100,6 +139,10 @@ bool SoundEvent::GetPaused() const
 	return retVal;
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent GetVolume
+//-----------------------------------------------------------------------------
 float SoundEvent::GetVolume() const
 {
 	float retVal = 0.0f;
@@ -111,6 +154,10 @@ float SoundEvent::GetVolume() const
 	return retVal;
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent　GetPitc
+//-----------------------------------------------------------------------------
 float SoundEvent::GetPitch() const
 {
 	float retVal = 0.0f;
@@ -122,6 +169,10 @@ float SoundEvent::GetPitch() const
 	return retVal;
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent　GetParameter
+//-----------------------------------------------------------------------------
 float SoundEvent::GetParameter(const std::string& name)
 {
 	float retVal = 0.0f;
@@ -133,6 +184,10 @@ float SoundEvent::GetParameter(const std::string& name)
 	return retVal;
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent　Is3D
+//-----------------------------------------------------------------------------
 bool SoundEvent::Is3D() const
 {
 	bool retVal = false;
@@ -150,6 +205,10 @@ bool SoundEvent::Is3D() const
 	return retVal;
 }
 
+
+//-----------------------------------------------------------------------------
+//   namespace
+//-----------------------------------------------------------------------------
 namespace
 {
 	FMOD_VECTOR VecToFMOD(const Vector3& in)
@@ -164,6 +223,10 @@ namespace
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//    SoundEvent　Set3DAttributes
+//-----------------------------------------------------------------------------
 void SoundEvent::Set3DAttributes(const Matrix4& worldTrans)
 {
 	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;

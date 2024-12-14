@@ -17,8 +17,16 @@
 #include "Skeleton.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Animatopn class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+// ファイルパスからアニメーションのロード
+//-----------------------------------------------------------------------------
 bool Animation::Load(const std::string& fileName)
 {
+	//json形式で取得
 	mFileName = fileName;
 	rapidjson::Document doc;
 	if (!LevelLoader::LoadJSON(fileName, doc))
@@ -29,7 +37,6 @@ bool Animation::Load(const std::string& fileName)
 
 	int ver = doc["version"].GetInt();
 
-	// Check the metadata
 	if (ver != 1)
 	{
 		SDL_Log("Animation %s unknown format", fileName.c_str());
@@ -53,6 +60,7 @@ bool Animation::Load(const std::string& fileName)
 		return false;
 	}
 
+	//フレーム数,アニメーション再生時間,ボーンの数を取得
 	mNumFrames = frames.GetUint();
 	mDuration = length.GetDouble();
 	mNumBones = bonecount.GetUint();
@@ -120,6 +128,9 @@ bool Animation::Load(const std::string& fileName)
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// 各フレームにおけるボーンの座標をMatrix4で取得
+//-----------------------------------------------------------------------------
 void Animation::GetGlobalPoseAtTime(std::vector<Matrix4>& outPoses, const Skeleton* inSkeleton, float inTime) const
 {
 	if (outPoses.size() != mNumBones)
@@ -127,17 +138,13 @@ void Animation::GetGlobalPoseAtTime(std::vector<Matrix4>& outPoses, const Skelet
 		outPoses.resize(mNumBones);
 	}
 
-	// Figure out the current frame index and next frame
-	// (This assumes inTime is bounded by [0, AnimDuration]
 	size_t frame = static_cast<size_t>(inTime / mFrameDuration);
 	size_t nextFrame = frame + 1;
-	// Calculate fractional value between frame and next frame
+
 	float pct = inTime / mFrameDuration - frame;
 
-	// Setup the pose for the root
 	if (mTracks[0].size() > 0)
 	{
-		// Interpolate between the current frame's pose and the next frame
 		BoneTransform interp = BoneTransform::Interpolate(mTracks[0][frame],
 			mTracks[0][nextFrame], pct);
 		outPoses[0] = interp.ToMatrix();
@@ -148,10 +155,9 @@ void Animation::GetGlobalPoseAtTime(std::vector<Matrix4>& outPoses, const Skelet
 	}
 
 	const std::vector<Skeleton::Bone>& bones = inSkeleton->GetBones();
-	// Now setup the poses for the rest
 	for (size_t bone = 1; bone < mNumBones; bone++)
 	{
-		Matrix4 localMat; // (Defaults to identity)
+		Matrix4 localMat;
 		if (mTracks[bone].size() > 0)
 		{
 			BoneTransform interp = BoneTransform::Interpolate(mTracks[bone][frame],

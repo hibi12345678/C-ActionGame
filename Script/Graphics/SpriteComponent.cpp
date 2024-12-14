@@ -19,6 +19,13 @@
 #include "LevelLoader.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// App class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	:Component(owner)
 	,mTexture(nullptr)
@@ -30,11 +37,19 @@ SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	mOwner->GetGame()->GetRenderer()->AddSprite(this);
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 SpriteComponent::~SpriteComponent()
 {
 	mOwner->GetGame()->GetRenderer()->RemoveSprite(this);
 }
 
+
+//-----------------------------------------------------------------------------
+//  描画処理
+//-----------------------------------------------------------------------------
 void SpriteComponent::Draw(Shader* shader)
 {
 	if (mTexture)
@@ -59,6 +74,10 @@ void SpriteComponent::Draw(Shader* shader)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  Setter
+//-----------------------------------------------------------------------------
 void SpriteComponent::SetTexture(Texture* texture)
 {
 	mTexture = texture;
@@ -67,6 +86,10 @@ void SpriteComponent::SetTexture(Texture* texture)
 	mTexHeight = texture->GetHeight();
 }
 
+
+//-----------------------------------------------------------------------------
+//  jsonファイルからデータの読み取り
+//-----------------------------------------------------------------------------
 void SpriteComponent::LoadProperties(const rapidjson::Value& inObj)
 {
 	Component::LoadProperties(inObj);
@@ -81,6 +104,10 @@ void SpriteComponent::LoadProperties(const rapidjson::Value& inObj)
 	JsonHelper::GetBool(inObj, "visible", mVisible);
 }
 
+
+//-----------------------------------------------------------------------------
+//  jsonファイルへの書き込み
+//-----------------------------------------------------------------------------
 void SpriteComponent::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	Component::SaveProperties(alloc, inObj);

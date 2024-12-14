@@ -16,6 +16,9 @@
 #include "LevelLoader.h"
 
 
+//-----------------------------------------------------------------------------
+// Constant Values.
+//-----------------------------------------------------------------------------
 const char* Actor::TypeNames[NUM_ACTOR_TYPES] = {
 	"Actor",
 	"BallActor",
@@ -25,6 +28,10 @@ const char* Actor::TypeNames[NUM_ACTOR_TYPES] = {
 	"TargetActor",
 };
 
+
+//-----------------------------------------------------------------------------
+// コンストラクタ
+//-----------------------------------------------------------------------------
 Actor::Actor(Game* game)
 	:mState(EActive)
 	,mPosition(Vector3::Zero)
@@ -36,6 +43,10 @@ Actor::Actor(Game* game)
 	mGame->AddActor(this);
 }
 
+
+//-----------------------------------------------------------------------------
+// デストラクタ
+//-----------------------------------------------------------------------------
 Actor::~Actor()
 {
 	mGame->RemoveActor(this);
@@ -47,6 +58,10 @@ Actor::~Actor()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  Update
+//-----------------------------------------------------------------------------
 void Actor::Update(float deltaTime)
 {
 	if (mState == EActive)
@@ -60,6 +75,10 @@ void Actor::Update(float deltaTime)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  ComponentのUpdate処理
+//-----------------------------------------------------------------------------
 void Actor::UpdateComponents(float deltaTime)
 {
 	for (auto comp : mComponents)
@@ -68,10 +87,18 @@ void Actor::UpdateComponents(float deltaTime)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  ActorのUpdate処理
+//-----------------------------------------------------------------------------
 void Actor::UpdateActor(float deltaTime)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+//  入力処理
+//-----------------------------------------------------------------------------
 void Actor::ProcessInput(const uint8_t* keyState)
 {
 	if (mState == EActive)
@@ -86,26 +113,38 @@ void Actor::ProcessInput(const uint8_t* keyState)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  入力処理
+//-----------------------------------------------------------------------------
 void Actor::ActorInput(const uint8_t* keyState)
 {
 
 }
 
+
+//-----------------------------------------------------------------------------
+//  ワールド座標へ変換します
+//-----------------------------------------------------------------------------
 void Actor::ComputeWorldTransform()
 {
 	mRecomputeTransform = false;
-	// Scale, then rotate, then translate
+	// Scale,rot,pos
 	mWorldTransform = Matrix4::CreateScale(mScale);
 	mWorldTransform *= Matrix4::CreateFromQuaternion(mRotation);
 	mWorldTransform *= Matrix4::CreateTranslation(mPosition);
 
-	// Inform components world transform updated
+	//componentのOnUpdateWorldTransformを呼び出す
 	for (auto comp : mComponents)
 	{
 		comp->OnUpdateWorldTransform();
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   正面方向への回転処理
+//-----------------------------------------------------------------------------
 void Actor::RotateToNewForward(const Vector3& forward)
 {
 	// Figure out difference between original (unit x) and new
@@ -130,6 +169,10 @@ void Actor::RotateToNewForward(const Vector3& forward)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  コンポーネントの追加
+//-----------------------------------------------------------------------------
 void Actor::AddComponent(Component* component)
 {
 	// Find the insertion point in the sorted vector
@@ -150,6 +193,9 @@ void Actor::AddComponent(Component* component)
 	mComponents.insert(iter, component);
 }
 
+//-----------------------------------------------------------------------------
+// コンポーネントの削除
+//-----------------------------------------------------------------------------
 void Actor::RemoveComponent(Component* component)
 {
 	auto iter = std::find(mComponents.begin(), mComponents.end(), component);
@@ -159,6 +205,9 @@ void Actor::RemoveComponent(Component* component)
 	}
 }
 
+//-----------------------------------------------------------------------------
+//  jsonファイルから読み取り
+//-----------------------------------------------------------------------------
 void Actor::LoadProperties(const rapidjson::Value& inObj)
 {
 	// Use strings for different states
@@ -186,6 +235,9 @@ void Actor::LoadProperties(const rapidjson::Value& inObj)
 	ComputeWorldTransform();
 }
 
+//-----------------------------------------------------------------------------
+//  jasonファイルへの書き込み
+//-----------------------------------------------------------------------------
 void Actor::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	std::string state = "active";

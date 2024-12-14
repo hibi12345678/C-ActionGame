@@ -14,7 +14,13 @@
 #include "Actor.h"
 #include "LevelLoader.h"
 
+///////////////////////////////////////////////////////////////////////////////
+// MoveComponent class
+///////////////////////////////////////////////////////////////////////////////
 
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
 :Component(owner, updateOrder)
 ,mAngularSpeed(0.0f)
@@ -23,8 +29,13 @@ MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
 	
 }
 
+
+//-----------------------------------------------------------------------------
+//   Update
+//-----------------------------------------------------------------------------
 void MoveComponent::Update(float deltaTime)
 {
+	//Transform　Rotation
 	if (!Math::NearZero(mAngularSpeed))
 	{
 		Quaternion rot = mOwner->GetRotation();
@@ -39,6 +50,7 @@ void MoveComponent::Update(float deltaTime)
 		mOwner->SetRotation(rot);
 	}
 	
+	//Transform　Position
 	if (!Math::NearZero(mForwardSpeed) || !Math::NearZero(mStrafeSpeed)|| !Math::NearZero(mJumpSpeed))
 	{
 		Vector3 pos = mOwner->GetPosition();
@@ -49,6 +61,10 @@ void MoveComponent::Update(float deltaTime)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  Jsonファイルからデータの読み取り
+//-----------------------------------------------------------------------------
 void MoveComponent::LoadProperties(const rapidjson::Value& inObj)
 {
 	Component::LoadProperties(inObj);
@@ -58,6 +74,10 @@ void MoveComponent::LoadProperties(const rapidjson::Value& inObj)
 	JsonHelper::GetFloat(inObj, "strafeSpeed", mStrafeSpeed);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Jsonファイルへの書き込み
+//-----------------------------------------------------------------------------
 void MoveComponent::SaveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const
 {
 	Component::SaveProperties(alloc, inObj);

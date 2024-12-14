@@ -14,6 +14,13 @@
 #include <GL/glew.h>
 
 
+///////////////////////////////////////////////////////////////////////////////
+// VertexArray class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 VertexArray::VertexArray(const void* verts, unsigned int numVerts, Layout layout,
 	const unsigned int* indices, unsigned int numIndices)
 	:mNumVerts(numVerts)
@@ -74,6 +81,10 @@ VertexArray::VertexArray(const void* verts, unsigned int numVerts, Layout layout
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 VertexArray::~VertexArray()
 {
 	glDeleteBuffers(1, &mVertexBuffer);
@@ -81,11 +92,19 @@ VertexArray::~VertexArray()
 	glDeleteVertexArrays(1, &mVertexArray);
 }
 
+
+//-----------------------------------------------------------------------------
+//   頂点をアクティブ
+//-----------------------------------------------------------------------------
 void VertexArray::SetActive()
 {
 	glBindVertexArray(mVertexArray);
 }
 
+
+//-----------------------------------------------------------------------------
+//   頂点のサイズ取得
+//-----------------------------------------------------------------------------
 unsigned int VertexArray::GetVertexSize(VertexArray::Layout layout)
 {
 	unsigned vertexSize = 8 * sizeof(float);

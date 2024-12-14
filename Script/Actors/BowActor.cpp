@@ -20,6 +20,13 @@
 #include "SkeletalMeshComponent.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// BowActor class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 BowActor::BowActor(Game* game, float scale, int num)
 	: ItemActorBase(game, scale, num)
 {	
@@ -28,18 +35,18 @@ BowActor::BowActor(Game* game, float scale, int num)
 	
 }
 
+
+//-----------------------------------------------------------------------------
+// Update
+//-----------------------------------------------------------------------------
 void BowActor::UpdateActor(float deltaTime)
 {
-
 	// 基底クラスのUpdateActor呼び出し
 	ItemActorBase::UpdateActor(deltaTime);
 	Game* game = GetGame();
 
 	if (FollowActor::EBow != game->GetPlayer()->GetItemState()) {
-
 		SetState(Actor::EDead);
-
 	}
-
 }
 

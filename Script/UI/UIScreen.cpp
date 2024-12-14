@@ -20,6 +20,13 @@
 #include "Texture.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// UIScreen class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 UIScreen::UIScreen(Game* game)
 	:mGame(game)
 	,mTitle(nullptr)
@@ -58,6 +65,11 @@ UIScreen::UIScreen(Game* game)
 	mTutorialTex2 = mGame->GetRenderer()->GetTexture("Assets/Texture/Tutorial2.png");
 }
 
+
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 UIScreen::~UIScreen()
 {
 	if (mTitle)
@@ -106,6 +118,11 @@ UIScreen::~UIScreen()
 	
 }
 
+
+
+//-----------------------------------------------------------------------------
+//   Update
+//-----------------------------------------------------------------------------
 void UIScreen::Update(float deltaTime)
 {
 	if (TutorialNum < 0) {
@@ -117,6 +134,10 @@ void UIScreen::Update(float deltaTime)
 
 }
 
+
+//-----------------------------------------------------------------------------
+//   描画処理
+//-----------------------------------------------------------------------------
 void UIScreen::Draw(Shader* shader)
 {
 
@@ -284,6 +305,11 @@ void UIScreen::Draw(Shader* shader)
 
 }
 
+
+
+//-----------------------------------------------------------------------------
+//   マウスの入力処理
+//-----------------------------------------------------------------------------
 void UIScreen::ProcessInput(const uint8_t* keys)
 {
 	// Do we have buttons?
@@ -430,6 +456,11 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 	}
 }
 
+
+
+//-----------------------------------------------------------------------------
+//   MainMenuでのmStartButtonの処理
+//-----------------------------------------------------------------------------
 void UIScreen::StartInput(const uint8_t* keys)
 {	
 	// Do we have buttons?
@@ -457,6 +488,11 @@ void UIScreen::StartInput(const uint8_t* keys)
 		
 	}
 }
+
+
+//-----------------------------------------------------------------------------
+//    入力処理
+//-----------------------------------------------------------------------------
 void UIScreen::HandleKeyPress(int key)
 {
 	switch (key)
@@ -529,11 +565,18 @@ void UIScreen::HandleKeyPress(int key)
 }
 
 
+//-----------------------------------------------------------------------------
+//     UIを閉じる
+//-----------------------------------------------------------------------------
 void UIScreen::Close()
 {
 	mUIState = EClosing;
 }
 
+
+//-----------------------------------------------------------------------------
+//     チュートリアルを閉じる
+//-----------------------------------------------------------------------------
 void UIScreen::CloseTutorial()
 {
 	if (TutorialNum == 3) {
@@ -542,6 +585,11 @@ void UIScreen::CloseTutorial()
 	}
 	
 }
+
+
+//-----------------------------------------------------------------------------
+//    タイトルの初期化
+//-----------------------------------------------------------------------------
 void UIScreen::SetTitle(const std::string& text,
 						const Vector3& color,
 						int pointSize)
@@ -558,6 +606,10 @@ void UIScreen::SetTitle(const std::string& text,
 
 }
 
+
+//-----------------------------------------------------------------------------
+//    textの追加
+//-----------------------------------------------------------------------------
 void UIScreen::AddText(const std::string& text, Vector2 pos, int pointSize,
 	const Vector3& color, int num
 	 )
@@ -571,6 +623,10 @@ void UIScreen::AddText(const std::string& text, Vector2 pos, int pointSize,
 	
 }
 
+
+//-----------------------------------------------------------------------------
+//    textメモリを解放
+//-----------------------------------------------------------------------------
 void UIScreen::CloseText()
 {
 	for (auto b : mText) {
@@ -579,6 +635,10 @@ void UIScreen::CloseText()
 	mText.clear();
 }
 
+
+//-----------------------------------------------------------------------------
+//    Itemtextの追加
+//-----------------------------------------------------------------------------
 void UIScreen::SetItemText(const std::string& text, Vector2 pos, int pointSize,
 	const Vector3& color)
 {
@@ -595,6 +655,10 @@ void UIScreen::SetItemText(const std::string& text, Vector2 pos, int pointSize,
 	mItemText->SetPos(pos);
 }
 
+
+//-----------------------------------------------------------------------------
+//    Buttonの追加
+//-----------------------------------------------------------------------------
 void UIScreen::AddButton(const std::string& name, std::function<void()> onClick)
 {
 	Vector2 dims(static_cast<float>(mButtonOn->GetWidth()), 
@@ -605,6 +669,10 @@ void UIScreen::AddButton(const std::string& name, std::function<void()> onClick)
 	
 }
 
+
+//-----------------------------------------------------------------------------
+//    StartメニューのButtonの追加
+//-----------------------------------------------------------------------------
 void UIScreen::StartButton(const std::string& name, std::function<void()> onClick)
 {
 	Vector2 dims(static_cast<float>(mButtonOn->GetWidth()),
@@ -612,6 +680,11 @@ void UIScreen::StartButton(const std::string& name, std::function<void()> onClic
 	Button* b = new Button(name, mFont, onClick, Vector2(0.0f, 0.0f), dims,0);	
 	mStartButton.emplace_back(b);	
 }
+
+
+//-----------------------------------------------------------------------------
+//    アイテムメニューのButtonの追加
+//-----------------------------------------------------------------------------
 void UIScreen::ItemButton(const std::string& name,int texNumber ,std::function<void()> onClick)
 {
 	Vector2 dims(static_cast<float>(mItemButtonOn->GetWidth()),
@@ -623,13 +696,21 @@ void UIScreen::ItemButton(const std::string& name,int texNumber ,std::function<v
 	mNextItemButtonPos.x += mItemButtonOff->GetWidth()+ 30.0f;
 }
 
+
+//-----------------------------------------------------------------------------
+//    Textureの描画
+//-----------------------------------------------------------------------------
 void UIScreen::DrawTexture(class Shader* shader, class Texture* texture,
 	const Vector2& offset, float scale, bool flipY, int a)
 {
 	float yScale = static_cast<float>(texture->GetHeight()) * scale;
+
+
+	//横のみサイズを大きくする
 	if (a == 1) {
-		yScale = static_cast<float>(texture->GetHeight()) * 1.3f;
+		yScale = static_cast<float>(texture->GetHeight()) * 1.0f;
 	}
+	//反転
 	if (flipY) {
 		yScale *= -1.0f;
 	}
@@ -645,6 +726,11 @@ void UIScreen::DrawTexture(class Shader* shader, class Texture* texture,
 	texture->SetActive();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
+
+
+//-----------------------------------------------------------------------------
+//    チュートリアル用のボタンの描画
+//-----------------------------------------------------------------------------
 void UIScreen::DrawButtonRight(const std::string& name, std::function<void()> onClick)
 {
 	Vector2 dims(static_cast<float>(mTutorialRightButtonOn->GetWidth()),
@@ -653,6 +739,10 @@ void UIScreen::DrawButtonRight(const std::string& name, std::function<void()> on
 	mTutorialButtonRight = b;
 }
 
+
+//-----------------------------------------------------------------------------
+//    チュートリアル用のボタンの描画
+//-----------------------------------------------------------------------------
 void UIScreen::DrawButtonLeft(const std::string& name, std::function<void()> onClick)
 {
 	Vector2 dims(static_cast<float>(mTutorialLeftButtonOn->GetWidth()),
@@ -661,6 +751,10 @@ void UIScreen::DrawButtonLeft(const std::string& name, std::function<void()> onC
 	mTutorialButtonLeft = b;
 }
 
+
+//-----------------------------------------------------------------------------
+//    チュートリアル用のボタンの描画
+//-----------------------------------------------------------------------------
 void UIScreen::DrawCloseButton(const std::string& name, std::function<void()> onClick)
 {
 	Vector2 dims(static_cast<float>(mCloseButtonOn->GetWidth()),
@@ -668,6 +762,11 @@ void UIScreen::DrawCloseButton(const std::string& name, std::function<void()> on
 	Button* b = new Button(name, mFont, onClick, Vector2(320.0f, 250.0f), dims, 0);
 	mCloseButton = b;
 }
+
+
+//-----------------------------------------------------------------------------
+//   マウスの状態を取得
+//-----------------------------------------------------------------------------
 void UIScreen::SetRelativeMouseMode(bool relative)
 {
 	if (relative)
@@ -682,6 +781,9 @@ void UIScreen::SetRelativeMouseMode(bool relative)
 	}
 }
 
+//-----------------------------------------------------------------------------
+//  TutorialNumを加算
+//-----------------------------------------------------------------------------
 void UIScreen::AddTutorialNum()
 { 
 	if (TutorialNum < 4) {
@@ -691,6 +793,10 @@ void UIScreen::AddTutorialNum()
 	}
 	
 }
+
+//-----------------------------------------------------------------------------
+//  TutorialNumを減算
+//-----------------------------------------------------------------------------
 void UIScreen::RemoveTutorialNum()
 { 
 	if (TutorialNum > 0) {
@@ -698,6 +804,15 @@ void UIScreen::RemoveTutorialNum()
 		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Tutorial");
 	}
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Button class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 Button::Button(const std::string& name, Font* font,
 	std::function<void()> onClick,
 	const Vector2& pos, const Vector2& dims, int TexNum)
@@ -712,6 +827,10 @@ Button::Button(const std::string& name, Font* font,
 	SetName(name);
 }
 
+
+//-----------------------------------------------------------------------------
+//      デストラクタです.
+//-----------------------------------------------------------------------------
 Button::~Button()
 {
 	if (mNameTex)
@@ -721,6 +840,10 @@ Button::~Button()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  Name Setter
+//-----------------------------------------------------------------------------
 void Button::SetName(const std::string& name)
 {
 	mName = name;
@@ -734,6 +857,10 @@ void Button::SetName(const std::string& name)
 	mNameTex = mFont->RenderText(mName);
 }
 
+
+//-----------------------------------------------------------------------------
+//  ボタンの中心からの上下左右の端までの距離
+//-----------------------------------------------------------------------------
 bool Button::ContainsPoint(const Vector2& pt) const
 {
 	bool no = pt.x < (mPosition.x - mDimensions.x / 2.0f) ||
@@ -743,6 +870,10 @@ bool Button::ContainsPoint(const Vector2& pt) const
 	return !no;
 }
 
+
+//-----------------------------------------------------------------------------
+//  クリック処理
+//-----------------------------------------------------------------------------
 void Button::OnClick()
 {
 	if (mOnClick)

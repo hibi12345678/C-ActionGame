@@ -29,22 +29,33 @@
 #include "Font.h"
 #include "GameClear.h"
 #include "GameOver.h"
+#include "GameTimer.h"
 #include "HUD.h"
 #include "ItemMenu.h"
 #include "LevelLoader.h"
 #include "MainmenuUI.h"
 #include "MeshComponent.h"
+#include "MoveComponent.h"
 #include "PauseMenu.h"
 #include "PlaneActor.h"
 #include "PointLightComponent.h"
 #include "Renderer.h"
 #include "Skeleton.h"
 #include "SoundEvent.h"
+#include "StageChange.h"
+#include "Terrain.h"
 #include "Tutorial.h"
 #include "TreeActor.h"
 #include "UIScreen.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Game class
+///////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+//      コンストラクタです.
+//-----------------------------------------------------------------------------
 Game::Game()
 	:mRenderer(nullptr)
 	, mAudioSystem(nullptr)
@@ -57,19 +68,24 @@ Game::Game()
 	, gameClearFlag(false)
 	, scoreNumber(0)
     , mBossTime(0.0f)
+	, stageNumber(1)
 {	
 }
 
+
+//-----------------------------------------------------------------------------
+//   初期化処理です
+//-----------------------------------------------------------------------------
 bool Game::Initialize()
 {
 	
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0)
+	if (SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0)
 	{
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 		return false;
 	}
 
-	// Create the renderer
+	//rendererの生成
 	mRenderer = new Renderer(this);
 	if (!mRenderer->Initialize(1024.0f, 768.0f))
 	{
@@ -79,7 +95,7 @@ bool Game::Initialize()
 		return false;
 	}
 	
-	// Create the audio system
+	//audiosystemの生成
 	mAudioSystem = new AudioSystem(this);
 	if (!mAudioSystem->Initialize())
 	{
@@ -90,24 +106,27 @@ bool Game::Initialize()
 		return false;
 	}
 
-	// Create the physics world
+	//physics worldの生成
 	mPhysWorld = new PhysWorld(this);
 	
-	// Initialize SDL_ttf
+	//SDL_ttfの初期化
 	if (TTF_Init() != 0)
 	{
 		SDL_Log("Failed to initialize SDL_ttf");
 		return false;
 	}
+
 	LoadData();
 	
-	mTicksCount = SDL_GetTicks();
 	GetData();
 
-
+	timer = new GameTimer();
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+//      実行します.
+//-----------------------------------------------------------------------------
 void Game::RunLoop()
 {
 	while (mGameState != GameState::EQuit)
@@ -119,6 +138,9 @@ void Game::RunLoop()
 
 }
 
+//-----------------------------------------------------------------------------
+//  入力処理
+//-----------------------------------------------------------------------------
 void Game::ProcessInput()
 {
 	SDL_Event event;
@@ -131,7 +153,6 @@ void Game::ProcessInput()
 			case SDL_QUIT:
 				mGameState = GameState::EQuit;
 				break;
-			// This fires when a key's initially pressed
 			case SDL_KEYDOWN:
 				if (!event.key.repeat)
 				{
@@ -179,8 +200,6 @@ void Game::ProcessInput()
 		else {
 			mUIStack.back()->ProcessInput(state);
 		}
-
-		
 	}
 
 	else if (!mUIStack.empty() && mGameState != GameState::EMainMenu)
@@ -194,27 +213,32 @@ void Game::ProcessInput()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  キーボード入力の処理
+//-----------------------------------------------------------------------------
 void Game::HandleKeyPress(int key)
 {
 	switch (key)
 	{
 	case SDLK_ESCAPE:
-		// Create pause menu
+		//pause menuの生成
 		new PauseMenu(this);
 		mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
+		timer->StopTimer();
 		break;
 	case SDLK_TAB:
 		if (mGameState == GameState::EGameplay) {
-			// Create pause menu
+			//ItemMenuの生成
 			new ItemMenu(this);
 			mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
-			
+			timer->StopTimer();
 		}
 		
 		break;
 	case SDLK_1:
 		if (mGameState == GameState::EGameplay) {
-			// Create pause menu
+			// TreeActorの生成
 			new TreeActor(this);
 
 			mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
@@ -227,23 +251,23 @@ void Game::HandleKeyPress(int key)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// 　Update
+//-----------------------------------------------------------------------------
 void Game::UpdateGame()
 {
 
 	FollowActor* followActor = GetPlayer();
-	if (followActor != nullptr) {
-		
-		if (!followActor->GetHealth()) {
-			float health = followActor->GetHealth();
-			if (health <= 0.0f && gameOverFlag == false) {
-				new GameOver(this);
-				gameOverFlag = true;
-				// Start music
-				mMusicEvent = mAudioSystem->PlayEvent("event:/GameOver");
-			}
-		}
-		
+	if (mGameState == GameState::EGameOver && gameOverFlag == false) {
+
+		new GameOver(this);
+		gameOverFlag = true;
+		//GameOverBGMの生成
+		mMusicEvent = mAudioSystem->PlayEvent("event:/GameOver");
+				
 	}
+
 	BossActor* bossActor = GetBoss();
 	if (bossActor != nullptr) {
 
@@ -252,14 +276,14 @@ void Game::UpdateGame()
 			if (health <= 0.0f && gameClearFlag == false) {
 				new GameClear(this);
 				gameClearFlag = true;
-				// Start music
+				//GameClearBGMの生成
 				mMusicEvent = mAudioSystem->PlayEvent("event:/GameClear");
 			}
 		}
-
 	}
-	// Compute delta time
-	// Wait until 16ms has elapsed since last frame
+
+	//delta timeの計算
+	// 前のフレームから16ミリ秒が経過するまで待つ
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16))
 		;
 
@@ -270,8 +294,12 @@ void Game::UpdateGame()
 	}
 	mTicksCount = SDL_GetTicks();
 	float mStamina;
-	
-	if (mGameState == GameState::EGameplay)
+
+	// Update audio system
+	mAudioSystem->Update(deltaTime);
+
+	//EGameplay中の処理
+	if (mGameState == GameState::EGameplay )
 	{
 
 		if (playFlag == false) {
@@ -316,13 +344,29 @@ void Game::UpdateGame()
 		{
 			delete actor;
 		}
+	}
 
+	//EGameOver中の処理
+	if (mGameState == GameState::EGameOver)
+	{
+
+		mFollowActor->Update(deltaTime);
+		Vector3 light = this->GetRenderer()->GetAmbientLight();
+		
+		this->GetRenderer()->SetAmbientLight(light - Vector3(0.003f, 0.003f, 0.003f));
 
 	}
 
-	// Update audio system
-	mAudioSystem->Update(deltaTime);
+	//EGameClear中の処理
+	if (mGameState == GameState::EGameClear)
+	{
+		mFollowActor->Update(deltaTime);
+		mBossActor->Update(deltaTime);
 
+	}
+
+
+	//EmainMenu中の処理
 	if (mGameState == GameState::EMainMenu) {
 		
 		if (mainFlag == false) {
@@ -343,10 +387,33 @@ void Game::UpdateGame()
 			playFlag = false;
 		}
 
-		
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 		SDL_ShowCursor(SDL_ENABLE);
 	}
+
+	//EGameplay中の処理
+	if (mGameState == GameState::ELoadStage)
+	{
+		// Add any dead actors to a temp vector
+		std::vector<Actor*> deadActors;
+		for (auto actor : mActors)
+		{
+			if (actor->GetState() == Actor::EDead)
+			{
+				deadActors.emplace_back(actor);
+			}
+		}
+
+		// Delete dead actors (which removes them from mActors)
+		for (auto actor : deadActors)
+		{
+			delete actor;
+		}
+		
+		mStageChanges[stageNumber-1]->MoveStage(stageNumber);
+		
+	}
+
 	// Update UI screens
 	for (auto ui : mUIStack)
 	{
@@ -355,6 +422,7 @@ void Game::UpdateGame()
 			ui->Update(deltaTime);
 		}
 	}
+
 	// Delete any UIScreens that are closed
 	auto iter = mUIStack.begin();
 	while (iter != mUIStack.end())
@@ -369,23 +437,9 @@ void Game::UpdateGame()
 			++iter;
 		}
 	}
-	// Add any dead actors to a temp vector
-	std::vector<EnemyActor*> deadEnemys;
-	for (auto actor : mEnemys)
-	{
-		if (actor->GetState() == EnemyActor::EDead)
-		{
-			deadEnemys.emplace_back(actor);
-		}
-	}
 
-	// Delete dead actors (which removes them from mActors)
-	for (auto actor : deadEnemys)
-	{
-		delete actor;
-	}
-
-	if (scoreNumber ==3) {
+	/*	//ボスの生成
+	if (scoreNumber == 3) {
 		mBossTime -= deltaTime;
 		if (mBossTime < 0.0f) {
 			BossActor* boss = new BossActor(this);
@@ -393,17 +447,20 @@ void Game::UpdateGame()
 			mBossTime = 0.0f;
 			scoreNumber++;
 			SetScore(scoreNumber);
-		}
-		
-	}
-	
+		}	
+	}	*/
+
 }
 
+//描画処理
 void Game::GenerateOutput()
 {
 	mRenderer->Draw();
 }
 
+//-----------------------------------------------------------------------------
+//  オブジェクトを読み取り、配置する
+//-----------------------------------------------------------------------------
 void Game::LoadData()
 {
 	if (!mUIStack.empty()) {
@@ -414,11 +471,15 @@ void Game::LoadData()
 	}
 
 	if (mGameState == GameState::EGameplay) {
+		
 		scoreNumber = 0;
 		LoadText("Assets/Text/Main.gptext");
 		mHUD = new HUD(this);
 		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");
+		mFollowActor->GetMoveComponent()->SetAngularSpeed(90.0f);
 		class Tutorial* mTutorial = new Tutorial(this);
+		StageChange* sc = new StageChange(this);
+		sc->SetPosition(Vector3(0.0f, 1500.0f, -100.0f));
 		// Create pause menu
 		for (int i = 0; i < 11; ++i) {  // 木を5個配置する例
 			float xPosition = -2200.0f + (i * 400.0f);  // Y座標を-1300から400ずつ増やす
@@ -437,19 +498,28 @@ void Game::LoadData()
 		}
 		gameOverFlag = false;
 		gameClearFlag = false;
+		timer->ResetTimer();
+		timer->StartTimer();
 	}
 
 	else if (mGameState == GameState::EMainMenu) {
+		
 		LoadText("Assets/Text/Mainmenu.gptext");
 		mHUD = new HUD(this);
 		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");
 		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
 		new MainmenuUI(this);
+		stageNumber = 1;
+		this->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(15000.0f, 10000.0f, -100.0f));
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 		SDL_ShowCursor(SDL_ENABLE);
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  終了処理
+//-----------------------------------------------------------------------------
 void Game::UnloadData()
 {
 	while (!mActors.empty())
@@ -485,6 +555,10 @@ void Game::UnloadData()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   終了処理
+//-----------------------------------------------------------------------------
 void Game::Shutdown()
 {
 	UnloadData();
@@ -501,6 +575,10 @@ void Game::Shutdown()
 	SDL_Quit();
 }
 
+
+//-----------------------------------------------------------------------------
+//   Actor vector に追加
+//-----------------------------------------------------------------------------
 void Game::AddActor(Actor* actor)
 {
 
@@ -514,6 +592,10 @@ void Game::AddActor(Actor* actor)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   Actor vector から削除
+//-----------------------------------------------------------------------------
 void Game::RemoveActor(Actor* actor)
 {
 	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
@@ -532,11 +614,19 @@ void Game::RemoveActor(Actor* actor)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   UIStack vector に追加
+//-----------------------------------------------------------------------------
 void Game::PushUI(UIScreen* screen)
 {
 	mUIStack.emplace_back(screen);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Fontをファイルパスから取得
+//-----------------------------------------------------------------------------
 Font* Game::GetFont(const std::string& fileName)
 {
 	auto iter = mFonts.find(fileName);
@@ -561,6 +651,10 @@ Font* Game::GetFont(const std::string& fileName)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  Textをファイルパスから取得
+//-----------------------------------------------------------------------------
 void Game::LoadText(const std::string& fileName)
 {
 
@@ -585,6 +679,10 @@ void Game::LoadText(const std::string& fileName)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  jsonファイルからkeyと一致したtextの取得
+//-----------------------------------------------------------------------------
 const std::string& Game::GetText(const std::string& key)
 {
 	static std::string errorMsg("Loading");
@@ -599,6 +697,10 @@ const std::string& Game::GetText(const std::string& key)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  スケルトンをファイルパスから取得
+//-----------------------------------------------------------------------------
 Skeleton* Game::GetSkeleton(const std::string& fileName)
 {
 	auto iter = mSkeletons.find(fileName);
@@ -622,6 +724,10 @@ Skeleton* Game::GetSkeleton(const std::string& fileName)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//  アニメーションをファイルパスから取得
+//-----------------------------------------------------------------------------
 Animation* Game::GetAnimation(const std::string& fileName)
 {
 	auto iter = mAnims.find(fileName);
@@ -645,90 +751,178 @@ Animation* Game::GetAnimation(const std::string& fileName)
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+//   Plane vector に追加
+//-----------------------------------------------------------------------------
 void Game::AddPlane(PlaneActor* plane)
 {
 	mPlanes.emplace_back(plane);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Plane vectorから削除
+//-----------------------------------------------------------------------------
 void Game::RemovePlane(PlaneActor* plane)
 {
 	auto iter = std::find(mPlanes.begin(), mPlanes.end(), plane);
 	mPlanes.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Enemy vectorに追加
+//-----------------------------------------------------------------------------
 void Game::AddEnemy(EnemyActor* enemy)
 {
 	mEnemys.emplace_back(enemy);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Enemy vectorから削除
+//-----------------------------------------------------------------------------
 void Game::RemoveEnemy(EnemyActor* enemy)
 {
 	auto iter = std::find(mEnemys.begin(), mEnemys.end(), enemy);
 	mEnemys.erase(iter);
-	scoreNumber++;
-	SetScore(scoreNumber);
-	if (scoreNumber == 3) {
-		
-		mBossTime = 5.0f;
-	}
-	
 }
 
+
+//-----------------------------------------------------------------------------
+//  DropItem vectorに追加
+//-----------------------------------------------------------------------------
 void Game::AddDropItem(DropItemActor* dropItem)
 {
 	mDropItems.emplace_back(dropItem);
 }
 
+
+//-----------------------------------------------------------------------------
+//  DropItem vectorから削除
+//-----------------------------------------------------------------------------
 void Game::RemoveDropItem(DropItemActor* dropItem)
 {
 	auto iter = std::find(mDropItems.begin(), mDropItems.end(), dropItem);
 	mDropItems.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Arrow vectorに追加
+//-----------------------------------------------------------------------------
 void Game::AddArrow(ArrowActor* arrow)
 {
 	mArrows.emplace_back(arrow);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Arrow vectorから削除
+//-----------------------------------------------------------------------------
 void Game::RemoveArrow(ArrowActor* arrow)
 {
 	auto iter = std::find(mArrows.begin(), mArrows.end(), arrow);
 	mArrows.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Bomb vectorに追加
+//-----------------------------------------------------------------------------
 void Game::AddBomb(BombActor* bomb)
 {
 	mBombs.emplace_back(bomb);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Bomb vectorから削除
+//-----------------------------------------------------------------------------
 void Game::RemoveBomb(BombActor* bomb)
 {
 	auto iter = std::find(mBombs.begin(), mBombs.end(), bomb);
 	mBombs.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Explosion vectorに追加
+//-----------------------------------------------------------------------------
 void Game::AddExplosion(ExplosionActor* explosion)
 {
 	mExplosions.emplace_back(explosion);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Explosion vectorから削除
+//-----------------------------------------------------------------------------
 void Game::RemoveExplosion(ExplosionActor* explosion)
 {
 	auto iter = std::find(mExplosions.begin(), mExplosions.end(), explosion);
 	mExplosions.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//   Tree vectorに追加
+//-----------------------------------------------------------------------------
 void Game::AddTree(TreeActor* tree)
 {
 	mTrees.emplace_back(tree);
 }
 
+
+//-----------------------------------------------------------------------------
+//  Tree vectorから削除
+//-----------------------------------------------------------------------------
 void Game::RemoveTree(TreeActor* tree)
 {
 	auto iter = std::find(mTrees.begin(), mTrees.end(), tree);
 	mTrees.erase(iter);
 }
 
+
+//-----------------------------------------------------------------------------
+//  StageChange vectorに追加
+//-----------------------------------------------------------------------------
+void Game::AddStageChange(StageChange* sc)
+{
+	mStageChanges.emplace_back(sc);
+}
+
+
+//-----------------------------------------------------------------------------
+//  StageChange vectorから削除
+//-----------------------------------------------------------------------------
+void Game::RemoveStageChange(StageChange* sc)
+{
+	auto iter = std::find(mStageChanges.begin(), mStageChanges.end(),
+		sc);
+	mStageChanges.erase(iter);
+}
+
+
+//-----------------------------------------------------------------------------
+//  Stage切り替えるために読み込み
+//-----------------------------------------------------------------------------
+void Game::LoadStage() {
+
+	for(auto ac :mEnemys)
+	{
+		ac->Actor::SetState(Actor::EDead);
+	}
+	for (auto ac : mTrees)
+	{
+		ac->SetState(Actor::EDead);
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  データファイルの取得
+//-----------------------------------------------------------------------------
 void Game::GetData() {
 
 	GetSkeleton("Assets/Skel/EnemyBoss.gpskel");
@@ -751,3 +945,4 @@ void Game::GetData() {
 	GetAnimation("Assets/Anim/EnemyBoss_jump_attack.gpanim");
 	GetAnimation("Assets/Anim/EnemyBoss_dying.gpanim");
 }
+
