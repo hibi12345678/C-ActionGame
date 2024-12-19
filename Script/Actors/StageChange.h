@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 #pragma once
 #include "Actor.h"
+#include "SoundEvent.h"    
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,6 +32,7 @@ private:
 	//=========================================================================
 	bool mStageFlag;
 
+	SoundEvent mMusicEvent;
 	class BoxComponent* mBoxComp;
 	class Game* mGame;
 };

@@ -30,6 +30,8 @@ public:
     //Update
     virtual void UpdateActor(float deltaTime) override;
 
+    void SetVisible(bool visible);
+
 protected:
     //=========================================================================
     // private variables.

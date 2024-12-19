@@ -19,13 +19,16 @@
 //-----------------------------------------------------------------------------
 //      コンストラクタです.
 //-----------------------------------------------------------------------------
-Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
+Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj)
+    : mflag(false)
+{
 
     //HightMapのサイズ
     int width= 2624;
     int height = 1756;
 
     mAngle = 0.0f;
+    mScale = glm::vec3(30.0f, 30.0f, 30.0f);
     //インデックスバッファの生成
     std::vector<GLuint> indices;
     for (int z = 0; z <height - 1; ++z) { 
@@ -104,7 +107,7 @@ Terrain::Terrain(Shader* shader, const Matrix4& view, const Matrix4& proj) {
 
     textureID = loadTerrainTexture("Assets/Texture/aerial_grass_rock_diff_4k.jpg");
     rockTextureID = loadTerrainTexture("Assets/Texture/rock_boulder_dry_diff_4k.jpg");
-    soilTextureID = loadTerrainTexture("Assets/Texture/sandy_gravel_02_diff_4k.jpg");
+    soilTextureID = loadTerrainTexture("Assets/Texture/aerial_grass_rock_diff_4k.jpg");
     snowTextureID = loadTerrainTexture("Assets/Texture/snow_02_diff_4k.jpg");
 
     glBindVertexArray(0); 
@@ -128,13 +131,15 @@ void Terrain::GenerateTerrain(const Matrix4& view, const Matrix4& proj)
 
     //シェーダーファイルへの送信
     glUniformMatrix4fv(glGetUniformLocation(mShader->GetID(), "uViewProjection"), 1, GL_FALSE, glm::value_ptr(viewProj));
-    glm::vec3 scale = glm::vec3(30.0f, 30.0f, 30.0f);
+    glm::vec3 scale = mScale;
     glm::mat4 model = glm::mat4(1.0f); 
     model = glm::translate(model,pos); 
     model = glm::scale(model, scale); 
     model = glm::rotate(model, glm::radians(mAngle), glm::vec3(0.0f, 0.0f, 1.0f)); 
     glUniform1f(glGetUniformLocation(mShader->GetID(), "uZScale"), scale.z);
     glUniformMatrix4fv(glGetUniformLocation(mShader->GetID(), "uModel"), 1, GL_FALSE, glm::value_ptr(model));
+    float uvScale = 64.0f; 
+    glUniform1f(glGetUniformLocation(mShader->GetID(), "uvScale"), uvScale);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -154,6 +159,12 @@ void Terrain::GenerateTerrain(const Matrix4& view, const Matrix4& proj)
     glBindTexture(GL_TEXTURE_2D, snowTextureID);
 
     glUniform1i(glGetUniformLocation(mShader->GetID(), "texture4"), 3);
+    if (mflag == true ) {
+        glUniform1i(glGetUniformLocation(mShader->GetID(), "texture1"), 3);
+        glUniform1i(glGetUniformLocation(mShader->GetID(), "texture2"), 1);
+        glUniform1i(glGetUniformLocation(mShader->GetID(), "texture3"), 3);
+    }
+
 
     glBindVertexArray(VAO);
 

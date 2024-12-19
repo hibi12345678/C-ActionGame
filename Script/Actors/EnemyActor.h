@@ -34,6 +34,21 @@ public:
 		EBattle
 	};
 
+	//Enum class AnimationState
+	enum class AnimationState {
+		Idle,
+		Walk,
+		Back,
+		Right,
+		Left,
+		Run,
+		Jump,
+		Die,
+		Attack,
+		Roa,
+		Block
+	};
+
 	//=========================================================================
 	// public methods.
 	//=========================================================================
@@ -48,7 +63,7 @@ public:
 	void UpdateMoveState(float deltaTime);
 	void UpdatePatrolState(float deltaTime);
     void UpdateBattleState(float deltaTime);
-	void UpdateAttackState(float deltaTime);
+	virtual void UpdateAttackState(float deltaTime);
 	void UpdateTimers(float deltaTime);
 	void HandleBlinking(float deltaTime);
 
@@ -73,11 +88,11 @@ public:
 	void AlignToTarget();
 	void Attack();
 	void AttackGround();
-	void AddAttackBox();
+	virtual void AddAttackBox();
 	void CleanUpAttackBox();
 	void HandleAttackBox();
-	void HandleDeath();
-	void FixCollisions();
+	virtual void HandleDeath();
+	virtual void FixCollisions();
 	void ResolveCollision(const AABB& aBox, const AABB& bBox, Vector3& pos, BoxComponent* boxComponent);
 
 protected:
@@ -106,6 +121,7 @@ protected:
 
 	State mState;
 	MoveState mMoveState; //敵の行動状態
+	AnimationState mAnimState; //アニメーション用ステート
 
 	class MoveComponent* mMoveComp;
 	class AudioComponent* mAudioComp;

@@ -28,15 +28,19 @@ ItemActorBase::ItemActorBase(Game* game, float scale, int num)
 }
 
 
+
 //-----------------------------------------------------------------------------
 //  Update
 //-----------------------------------------------------------------------------
 void ItemActorBase::UpdateActor(float deltaTime)
 {
 
-
+	
     Actor::UpdateActor(deltaTime);
 	Game* game = GetGame();
+	FollowActor* player= game->GetPlayer();
+	bool isVisible = player->GetVisible();
+	SetVisible(isVisible);
 	if (mNum == 0) {
 		Position = game->GetPlayer()->GetSekltalMesh()->GetBonePosition("Sword_joint");
 		Rotation = game->GetPlayer()->GetSekltalMesh()->GetBoneRotation("Sword_joint");
@@ -56,4 +60,13 @@ void ItemActorBase::UpdateActor(float deltaTime)
 	Vector3 globalWeaponPos = Vector3::Transform(Position, playerTransform); 
 	globalWeaponPos += playerPosition;
 	SetPosition(globalWeaponPos);
+}
+
+//-----------------------------------------------------------------------------
+//  ‰ÂŽ‹ó‘Ô‚Ìˆ—
+//-----------------------------------------------------------------------------
+void ItemActorBase::SetVisible(bool visible)
+{
+
+	mc->SetVisible(visible);
 }

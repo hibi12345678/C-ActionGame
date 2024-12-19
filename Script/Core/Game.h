@@ -34,6 +34,8 @@ public:
         ETutorial,
         EItem,
         ELoadStage,
+        EBossMovie,
+        EBossDefeat,
         EGameOver,
         EGameClear,
         EQuit
@@ -73,7 +75,7 @@ public:
     GameState GetState() const { return mGameState; }
     int GetScore() const { return scoreNumber; }
     class FollowActor* GetPlayer() { return mFollowActor; }
-    class BossActor* GetBoss() { return mBossActor; }
+    std::vector<class BossActor*>& GetBoss() { return mBossActor; }
     std::vector<class PlaneActor*>& GetPlanes() { return mPlanes; }
     std::vector<class EnemyActor*>& GetEnemys() { return mEnemys; }
     std::vector<class DropItemActor*>& GetDropItem() { return mDropItems; }
@@ -90,12 +92,13 @@ public:
     class AudioSystem* GetAudioSystem() { return mAudioSystem; }
     class PhysWorld* GetPhysWorld() { return mPhysWorld; }
     class HUD* GetHUD() { return mHUD; }
+    int GetStageNumber(){ return stageNumber; }
     class GameTimer* GetTimer() { return timer; }
     void SetState(GameState state) { mGameState = state; }
     void SetScore(int score) { scoreNumber = score; }
     void SetFollowActor(class FollowActor* actor) { mFollowActor = actor; }
-    void SetBossActor(class BossActor* actor) { mBossActor = actor; }
     void SetStageNumber(int num) { stageNumber = num; }
+    void SetHitStopTimer() { mHitStopTimer = 0.3f; }
 
     //Add,Remove
     void PushUI(class UIScreen* screen);
@@ -106,6 +109,8 @@ public:
     void RemovePlane(class PlaneActor* plane);
     void AddEnemy(class EnemyActor* enemy);
     void RemoveEnemy(class EnemyActor* enemy);
+    void AddBossActor(class BossActor* boss);
+    void RemoveBossActor(class BossActor* boss);
     void AddDropItem(class DropItemActor* dropItem);
     void RemoveDropItem(class DropItemActor* dropItem);
     void AddArrow(class ArrowActor* arrow);
@@ -135,6 +140,7 @@ private:
     int scoreNumber; //スコア
     int stageNumber; //ステージナンバー
     float mBossTime; //ボスが出現するまでの時間
+    float mHitStopTimer;
     Uint32 mTicksCount;
 
     GameState mGameState; //ゲームの状態
@@ -145,13 +151,14 @@ private:
     class PhysWorld* mPhysWorld;
     class HUD* mHUD;
     class FollowActor* mFollowActor;
-    class BossActor* mBossActor;
     class SpriteComponent* mCrosshair;
     class GameTimer* timer;
+    class StageChange* sc;
     std::vector<class Actor*> mActors;
     std::vector<class UIScreen*> mUIStack;
     std::vector<class PlaneActor*> mPlanes;
     std::vector<class EnemyActor*> mEnemys;
+    std::vector<class BossActor*> mBossActor;
     std::vector<class DropItemActor*> mDropItems;
     std::vector<class ArrowActor*> mArrows;
     std::vector<class BombActor*> mBombs;

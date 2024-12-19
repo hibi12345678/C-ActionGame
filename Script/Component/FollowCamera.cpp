@@ -33,6 +33,9 @@ FollowCamera::FollowCamera(Actor* owner)
 	, mTargetDist(100.0)
 	, mVelocity(Vector3(0.0,0.0,0.0))
 	, mActualPos(Vector3(-350.0,0.0,150.0))
+	, mHorzDist(320.0f)
+	, mVertDist(230.0f)
+	, mRightDist(0.0f)
 {
 }
 
@@ -95,13 +98,15 @@ void FollowCamera::SaveProperties(rapidjson::Document::AllocatorType& alloc, rap
 
 
 //-----------------------------------------------------------------------------
-// 　カメラ位置の計算mん
+// 　カメラ位置の計算
 //-----------------------------------------------------------------------------
 Vector3 FollowCamera::ComputeCameraPos() const
 {
 	// Set camera position behind and above owner
 	Vector3 cameraPos = mOwner->GetPosition();
-	cameraPos -= mOwner->GetForward() *350;
-	cameraPos += Vector3::UnitZ * 250;
+	cameraPos -= mOwner->GetForward() * mHorzDist;
+	cameraPos += mOwner->GetRight() * mRightDist;
+	cameraPos += Vector3::UnitZ * mVertDist;
+
 	return cameraPos;
 }

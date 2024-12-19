@@ -69,6 +69,7 @@ Game::Game()
 	, scoreNumber(0)
     , mBossTime(0.0f)
 	, stageNumber(1)
+	, mHitStopTimer(0.0f)
 {	
 }
 
@@ -105,7 +106,9 @@ bool Game::Initialize()
 		mAudioSystem = nullptr;
 		return false;
 	}
-
+	mMusicEvent = mAudioSystem->PlayEvent("event:/BGM1");
+	mMusicEvent = mAudioSystem->PlayEvent("event:/BGM2");
+	mMusicEvent = mAudioSystem->PlayEvent("event:/BGM3");
 	//physics worldの生成
 	mPhysWorld = new PhysWorld(this);
 	
@@ -236,16 +239,6 @@ void Game::HandleKeyPress(int key)
 		}
 		
 		break;
-	case SDLK_1:
-		if (mGameState == GameState::EGameplay) {
-			// TreeActorの生成
-			new TreeActor(this);
-
-			mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
-
-		}
-
-		break;
 	default:
 		break;
 	}
@@ -264,24 +257,10 @@ void Game::UpdateGame()
 		new GameOver(this);
 		gameOverFlag = true;
 		//GameOverBGMの生成
-		mMusicEvent = mAudioSystem->PlayEvent("event:/GameOver");
-				
+		mMusicEvent = mAudioSystem->PlayEvent("event:/GameOver");	
+
 	}
-
-	BossActor* bossActor = GetBoss();
-	if (bossActor != nullptr) {
-
-		if (!bossActor->GetHealth()) {
-			float health = bossActor->GetHealth();
-			if (health <= 0.0f && gameClearFlag == false) {
-				new GameClear(this);
-				gameClearFlag = true;
-				//GameClearBGMの生成
-				mMusicEvent = mAudioSystem->PlayEvent("event:/GameClear");
-			}
-		}
-	}
-
+	
 	//delta timeの計算
 	// 前のフレームから16ミリ秒が経過するまで待つ
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16))
@@ -315,9 +294,16 @@ void Game::UpdateGame()
 		}
 		// Update all actors
 		mUpdatingActors = true;
+		mHitStopTimer -= deltaTime;
 		for (auto actor : mActors)
 		{
-			actor->Update(deltaTime);
+		
+			if (mHitStopTimer < 0.0f || mHitStopTimer > 0.15f) {
+				actor->Update(deltaTime);
+			}
+			else{
+				actor->Update(deltaTime * 0.1f);
+			}
 		}
 		mUpdatingActors = false;
 
@@ -344,6 +330,27 @@ void Game::UpdateGame()
 		{
 			delete actor;
 		}
+
+	}
+
+	//EBossMovie中の処理
+	if (mGameState == GameState::EBossMovie)
+	{
+		for (auto actor : mBossActor)
+		{
+			actor->Update(deltaTime);
+		}
+
+	}
+
+	//EBossMovie中の処理 , EBossMovie中の処理
+	if (mGameState == GameState::EBossDefeat)
+	{
+		for (auto actor : mActors)
+		{
+			actor->Update(deltaTime);
+		}
+		
 	}
 
 	//EGameOver中の処理
@@ -360,8 +367,14 @@ void Game::UpdateGame()
 	//EGameClear中の処理
 	if (mGameState == GameState::EGameClear)
 	{
-		mFollowActor->Update(deltaTime);
-		mBossActor->Update(deltaTime);
+		if (!gameClearFlag) {
+			//GameClearBGMの生成
+			mMusicEvent = mAudioSystem->PlayEvent("event:/GameClear");
+			new GameClear(this);
+			gameClearFlag = true;
+		}
+		
+	
 
 	}
 
@@ -381,12 +394,13 @@ void Game::UpdateGame()
 				delete mUIStack.back();
 				mUIStack.pop_back();
 			}
+			//sc->~StageChange();
 			LoadData();
 			
 			mainFlag = true;
 			playFlag = false;
 		}
-
+		GetRenderer()->GetTerrain()->SetTex(false);
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 		SDL_ShowCursor(SDL_ENABLE);
 	}
@@ -410,7 +424,7 @@ void Game::UpdateGame()
 			delete actor;
 		}
 		
-		mStageChanges[stageNumber-1]->MoveStage(stageNumber);
+        sc->MoveStage(stageNumber);
 		
 	}
 
@@ -437,18 +451,6 @@ void Game::UpdateGame()
 			++iter;
 		}
 	}
-
-	/*	//ボスの生成
-	if (scoreNumber == 3) {
-		mBossTime -= deltaTime;
-		if (mBossTime < 0.0f) {
-			BossActor* boss = new BossActor(this);
-			boss->SetPosition(Vector3(0.0f, 0.0f, -100.0f));
-			mBossTime = 0.0f;
-			scoreNumber++;
-			SetScore(scoreNumber);
-		}	
-	}	*/
 
 }
 
@@ -478,20 +480,20 @@ void Game::LoadData()
 		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");
 		mFollowActor->GetMoveComponent()->SetAngularSpeed(90.0f);
 		class Tutorial* mTutorial = new Tutorial(this);
-		StageChange* sc = new StageChange(this);
-		sc->SetPosition(Vector3(0.0f, 1500.0f, -100.0f));
-		// Create pause menu
-		for (int i = 0; i < 11; ++i) {  // 木を5個配置する例
-			float xPosition = -2200.0f + (i * 400.0f);  // Y座標を-1300から400ずつ増やす
+		sc = new StageChange(this);
+		sc->SetPosition(Vector3(-200.0f, 2500.0f, -100.0f));
+		
+		for (int i = 0; i < 9; ++i) {  
+			float xPosition = -1800.0f + (i * 400.0f);  
 			TreeActor* tree = new TreeActor(this);
 			tree->SetPosition(Vector3(xPosition, -1500.0f, -100.0f));  // X, Y, Z座標を設定
 		}
-		for (int i = 0; i < 11; ++i) {  // 木を5個配置する例
-			float xPosition = -2200.0f + (i * 400.0f);  // Y座標を-1300から400ずつ増やす
+		for (int i = 0; i < 7; ++i) {  
+			float xPosition = -2200.0f + (i * 400.0f);  
 			TreeActor* tree = new TreeActor(this);
 			tree->SetPosition(Vector3( 1500.0f, xPosition, -100.0f));  // X, Y, Z座標を設定
 		}
-		for (int i = 0; i < 11; ++i) {  // 木を5個配置する例
+		for (int i = 0; i < 7; ++i) {  
 			float xPosition = -2200.0f + (i * 400.0f);  // Y座標を-1300から400ずつ増やす
 			TreeActor* tree = new TreeActor(this);
 			tree->SetPosition(Vector3( -1500.0f, xPosition, -100.0f));  // X, Y, Z座標を設定
@@ -508,9 +510,13 @@ void Game::LoadData()
 		mHUD = new HUD(this);
 		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");
 		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
+		LevelLoader::LoadLevel(this, "Assets/Level/Obstacle.gplevel");
 		new MainmenuUI(this);
 		stageNumber = 1;
-		this->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(15000.0f, 10000.0f, -100.0f));
+		
+		this->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(15300.0f, 10000.0f, -100.0f));
+		GetRenderer()->GetTerrain()->SetAngle(0.0f);
+		GetRenderer()->GetTerrain()->SetScale(glm::vec3(30.0f, 30.0f, 30.0f));
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 		SDL_ShowCursor(SDL_ENABLE);
 	}
@@ -789,6 +795,24 @@ void Game::RemoveEnemy(EnemyActor* enemy)
 	mEnemys.erase(iter);
 }
 
+//-----------------------------------------------------------------------------
+//   BossActor vectorに追加
+//-----------------------------------------------------------------------------
+void Game::AddBossActor(BossActor* enemy)
+{
+	mBossActor.emplace_back(enemy);
+}
+
+
+//-----------------------------------------------------------------------------
+//   BossActor vectorから削除
+//-----------------------------------------------------------------------------
+void Game::RemoveBossActor(BossActor* enemy)
+{
+	auto iter = std::find(mBossActor.begin(), mBossActor.end(), enemy);
+	mBossActor.erase(iter);
+}
+
 
 //-----------------------------------------------------------------------------
 //  DropItem vectorに追加
@@ -918,6 +942,10 @@ void Game::LoadStage() {
 	{
 		ac->SetState(Actor::EDead);
 	}
+	for (auto ac : mPlanes)
+	{
+		ac->SetState(Actor::EDead);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -944,5 +972,6 @@ void Game::GetData() {
 	GetAnimation("Assets/Anim/EnemyBoss_attack.gpanim");
 	GetAnimation("Assets/Anim/EnemyBoss_jump_attack.gpanim");
 	GetAnimation("Assets/Anim/EnemyBoss_dying.gpanim");
+	GetAnimation("Assets/Anim/EnemyBoss_roa.gpanim");
 }
 

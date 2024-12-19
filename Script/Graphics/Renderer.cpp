@@ -25,6 +25,8 @@
 #include <algorithm>
 #include <iostream>
 #include "FollowActor.h"
+#include "CameraComponent.h"
+#include "FollowCamera.h"
 #include "Game.h"
 #include "GBuffer.h"
 #include "Mesh.h"
@@ -61,6 +63,7 @@ Renderer::Renderer(Game* game)
 	,mGGlobalShader(nullptr)
 	,mGPointLightShader(nullptr)
 	,angle(0.0f)
+	,mPerspective(70.0f)
 {
 }
 
@@ -343,6 +346,8 @@ void Renderer::UnloadData()
 //-----------------------------------------------------------------------------
 void Renderer::Draw()
 {
+	mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(mPerspective),
+		mScreenWidth, mScreenHeight, 100.0f, 200000.0f);
 	//Draw the GameScene
 	// Draw the 3D scene to the G-buffer
 	Draw3DScene(mGBuffer->GetBufferID(), mView, mProjection, true);
@@ -469,13 +474,13 @@ void Renderer::Draw()
 		Quaternion Rotation = mGame->GetPlayer()->Actor::GetRotation();
 		static float values[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		FollowActor::State mState = mGame->GetPlayer()->GetState();
-
+		
 		ImGui::Text("Health: %.2f", health);
 		ImGui::Text("Position: (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
 		ImGui::Text("Rotation: (%.2f, %.2f, %.2f ,%.2f)", Rotation.x, Rotation.y, Rotation.z, Rotation.w);
 		ImGui::Text("State: %d", static_cast<int>(mState));
 		ImGui::Checkbox("Draw Boxes ", &mBoxFlag);
-
+		
 		const char* stateName = "";
 		switch (mState) {
 		case FollowActor::State::EJump:
@@ -491,7 +496,36 @@ void Renderer::Draw()
 			stateName = "Dead";
 			break;
 		}
+
+
 		ImGui::Text("State (Name): %s", stateName);
+
+		/*		if (mGame->GetPlayer()->GetCameraComponent() != nullptr) {
+			// Perspective用のUI
+			ImGui::InputFloat("Perspective", &mPerspective);
+
+			// HorzDist用のUI
+			float horzDist = mGame->GetPlayer()->GetCameraComponent()->GetHorzDist();
+			if (ImGui::InputFloat("Horizontal Distance", &horzDist))
+			{
+				mGame->GetPlayer()->GetCameraComponent()->SetHorzDist(horzDist);
+			}
+
+			// VertDist用のUI
+			float vertDist = mGame->GetPlayer()->GetCameraComponent()->GetVertDist();
+			if (ImGui::InputFloat("Vertical Distance", &vertDist))
+			{
+				mGame->GetPlayer()->GetCameraComponent()->SetVertDist(vertDist);
+			}
+
+			// VertDist用のUI
+			float rightDist = mGame->GetPlayer()->GetCameraComponent()->GetRightDist();
+			if (ImGui::InputFloat("Right Distance", &rightDist))
+			{
+				mGame->GetPlayer()->GetCameraComponent()->SetRightDist(rightDist);
+			}
+		}
+        */
 
 		ImGui::End();  
 	}
@@ -738,11 +772,10 @@ void Renderer::DrawSkybox() {
 	mSkyboxShader->SetActive();
 	glm::mat4 glmView = ConvertToGLM(mView);
 	glm::mat4 glmProjection = ConvertToGLM(mProjection);
-	glm::mat4 swappedView = glm::mat4(glmView[1] * 0.5f, glmView[2] * 0.5f, glmView[0], glmView[3]);
+	glm::mat4 swappedView = glm::mat4(glmView[1], glmView[2], glmView[0], glmView[3]);
 	glm::mat4 view = glm::mat4(glm::mat3(swappedView) );
-	glm::mat4 viewProj = glmProjection * view;
 	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(viewProj));
+	glUniformMatrix4fv(glGetUniformLocation(mSkyboxShader->GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(glmProjection));
 
 	glBindVertexArray(skyboxVAO);
 	glActiveTexture(GL_TEXTURE0);
@@ -940,7 +973,7 @@ bool Renderer::LoadShaders()
 	mMeshShader->SetActive();
 	// Set the view-projection matrix
 	mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
-	mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f),
+	mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(mPerspective),
 		mScreenWidth, mScreenHeight, 100.0f, 200000.0f);
 	mMeshShader->SetMatrixUniform("uViewProj", mView * mProjection);
 

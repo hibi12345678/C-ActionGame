@@ -10,7 +10,7 @@ out vec3 fragNormal;
 
 uniform mat4 uModel;           
 uniform mat4 uViewProjection; 
-
+uniform float uvScale;
 
 void main()
 {
@@ -19,5 +19,5 @@ void main()
 	fragWorldPos = pos.xyz;
     gl_Position = uViewProjection * uModel * vec4(aPosition, 1.0);
 	fragNormal = (vec4(inNormal, 0.0f)).xyz;
-    teTexCoord = aTexCoord;
+    teTexCoord = aTexCoord * uvScale;
 }

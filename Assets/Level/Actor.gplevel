@@ -176,7 +176,7 @@
                 "state": "active",
                 "position": [
                     0.0,
-                    0.0,
+                    -1000.0,
                     0.0
                 ],
                 "rotation": [
@@ -226,8 +226,8 @@
                             0.0,
                             0.0
                         ],
-                        "horzDist": 350.0,
-                        "vertDist": 250.0,
+                        "horzDist": 320.0,
+                        "vertDist": 230.0,
                         "targetDist": 100.0,
                         "springConstant": 128.0
                     }

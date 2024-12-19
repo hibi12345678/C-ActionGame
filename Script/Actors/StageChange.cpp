@@ -2,13 +2,16 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "StageChange.h"
+#include "AudioSystem.h"
+#include "BossActor.h"
 #include "BoxComponent.h"
 #include "FollowActor.h"
 #include "Game.h"
+#include "LevelLoader.h"
 #include "Terrain.h"
 #include "Renderer.h"
-#include "LevelLoader.h"
-
+#include "MoveComponent.h"
+#include "TreeActor.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // StageChange class
@@ -23,8 +26,8 @@ StageChange::StageChange(Game* game)
 	,mStageFlag(false)
 {
 	mBoxComp = new BoxComponent(this);
-	AABB myBox(Vector3(-250.0f, -250.0f, 0.0f),
-		Vector3(250.0f, 250.0f, 150.0f));
+	AABB myBox(Vector3(-300.0f, -100.0f, 0.0f),
+		Vector3(300.0f, 300.0f, 150.0f));
 	mBoxComp->SetObjectBox(myBox);
 	mBoxComp->SetShouldRotate(false);
 	game->AddStageChange(this);
@@ -47,36 +50,63 @@ void StageChange::MoveStage(int stageNum)
 
 		if (light.x<=0.0f) {
 			
-			if (stageNum == 0) {
-				mGame->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(3000.0f, -5000.0f, -3000.0f));
+			if (stageNum == 1) {
+				mGame->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(7000.0f, -2000.0f, -2300.0f));
 				mGame->GetRenderer()->GetTerrain()->SetAngle(90.0f);
-				LevelLoader::LoadLevel(mGame, "Assets/Level/Stage.gplevel");
-				mGame->GetPlayer()->SetPosition(Vector3(-500.0f, 0.0f, -100.0f));
-			}
-			else if (stageNum == 1) {
-				mGame->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(3000.0f, -5000.0f, -3000.0f));
-				mGame->GetRenderer()->GetTerrain()->SetAngle(90.0f);
-				LevelLoader::LoadLevel(mGame, "Assets/Level/Stage.gplevel");
-				StageChange* sc = new StageChange(mGame);
-				sc->SetPosition(Vector3(1500.0f, 0.0f, -100.0f));
-				mGame->GetPlayer()->SetPosition(Vector3(-1500.0f, 0.0f, -50.0f));
+				LevelLoader::LoadLevel(mGame, "Assets/Level/Actor2.gplevel");
+				LevelLoader::LoadLevel(mGame, "Assets/Level/Stage2.gplevel");
+				LevelLoader::LoadLevel(mGame, "Assets/Level/Light2.gplevel");
+				LevelLoader::LoadLevel(mGame, "Assets/Level/Obstacle2.gplevel");
+				mGame->GetPlayer()->SetPosition(Vector3(-838.0f, -928.0f, 50.0f));
+				SetPosition(Vector3(1115.0f, 380.0f, 0.0f));
+				AABB newBox(Vector3(-150.0f, -300.0f, 0.0f),
+					Vector3(150.0f, 300.0f, 150.0f));
+				mBoxComp->SetObjectBox(newBox);
+				mBoxComp->SetShouldRotate(false);
+				for (int i = 0; i < 5; ++i) {
+					float xPosition = -1500.0f + (i * 400.0f);  // YÀ•W‚ğ-1300‚©‚ç400‚¸‚Â‘‚â‚·
+					TreeActor* tree = new TreeActor(mGame);
+					tree->SetPosition(Vector3(-1500.0f, xPosition, -100.0f));  // X, Y, ZÀ•W‚ğİ’è
+				}
+				for (int i = 0; i < 5; ++i) {
+					float xPosition = -1500.0f + (i * 400.0f);
+					TreeActor* tree = new TreeActor(mGame);
+					tree->SetPosition(Vector3(xPosition, -1500.0f, -100.0f));  // X, Y, ZÀ•W‚ğİ’è
+				}
+				mGame->GetRenderer()->SetAmbientLight(Vector3(0.4f, 0.4f, 0.4f));
+				GetGame()->SetState(Game::GameState::EGameplay);
 			}
 			else if (stageNum == 2) {
-				mGame->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(0.0f, 0.0f, 0.0f));
+				mGame->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(0.0f, 0.0f, -100.0f));
 				mGame->GetRenderer()->GetTerrain()->SetAngle(0.0f);
-				LevelLoader::LoadLevel(mGame, "Assets/Level/Stage.gplevel");
+				mGame->GetRenderer()->GetTerrain()->SetScale(glm::vec3(4.0f, 4.0f, 10.0f));
+				mGame->GetRenderer()->GetTerrain()->SetTex(true);
+				LevelLoader::LoadLevel(mGame, "Assets/Level/Stage3.gplevel");
+				LevelLoader::LoadLevel(mGame, "Assets/Level/Light3.gplevel");
+				LevelLoader::LoadLevel(mGame, "Assets/Level/Obstacle3.gplevel");
 				mGame->GetPlayer()->SetPosition(Vector3(-500.0f, 0.0f, -100.0f));
+				Quaternion rotation = Quaternion::CreateFromAxisAngle(540.0f);
+				mGame->GetPlayer()->SetRotation(rotation);
+				mGame->GetPlayer()->DeleteCamera();
+				BossActor* boss = new BossActor(mGame);
+				boss->SetPosition(Vector3(500.0f, 0.0f, -100.0f));
 
+				SetPosition(Vector3(3000.0f, 3000.0f, 0.0f));
+				mGame->GetRenderer()->SetAmbientLight(Vector3(0.4f, 0.4f, 0.4f));
+				auto& bosses = mGame->GetBoss();
+
+				
+				mGame->SetState(Game::GameState::EBossMovie);
 			}
-			GetGame()->SetState(Game::GameState::EGameplay);
+			
 			mStageFlag = true;
+			mGame->SetStageNumber(stageNum + 1);
+			
 		}
 	}
-	else if (mStageFlag) {
-		mGame->GetRenderer()->SetAmbientLight(light + Vector3(0.02f, 0.02f, 0.02f));
-		mGame->SetStageNumber(stageNum + 1);
-		mStageFlag = false;
-		
-	}
 
+	else if (mStageFlag) {
+		
+		mStageFlag = false;
+	}
 }

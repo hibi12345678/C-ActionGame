@@ -227,9 +227,9 @@ void UIScreen::Draw(Shader* shader)
 			DrawTexture(shader, mTutorialTex1_2, Vector2(-120.0f, -40.0f));
 			DrawTexture(shader, mTutorialTex1_3, Vector2(120.0f, -40.0f));
 			tex = mFont->RenderText("Health bar, ", Color::Black, 24, 1);
-			DrawTexture(shader, tex, Vector2(0.0f, 200.0f));
-			tex = mFont->RenderText("Stamina bar, ", Color::Black, 24, 1);
 			DrawTexture(shader, tex, Vector2(20.0f, 140.0f));
+			tex = mFont->RenderText("Stamina bar, ", Color::Black, 24, 1);
+			DrawTexture(shader, tex, Vector2(20.0f, 120.0f));
 			tex = mFont->RenderText("Rader", Color::Black, 24, 1);
 			DrawTexture(shader, tex, Vector2(-120.0f, 40.0f));
 			tex = mFont->RenderText("Equipped Items", Color::Black, 42, 1);
@@ -244,17 +244,17 @@ void UIScreen::Draw(Shader* shader)
 
 		case 3:
 			tex = mFont->RenderText("WASD : Move", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(-200.0f, 180.0f));
+			DrawTexture(shader, tex, Vector2(-200.0f, 150.0f));
 			tex = mFont->RenderText("Space : Jump", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(-205.0f, 100.0f));
+			DrawTexture(shader, tex, Vector2(-205.0f, 70.0f));
 			tex = mFont->RenderText("Left Click : Attack", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(-170.0f, 20.0f));
+			DrawTexture(shader, tex, Vector2(-170.0f, -10.0f));
 			tex = mFont->RenderText("E : Skill", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(110.0f, 180.0f));
+			DrawTexture(shader, tex, Vector2(110.0f, 150.0f));
 			tex = mFont->RenderText("Esc : Menu", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(145.0f, 100.0f));
+			DrawTexture(shader, tex, Vector2(145.0f, 70.0f));
 			tex = mFont->RenderText("Tab : ItemMenu", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(190.0f, 20.0f));
+			DrawTexture(shader, tex, Vector2(190.0f, -10.0f));
 			break;
 		}
 	}
@@ -677,7 +677,7 @@ void UIScreen::StartButton(const std::string& name, std::function<void()> onClic
 {
 	Vector2 dims(static_cast<float>(mButtonOn->GetWidth()),
 		static_cast<float>(mButtonOn->GetHeight()));
-	Button* b = new Button(name, mFont, onClick, Vector2(0.0f, 0.0f), dims,0);	
+	Button* b = new Button(name, mFont, onClick, Vector2(50.0f, -100.0f), dims,0);	
 	mStartButton.emplace_back(b);	
 }
 
