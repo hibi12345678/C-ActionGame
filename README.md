@@ -65,7 +65,6 @@ Some parts of this project are adapted from *Game Programming in C++* by Sanjay 
 Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 
 ## Source
--**Model**   : Mixamo(https://www.mixamo.com/)
--**Sound**   : 効果音ラボ(https://soundeffect-lab.info/)
--**Texture** : Poly Haven(https://polyhaven.com/)
-               pinterest(https://jp.pinterest.com/)
+- **Model**   : Mixamo(https://www.mixamo.com/)
+- **Sound**   : 効果音ラボ(https://soundeffect-lab.info/)
+- **Texture** : Poly Haven(https://polyhaven.com/),pinterest(https://jp.pinterest.com/)
