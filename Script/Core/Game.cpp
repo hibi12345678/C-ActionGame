@@ -149,8 +149,12 @@ void Game::ProcessInput()
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
+#ifdef DEBUG
 		// ImGui‚ÉSDLƒCƒxƒ“ƒg‚ğˆ—‚³‚¹‚é
 		ImGui_ImplSDL2_ProcessEvent(&event);
+#endif // DEBUG
+
+
 		switch (event.type)
 		{
 			case SDL_QUIT:
