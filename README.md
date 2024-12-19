@@ -45,13 +45,13 @@
 ```bash
   git clone https://github.com/hibi12345678/Knight-s-Action.git　
 ```
- -その後、クローンしたフォルダ内でプロジェクトをビルドし、実行ファイルを生成します。
+ -その後、クローンしたフォルダ内で[Release](./Release)フォルダ内のGame.exe ファイルを実行してゲームを開始できます。
  
 -**ZIPファイルをダウンロードする場合**
- -ダウンロードしたZIPファイルを解凍し、解凍したフォルダ内にある Game.exe ファイルを実行してゲームを開始できます。
+ -ダウンロードしたZIPファイルを解凍し、解凍したフォルダ内にある [Release](./Release)フォルダ内のGame.exe ファイルを実行してゲームを開始できます。
 
-Debugモードでビルドを行いたい場合は、Visual Studioで .sln ファイルを開き、ビルド設定を Debug に変更してからビルドを実行してください。
-追加ライブラリは[External](./External)ファイル内に含まれています
+Debugモードでビルドを行いたい場合は、Visual Studioで .sln ファイルを開き、ビルド設定を Debug に変更してからビルドを実行してください。DebugモードのみImGuiウィンドウが表示されます。
+追加ライブラリは[External](./External)ファイル内に含まれています。
 
 ## License
 
