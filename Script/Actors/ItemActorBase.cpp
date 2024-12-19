@@ -39,6 +39,7 @@ void ItemActorBase::UpdateActor(float deltaTime)
     Actor::UpdateActor(deltaTime);
 	Game* game = GetGame();
 	FollowActor* player= game->GetPlayer();
+
 	bool isVisible = player->GetVisible();
 	SetVisible(isVisible);
 	if (mNum == 0) {
