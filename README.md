@@ -23,21 +23,20 @@
 
 ## ビルド環境
 
- - **IDE**: Visual Studio 2019
- - **コンパイラ**: MSVC（Microsoft Visual C++）
- - **グラフィックスAPI**: OpenGL
- - **追加ライブラリ**
-  - [GLEW](https://github.com/nigels-com/glew)
-  - [SOIL](https://github.com/littlstar/soil)
-  - [stb_image](https://github.com/nothings/stb) 
-  - [GLM](https://github.com/g-truc/glm)
-  - [SDL](https://www.libsdl.org/)
-  - [SDL2_image](https://github.com/libsdl-org/SDL_image)
-  - [SDL_mixer](https://github.com/libsdl-org/SDL_mixer)
-  - [SDL_ttf](https://github.com/libsdl-org/SDL_ttf)
-  - [imgui(ver. 1.91.3-docking)](https://github.com/ocornut/imgui)
-  - [FMOD Studi API Windows](https://www.fmod.com/)
-  - [rapidjson](https://github.com/Tencent/rapidjson)
+ - **IDE** : Visual Studio 2019
+ - **コンパイラ** : MSVC（Microsoft Visual C++）
+ - **グラフィックスAPI** : OpenGL
+ - **追加ライブラリ** : [GLEW](https://github.com/nigels-com/glew)
+, [SOIL](https://github.com/littlstar/soil)
+, [stb_image](https://github.com/nothings/stb) 
+, [GLM](https://github.com/g-truc/glm)
+, [SDL](https://www.libsdl.org/)
+, [SDL2_image](https://github.com/libsdl-org/SDL_image)
+, [SDL_mixer](https://github.com/libsdl-org/SDL_mixer)
+, [SDL_ttf](https://github.com/libsdl-org/SDL_ttf)
+, [imgui(ver. 1.91.3-docking)](https://github.com/ocornut/imgui)
+, [FMOD Studi API Windows](https://www.fmod.com/)
+,[rapidjson](https://github.com/Tencent/rapidjson)
   
 ## 実行方法
 
