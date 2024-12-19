@@ -22,8 +22,7 @@ GameClear::GameClear(Game* game)
 	mGame->GetTimer()->StopTimer();
 	SDL_ShowCursor(SDL_ENABLE);
 	SetRelativeMouseMode(false);
-	AddText("GameClear", Vector2(0.0f, 250.0f), 72, Color::Yellow, 1);
-	AddText("GameClear", Vector2(0.0f, 250.0f), 72, Color::Yellow, 1);
+	AddText("GameClear", Vector2(0.0f, 250.0f), 72, Color::White, 1);
 	
 	AddButton("StartButton", [this]() {
 		new DialogBox(mGame, "StartText",

@@ -34,14 +34,15 @@ BombActor::BombActor(Game* game, float scale, int num)
 	: ItemActorBase(game, scale, num)
 	, mLifeSpan(6.0f)
 	, blinkTime(0.0f)
-	, blinkInterval(0.4f)
+	, blinkInterval(0.2f)
+	, isVisible (true)
 
 {
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Bomb3D.gpmesh");
 	mc->SetMesh(mesh);
 
 	if (mNum == 1) {
-
+		SetScale(0.25f);
 		mMyMove = new BombMove(this);
 		mMyMove->SetForwardSpeed(600.0f);
 		mMyMove->SetStrafeSpeed(0.0f);
@@ -97,6 +98,8 @@ void BombActor::UpdateActor(float deltaTime)
 			{
 
 				mAudioComp->PlayEvent("event:/Alert");
+				isVisible = !isVisible;
+				mc->SetVisible(isVisible);
 				// タイマーをリセット
 				blinkTime = 0.0f;
 			}

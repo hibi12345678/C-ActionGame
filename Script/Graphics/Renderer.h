@@ -95,6 +95,7 @@ private:
 	float angle;
 	float mScreenWidth; //Width
 	float mScreenHeight; //Hieght
+	float mPerspective;
 
 	Vector3 mAmbientLight; 	// Lighting data
 	Matrix4 mView; //シェーダーに送るView

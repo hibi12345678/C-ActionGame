@@ -31,6 +31,8 @@ public:
     glm::vec3 GetTranslate() const { return pos; }
     void SetAngle(float angle) { mAngle = angle; }
     void SetTranslate(glm::vec3 translate) { pos = translate; }
+    void SetScale(glm::vec3 scale) { mScale = scale; }
+    void SetTex(bool flag) { mflag = flag; }
 
     void GenerateTerrain(const Matrix4& view, const Matrix4& proj);
     GLuint loadTerrainTexture(const char* filePath);
@@ -82,7 +84,9 @@ private:
     58, 56, 59, 99, 253, 163, 168, 14, 51, 233, 196, 255, 20, 13, 194, 62,
     201, 187, 240, 156, 207, 43, 18, 39, 102, 203, 155, 97, 177, 184, 123, 108 }; //HeightMapのランダム生成用
 
+    bool mflag;
     float mAngle;
+    glm::vec3 mScale;
 
     GLuint VBO; //Terrain用VBO
     GLuint VAO; //Terrain用VAO

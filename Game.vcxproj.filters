@@ -294,6 +294,12 @@
     <ClCompile Include="Script\Actors\StageChange.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Script\Component\BossCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Component\DefeatCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Script\UI\DialogBox.h" />
@@ -369,5 +375,7 @@
     <ClInclude Include="Script\Actors\TreeActor.h" />
     <ClInclude Include="Script\System\GameTimer.h" />
     <ClInclude Include="Script\Actors\StageChange.h" />
+    <ClInclude Include="Script\Component\BossCamera.h" />
+    <ClInclude Include="Script\Component\DefeatCamera.h" />
   </ItemGroup>
 </Project>

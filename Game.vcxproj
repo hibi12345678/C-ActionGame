@@ -80,9 +80,11 @@
     <ClCompile Include="Script\Component\ArrowMove.cpp" />
     <ClCompile Include="Script\Component\AudioComponent.cpp" />
     <ClCompile Include="Script\Component\BombMove.cpp" />
+    <ClCompile Include="Script\Component\BossCamera.cpp" />
     <ClCompile Include="Script\Component\BoxComponent.cpp" />
     <ClCompile Include="Script\Component\CameraComponent.cpp" />
     <ClCompile Include="Script\Component\Component.cpp" />
+    <ClCompile Include="Script\Component\DefeatCamera.cpp" />
     <ClCompile Include="Script\Component\FollowCamera.cpp" />
     <ClCompile Include="Script\Component\FPSCamera.cpp" />
     <ClCompile Include="Script\Component\MoveComponent.cpp" />
@@ -154,9 +156,11 @@
     <ClInclude Include="Script\Component\ArrowMove.h" />
     <ClInclude Include="Script\Component\AudioComponent.h" />
     <ClInclude Include="Script\Component\BombMove.h" />
+    <ClInclude Include="Script\Component\BossCamera.h" />
     <ClInclude Include="Script\Component\BoxComponent.h" />
     <ClInclude Include="Script\Component\CameraComponent.h" />
     <ClInclude Include="Script\Component\Component.h" />
+    <ClInclude Include="Script\Component\DefeatCamera.h" />
     <ClInclude Include="Script\Component\FollowCamera.h" />
     <ClInclude Include="Script\Component\FPSCamera.h" />
     <ClInclude Include="Script\Component\MoveComponent.h" />

@@ -65,8 +65,11 @@ protected:
 	//=========================================================================
 	bool mTargetEnemy; //ターゲット
 	int itemNum; //装備中のアイテム選択用変数
+	int mStageNum;
 	float mRadarRange; //レーダー範囲
 	float mRadarRadius; //レーダー半径
+	float mDrawTime; //Tips1
+	float mBossDrawTime; //Tips3
 
 	class Game* mGame; 
 	class Font* mFont;
@@ -93,6 +96,10 @@ protected:
 	class Texture* mFrame;
 	class Texture* mFrame2;
 	class Texture* mLine;
+	class Texture* mTimer;
+	class Texture* mStart;
+	class Texture* mTips;
+	class Texture* mTips2;
 	std::vector<class TargetComponent*> mTargetComps;
 	std::vector<Vector2> mBlips;
 

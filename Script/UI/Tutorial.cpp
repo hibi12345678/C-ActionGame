@@ -54,7 +54,7 @@ Tutorial::~Tutorial()
 {
 	mGame->SetState(Game::GameState::EGameplay);
 	Renderer* r = mGame->GetRenderer();
-	r->SetAmbientLight(Vector3(0.7f, 0.7f, 0.7f));
+	r->SetAmbientLight(Vector3(0.4f, 0.4f, 0.4f));
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_GetRelativeMouseState(nullptr, nullptr);

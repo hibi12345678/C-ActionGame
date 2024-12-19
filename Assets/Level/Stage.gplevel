@@ -25,34 +25,6 @@
             "properties": {
                 "state": "active",
                 "position": [
-                    -1300.0,
-                    2500.0,
-                    100.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    1.0,
-                    0.2
-                ],
-                "scale": 1.0
-            },
-            "components": [ {
-                    "type": "MeshComponent",
-                    "properties": {
-                        "updateOrder": 100,
-                        "meshFile": "Assets/Object/StageArrow.gpmesh",
-                        "textureIndex": 0,
-                        "visible": true,
-                        "isSkeletal": false
-                    }
-                }       
-            ]
-        },{
-            "type": "PlaneActor",
-            "properties": {
-                "state": "active",
-                "position": [
                     0.0,
                     0.0,
                     -100.0
@@ -87,7 +59,7 @@
                         ],
                         "worldMax": [
                             2000.0,
-                            2000.0,
+                            2500.0,
                             -100.0
                         ]
                     }
@@ -177,7 +149,7 @@
                         ],
                         "worldMax": [
                             2000.0,
-                            1350.0,
+                            400.0,
                             300.0
                         ]
                     }
@@ -217,12 +189,12 @@
                         ],
                         "worldMin": [
                             -2000.0,
-                            1350.0,
+                            2500.0,
                             -100.0
                         ],
                         "worldMax": [
                             2000.0,
-                            2000.0,
+                            3250.0,
                             300.0
                         ]
                     }
@@ -267,7 +239,232 @@
                         ],
                         "worldMax": [
                             -1350.0,
+                            300.0,
+                            300.0
+                        ]
+                    }
+                }
+            ]
+        } ,{
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    0.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 400.0
+            },
+            "components": [        
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "worldMin": [
+                            -2000.0,
+                            300.0,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            -1250.0,
+                            3000.0,
+                            300.0
+                        ]
+                    }
+                }
+            ]
+        }, {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    0.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 400.0
+            },
+            "components": [        
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "worldMin": [
+                            1150.0,
+                            400.0,
+                            -100.0
+                        ],
+                        "worldMax": [
                             2000.0,
+                            1300.0,
+                            300.0
+                        ]
+                    }
+                }
+            ]
+        }, {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    0.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 400.0
+            },
+            "components": [        
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "worldMin": [
+                            950.0,
+                            1300.0,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            2000.0,
+                            3000.0,
+                            300.0
+                        ]
+                    }
+                }
+            ]
+        }, {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    0.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 400.0
+            },
+            "components": [        
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "worldMin": [
+                            800.0,
+                            2000.0,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            2000.0,
+                            3000.0,
+                            300.0
+                        ]
+                    }
+                }
+            ]
+        }, {
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    0.0,
+                    0.0,
+                    -100.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 400.0
+            },
+            "components": [        
+                {
+                    "type": "BoxComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "objectMin": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "objectMax": [
+                            -2000.0,
+                            -2000.0,
+                            0.0
+                        ],
+                        "worldMin": [
+                            -2000.0,
+                            2000.0,
+                            -100.0
+                        ],
+                        "worldMax": [
+                            -1050.0,
+                            3000.0,
                             300.0
                         ]
                     }

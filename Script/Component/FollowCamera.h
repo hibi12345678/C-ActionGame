@@ -31,10 +31,15 @@ public:
 
 	//Getter,Setter
 	TypeID GetType() const override { return TFollowCamera; }
+	float GetHorzDist() { return mHorzDist; }
+	float GetVertDist() { return mVertDist; }
+	float GetRightDist() { return mRightDist; }
 	void SetHorzDist(float dist) { mHorzDist = dist; }
 	void SetVertDist(float dist) { mVertDist = dist; }
+	void SetRightDist(float dist) { mRightDist = dist; }
 	void SetTargetDist(float dist) { mTargetDist = dist; }
 	void SetSpringConstant(float spring) { mSpringConstant = spring; }
+
 
 	//Load,Save
 	void LoadProperties(const rapidjson::Value& inObj) override;
@@ -47,6 +52,7 @@ private:
 	//=========================================================================
 	float mHorzDist;
 	float mVertDist;
+	float mRightDist;
 	float mTargetDist;
 	float mSpringConstant;
 

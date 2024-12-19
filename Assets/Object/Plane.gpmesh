@@ -3,7 +3,7 @@
 	"vertexformat":"PosNormTex",
 	"shader":"BasicMesh",
 	"textures":[
-		"Assets/Texture/aerial_grass_rock_diff_4k.jpg"
+		"Assets/Texture/snow_02_diff_4k.jpg"
 	],
 	"specularPower":100.0,
 	"vertices":[

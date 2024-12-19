@@ -88,6 +88,7 @@ public:
 	class BoxComponent* GetBox() { return mBoxComp; }
 	class BoxComponent* GetAttackBox() { return mAttackBoxComp; }
 	float GetPlayTime() { return mPlayTime;}
+	bool GetVisible() { return isVisible; }
 	void SetVisible(bool visible);
 	void SetState(State state) { mState = state; }
 	void SetItemState(ItemState state) { mItemState = state; }
@@ -104,6 +105,7 @@ public:
 	void ResolveCollision(const AABB& aBox, const AABB& bBox, Vector3& pos, BoxComponent* boxComponent);
 	void Block();
 	void EquipSword();
+	void DeleteCamera();
 
 
 
@@ -117,6 +119,8 @@ private:
 	bool jumpFlag; //ジャンプ(Space)入力
 	bool isVisible; //表示判定
 	bool mMoving; 
+	bool mAttackFlag;
+	bool lowStaminaFlag;
 	int mArrowCount; //矢の数
 	int mBombCount; //ボムの数
 	float mAttackTimer; //攻撃のクールタイム
@@ -135,6 +139,8 @@ private:
 	float inertiaStrafe; //慣性横方向速度 
 	float inertiaForward; //慣性正面方向速度
 	float mPlayTime;
+	float mLastWalkstep; //歩行音用
+	float mLastRunstep; //歩行音用
 	Vector3 pos;
 
 	State mState; 
@@ -151,4 +157,6 @@ private:
 	class BoxComponent* mBlockBoxComp;
 	class AudioSystem* mAudioSystem;
 	SoundEvent mFootstep;
+	SoundEvent mRunstep;
+
 };
