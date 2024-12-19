@@ -160,11 +160,21 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 
 	mWindow = SDL_CreateWindow("Game", 10, 150,
 		static_cast<int>(mScreenWidth), static_cast<int>(mScreenHeight), SDL_WINDOW_OPENGL);
-	mImGuiWindow = SDL_CreateWindow("ImGui Window", 1044,150,
-		866, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
+
+
+#ifdef _DEBUG
+	mImGuiWindow = SDL_CreateWindow("ImGui Window", 1044, 150,
+		866, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	mImGuiContext = SDL_GL_CreateContext(mImGuiWindow);
-	
+	//IÇçguiÇÃèâä˙âª
+	InitializeImGui(mImGuiWindow, mImGuiContext);
+#endif // _DEBUG
+
+
+
+
+
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -190,8 +200,6 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 		return false;
 	}
 
-	//IÇçguiÇÃèâä˙âª
-	InitializeImGui(mImGuiWindow, mImGuiContext);
 	glGetError();
 
 	// Make sure we can create/compile shaders
@@ -310,11 +318,15 @@ void Renderer::Shutdown()
 	delete mLineShader;
 	mTessellationShader->Unload();
 	delete mTessellationShader;
+
+#ifdef _DEBUG 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+#endif
 	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
+
 }
 
 
@@ -385,6 +397,7 @@ void Renderer::Draw()
 	}
 	//DrawUIObj();
 
+#ifdef _DEBUG // DebugÉÇÅ[ÉhÇÃÇ›ImGuiÇóLå¯âª
     // ---- ImGuiï`âÊÇÃÇΩÇﬂÇÃèÄîı ----
 	SDL_GL_MakeCurrent(mImGuiWindow, mImGuiContext);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -530,14 +543,12 @@ void Renderer::Draw()
 		ImGui::End();  
 	}
 
-
-
-
-
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	SDL_GL_SwapWindow(mImGuiWindow);
 	SDL_GL_MakeCurrent(mWindow, mContext);
+
+#endif // _DEBUG
 	SDL_GL_SwapWindow(mWindow);
 }
 
@@ -1128,7 +1139,6 @@ void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
 	outDir.Normalize();
 }
 
-
 //-----------------------------------------------------------------------------
 // ImGuièâä˙âªä÷êî
 //-----------------------------------------------------------------------------
@@ -1147,6 +1157,7 @@ void Renderer::InitializeImGui(SDL_Window* imguiWindow, SDL_GLContext imguiConte
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 }
+
 
 
 //-----------------------------------------------------------------------------
