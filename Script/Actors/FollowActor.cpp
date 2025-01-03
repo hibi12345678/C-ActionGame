@@ -34,8 +34,8 @@
 FollowActor::FollowActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
-	, mState(EGrounded)
-	, mItemState(ESword)
+	, mState(State::EGrounded)
+	, mItemState(ItemState::ESword)
 	, jumpSpeed(0.0f)
 	, mStamina(1.0f)
 	, mHealth(1.0f)
@@ -53,8 +53,8 @@ FollowActor::FollowActor(Game* game)
 	, isVisible(true)
 	, blockPressed(false)
 	, mBlockTimer(0.0f)
-	, mBombCount(0)
-	, mArrowCount(0)
+	, mBombCount(2)
+	, mArrowCount(4)
 	, mFPSCamera(nullptr)
 	, changeTimer(0.0f)
 	, deathFlag(true)
@@ -62,6 +62,10 @@ FollowActor::FollowActor(Game* game)
 	, mAnimState(AnimationState::Idle)
 	, mAnimTime(0.0f)
 	, mPlayTime(0.0f)
+	, forwardSpeed(0.0f)
+	, strafeSpeed(0.0f)
+	, mAttackNum(1)
+	, attackCombo(false)
 
 {
 	mMeshComp = new SkeletalMeshComponent(this);
@@ -83,9 +87,8 @@ FollowActor::FollowActor(Game* game)
 	mBoxComp->SetObjectBox(myBox);
 	mBoxComp->SetShouldRotate(false);
 
-	blockPressed = false;
-	SwordActor* sword1 = new SwordActor(game, 1.0f, 0);
-	SwordActor* sword2 = new SwordActor(game, 1.0f, 1);
+	EquipSword();
+
 }
 
 
@@ -94,258 +97,324 @@ FollowActor::FollowActor(Game* game)
 //-----------------------------------------------------------------------------
 void FollowActor::ActorInput(const uint8_t* keys)
 {
+	if (GetGame()->GetState() == Game::GameState::EBossDefeat ||
+		GetGame()->GetState() == Game::GameState::EBossMovie)
+	{
+		return;
+	}
 
-	if (GetGame()->GetState() == Game::GameState::EBossDefeat || GetGame()->GetState() == Game::GameState::EBossMovie) {
+	ProcessMovementInput(keys);
+	ProcessJumpInput(keys);
+	ProcessBlockInput(keys);
+	ProcessMouseInput();
+	ProcessAttackInput();
+
+}
+
+//-----------------------------------------------------------------------------
+//   移動処理
+//-----------------------------------------------------------------------------
+void FollowActor::ProcessMovementInput(const uint8_t* keys)
+{
+	forwardSpeed = 0.0f;
+	strafeSpeed = 0.0f;
+
+	if (keys[SDL_SCANCODE_W] && mAttackTimer <= 0.0f)
+	{
+		forwardSpeed += HandleForwardMovement(keys);
+	}
+	else if (keys[SDL_SCANCODE_S] && mAttackTimer <= 0.0f)
+	{
+		forwardSpeed -= HandleBackwardMovement();
+	}
+
+	if (keys[SDL_SCANCODE_A] && mAttackTimer <= 0.0f)
+	{
+		strafeSpeed -= HandleStrafeMovement(AnimationState::Left);
+	}
+	else if (keys[SDL_SCANCODE_D] && mAttackTimer <= 0.0f)
+	{
+		strafeSpeed += HandleStrafeMovement(AnimationState::Right);
+	}
+
+	if (jumpFlag)
+	{
+		strafeSpeed += inertiaStrafe;
+		forwardSpeed += inertiaForward;
+	}
+
+	// Did we just start moving?
+	if (!mMoving && (!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)))
+		mMoving = true;
+
+	// Or did we just stop moving?
+	else if (mMoving && Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) 
+		&& !mAttackBoxComp && !mBlockBoxComp && mState == State::EGrounded 
+		&& GetGame()->GetState() == Game::GameState::EGameplay && mAttackTimer <= 0.0f)
+	{
+		mMoving = false;
+
+		if (mItemState == ItemState::EBow )
+			PlayAnimation("Assets/Anim/Player_bowidle.gpanim", AnimationState::Idle);
 		
+		else 
+			PlayAnimation("Assets/Anim/Player_idle.gpanim", AnimationState::Idle);
+			
+	}
+
+	if (mHealth > 0.0f) {
+		mMoveComp->SetForwardSpeed(forwardSpeed);
+		mMoveComp->SetStrafeSpeed(strafeSpeed);
 	}
 	else {
-		float forwardSpeed = 0.0f;
-		float strafeSpeed = 0.0f;
+		mMoveComp->SetForwardSpeed(0.0f);
+		mMoveComp->SetStrafeSpeed(0.0f);
+	}
 
-		if (keys[SDL_SCANCODE_W] && mAttackTimer <= 0.0f)
-		{
+}
 
-			forwardSpeed += 200.0f;
-			if (jumpFlag)
-				forwardSpeed -= 100.f;
-			// Check if Shift key is pressed
-			isShiftPressed = keys[SDL_SCANCODE_LSHIFT] || keys[SDL_SCANCODE_RSHIFT];
-			// Apply speed multiplier if Shift is pressed
-			if (isShiftPressed && mStamina > 0.0f && mState == EGrounded)
-			{
+float FollowActor::HandleForwardMovement(const uint8_t* keys)
+{
+	float speed = 200.0f;
+	if (jumpFlag)
+		speed -= 100.0f;
 
-				mStamina -= 0.01f;
-				if (!lowStaminaFlag) {
-					forwardSpeed *= 2.0f;
-				}
-				if (mAnimState != AnimationState::Run && !lowStaminaFlag) {
-					mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_run.gpanim"), 1.0f);
-					mAnimState = AnimationState::Run;
-				}
-				else if (mAnimState != AnimationState::Walk && lowStaminaFlag) {
-					mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_walk.gpanim"), 1.0f);
-					mAnimState = AnimationState::Walk;
-				}
-				if (mStamina < 0.0f) {
-					lowStaminaFlag = true;
-				}
-			}
+	isShiftPressed = keys[SDL_SCANCODE_LSHIFT] || keys[SDL_SCANCODE_RSHIFT];
+	if (isShiftPressed && mStamina > 0.0f && mState == State::EGrounded)
+	{
 
-			else if (!isShiftPressed && mAnimState != AnimationState::Walk && mState == EGrounded) {
-				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_walk.gpanim"), 1.0f);
-				mAnimState = AnimationState::Walk;
-			}
+		mStamina -= 0.01f;
+		if (!lowStaminaFlag) {
+			speed *= 2.0f;
 		}
-		else if (keys[SDL_SCANCODE_S] && mAttackTimer <= 0.0f)
-		{
-			forwardSpeed -= 200.0f;
-			if (jumpFlag)
-				forwardSpeed += 100.f;
-			if (mAnimState != AnimationState::Back && mState == EGrounded) {
-				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_back.gpanim"), 1.0f);
-				mAnimState = AnimationState::Back;
-			}
+		if (mAnimState != AnimationState::Run && !lowStaminaFlag) {
+			PlayAnimation("Assets/Anim/Player_run.gpanim", AnimationState::Run);
+			
 		}
-		if (keys[SDL_SCANCODE_A] && mAttackTimer <= 0.0f)
-		{
-			strafeSpeed -= 200.0f;
-			if (jumpFlag)
-				strafeSpeed += 100.f;
-			if (mAnimState != AnimationState::Left && forwardSpeed == 0.0f && mState == EGrounded) {
-				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_left.gpanim"), 1.0f);
-				mAnimState = AnimationState::Left;
-			}
+		else if (mAnimState != AnimationState::Walk && lowStaminaFlag) {
+			PlayAnimation("Assets/Anim/Player_walk.gpanim", AnimationState::Walk);
+			
 		}
-		else if (keys[SDL_SCANCODE_D] && mAttackTimer <= 0.0f)
-		{
-			strafeSpeed += 200.0f;
-			if (jumpFlag)
-				strafeSpeed -= 100.f;
-			if (mAnimState != AnimationState::Right && forwardSpeed == 0.0f && mState == EGrounded) {
-				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_right.gpanim"), 1.0f);
-				mAnimState = AnimationState::Right;
-			}
-		}
-		if (keys[SDL_SCANCODE_SPACE] && mState == EGrounded && mStamina > 0.1f && mHealth > 0.0f && mAttackTimer <= 0.0f)
-		{
-			delete mBlockBoxComp;  // メモリの解放
-			mBlockBoxComp = nullptr;  // ポインタをクリア
-			blockPressed = false;
-			mState = EJump;
-
-			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_jump.gpanim"), 0.9f);
-
-			jumpSpeed += -20000.0f;
-			mStamina -= 0.1f;
-			jumpFlag = true;
-			inertiaStrafe = strafeSpeed;
-			inertiaForward = forwardSpeed;
-		}
-		if (jumpFlag) {
-			strafeSpeed += inertiaStrafe;
-			forwardSpeed += inertiaForward;
-		}
-		if (keys[SDL_SCANCODE_R] && mState == EGrounded && mStamina > 0.1f && mHealth > 0.0f && mAttackTimer <= 0.0f && mItemState == ESword)
-		{
-			Block();
-			forwardSpeed = 0.0f;
-			strafeSpeed = 0.0f;
-
-		}
-		else if (mItemState == ESword) {
-
-			if (mBlockBoxComp != nullptr) {
-				mMoving = false;
-
-
-				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
-				mAnimState = AnimationState::Idle;
-
-				delete mBlockBoxComp;  // メモリの解放
-				mBlockBoxComp = nullptr;  // ポインタをクリア
-			}
-
-		}
-		if (keys[SDL_SCANCODE_R] && mHealth > 0.0f && mItemState == ETorch) {
-
-
-		}
-
-
-		if (keys[SDL_SCANCODE_R] && mHealth > 0.0f && mItemState == EBow && changeTimer > 0.5f) {
-
-			changeTimer = 0.0f;
-			if (!mCameraComp && mFPSCamera) {
-				mMeshComp->SetVisible(true);
-				mCameraComp = new FollowCamera(this);
-				delete mFPSCamera;
-				mFPSCamera = nullptr;
-			}
-			else if (!mFPSCamera && mCameraComp) {
-				mMeshComp->SetVisible(false);
-				mFPSCamera = new FPSCamera(this);
-				delete mCameraComp;
-				mCameraComp = nullptr;
-			}
-		}
-
-		if (mItemState != EBow) {
-			if (!mCameraComp && mFPSCamera) {
-				mMeshComp->SetVisible(true);
-				mCameraComp = new FollowCamera(this);
-				delete mFPSCamera;
-				mFPSCamera = nullptr;
-			}
-		}
-
-		if (mAttackBoxComp != nullptr || mBlockBoxComp != nullptr) {
-			forwardSpeed = 0.0f;
-			strafeSpeed = 0.0f;
-		}
-
-		int x, y;
-
-		SDL_GetRelativeMouseState(&x, &y);
-		// Assume mouse movement is usually between -500 and +500
-		const int maxMouseSpeed = 500;
-		// Rotation/sec at maximum speed
-		const float maxAngularSpeed = Math::Pi * 6;
-		float angularSpeed = 0.0f;
-		if (x != 0)
-		{
-			// Convert to ~[-1.0, 1.0]
-			angularSpeed = static_cast<float>(x) / maxMouseSpeed;
-			// Multiply by rotation/sec
-			angularSpeed *= maxAngularSpeed;
-		}
-
-		// Compute pitch
-		const float maxPitchSpeed = Math::Pi * 8;
-		float pitchSpeed = 0.0f;
-		if (y != 0)
-		{
-			// Convert to ~[-1.0, 1.0]
-			pitchSpeed = static_cast<float>(y) / maxMouseSpeed;
-			pitchSpeed *= maxPitchSpeed;
-		}
-
-		// Did we just start moving?
-		if (!mMoving && (!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)))
-		{
-			mMoving = true;
-
-		}
-
-		// Or did we just stop moving?
-		else if (mMoving && Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && !mAttackBoxComp && !mBlockBoxComp && mState == EGrounded && GetGame()->GetState() == Game::GameState::EGameplay && mAttackTimer <= 0.0f)
-		{
-			mMoving = false;
-
-			if (mItemState == EBow) {
-				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bowidle.gpanim"), 1.0f);
-				mAnimState = AnimationState::Idle;
-			}
-			else {
-				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
-				mAnimState = AnimationState::Idle;
-			}
-
-
-		}
-
-		int butx = 0, buty = 0;
-
-		Uint32 buttons = SDL_GetMouseState(&butx, &buty);
-
-		// マウス左クリックが押されたか確認
-		if (mAttackTimer < 0.0f && (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) && mState == EGrounded && mStamina >= 0.2f) {
-
-			delete mBlockBoxComp;  // メモリの解放
-			mBlockBoxComp = nullptr;  // ポインタをクリア
-			blockPressed = false;
-			mStamina -= 0.3f;
-
-			if (mItemState == ESword || mItemState == ETorch) {
-				Attack();
-
-			}
-			if (mItemState == EBow) {
-				Shoot();
-			}
-			if (mItemState == EBomb) {
-				Bomb();
-			}
-		}
-
-
-
-		if (mHealth > 0.0f) {
-			mMoveComp->SetAngularSpeed(angularSpeed);
-			if (mCameraComp) {
-				mCameraComp->SetPitchSpeed(pitchSpeed);
-			}
-			else if (mFPSCamera) {
-				mFPSCamera->SetPitchSpeed(pitchSpeed);
-			}
-			mMoveComp->SetForwardSpeed(forwardSpeed);
-			mMoveComp->SetStrafeSpeed(strafeSpeed);
-		}
-		else {
-			mMeshComp->SetVisible(true);
-			mMoveComp->SetAngularSpeed(0.0f);
-			mCameraComp->SetPitchSpeed(0.0f);
-			if (mCameraComp) {
-				mCameraComp->SetPitchSpeed(0.0f);
-			}
-			else if (mFPSCamera) {
-				mFPSCamera->SetPitchSpeed(0.0f);
-			}
-			mMoveComp->SetForwardSpeed(0.0f);
-			mMoveComp->SetStrafeSpeed(0.0f);
+		if (mStamina < 0.0f) {
+			lowStaminaFlag = true;
 		}
 	}
-	
+	else if (!isShiftPressed && mAnimState != AnimationState::Walk && mState == State::EGrounded)
+	{
+		PlayAnimation("Assets/Anim/Player_walk.gpanim", AnimationState::Walk);
+	}
+	return speed;
+}
 
+
+float FollowActor::HandleBackwardMovement()
+{
+	if (jumpFlag)
+		return 100.0f;
+	if (mAnimState != AnimationState::Back && mState == State::EGrounded)
+	    PlayAnimation("Assets/Anim/Player_back.gpanim", AnimationState::Back);
+	return 200.0f;
+}
+
+
+float FollowActor::HandleStrafeMovement(AnimationState direction)
+{
+	if (jumpFlag)
+		return 100.0f;
+
+	if (mAnimState != direction && forwardSpeed == 0.0f && mState == State::EGrounded)
+	{
+		std::string animPath = direction == AnimationState::Left ?
+			"Assets/Anim/Player_left.gpanim" :
+			"Assets/Anim/Player_right.gpanim";
+		PlayAnimation(animPath, direction);
+	}
+	return 200.0f;
+}
+
+
+//-----------------------------------------------------------------------------
+//   ジャンプ処理
+//-----------------------------------------------------------------------------
+void FollowActor::ProcessJumpInput(const uint8_t* keys)
+{
+	if (keys[SDL_SCANCODE_SPACE] && mState == State::EGrounded &&
+		mStamina > 0.1f && mHealth > 0.0f && mAttackTimer <= 0.0f)
+	{
+		ClearBlockState();
+		mState = State::EJump;
+		PlayAnimation("Assets/Anim/Player_jump.gpanim", AnimationState::Jump);
+		jumpSpeed += -20000.0f;
+		mStamina -= 0.1f;
+		jumpFlag = true;
+		inertiaStrafe = mMoveComp->GetStrafeSpeed();
+		inertiaForward = mMoveComp->GetForwardSpeed();
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+//   ブロック処理
+//-----------------------------------------------------------------------------
+void FollowActor::ProcessBlockInput(const uint8_t* keys)
+{
+	if (keys[SDL_SCANCODE_R] && mState == State::EGrounded &&
+		mStamina > 0.1f && mHealth > 0.0f && mAttackTimer <= 0.0f
+		&& mItemState == ItemState::ESword)
+	{
+		Block();
+	}
+	else
+	{
+		ClearBlockState();
+	}
+
+	if (keys[SDL_SCANCODE_R] && mHealth > 0.0f && mItemState == ItemState::EBow && changeTimer > 0.5f) {
+
+		changeTimer = 0.0f;
+		if (!mCameraComp && mFPSCamera) {
+			mMeshComp->SetVisible(true);
+			mCameraComp = new FollowCamera(this);
+			delete mFPSCamera;
+			mFPSCamera = nullptr;
+		}
+		else if (!mFPSCamera && mCameraComp) {
+			mMeshComp->SetVisible(false);
+			mFPSCamera = new FPSCamera(this);
+			delete mCameraComp;
+			mCameraComp = nullptr;
+		}
+	}
+
+	if (mItemState != ItemState::EBow) {
+		if (!mCameraComp && mFPSCamera) {
+			mMeshComp->SetVisible(true);
+			mCameraComp = new FollowCamera(this);
+			delete mFPSCamera;
+			mFPSCamera = nullptr;
+		}
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+//   ブロックのBoxを削除する
+//-----------------------------------------------------------------------------
+void FollowActor::ClearBlockState()
+{
+	if (mBlockBoxComp)
+	{
+		delete mBlockBoxComp;
+		mBlockBoxComp = nullptr;
+		blockPressed = false;
+	}
+}
+
+//-----------------------------------------------------------------------------
+//   マウスの移動をカメラとキャラクターの回転とする処理
+//-----------------------------------------------------------------------------
+void FollowActor::ProcessMouseInput() {
+	int x, y;
+
+	SDL_GetRelativeMouseState(&x, &y);
+	// Assume mouse movement is usually between -500 and +500
+	const int maxMouseSpeed = 500;
+	// Rotation/sec at maximum speed
+	const float maxAngularSpeed = Math::Pi * 6;
+	float angularSpeed = 0.0f;
+	if (x != 0)
+	{
+		// Convert to ~[-1.0, 1.0]
+		angularSpeed = static_cast<float>(x) / maxMouseSpeed;
+		// Multiply by rotation/sec
+		angularSpeed *= maxAngularSpeed;
+	}
+
+	// Compute pitch
+	const float maxPitchSpeed = Math::Pi * 8;
+	float pitchSpeed = 0.0f;
+	if (y != 0)
+	{
+		// Convert to ~[-1.0, 1.0]
+		pitchSpeed = static_cast<float>(y) / maxMouseSpeed;
+		pitchSpeed *= maxPitchSpeed;
+	}
+
+	if (mHealth > 0.0f) {
+		mMoveComp->SetAngularSpeed(angularSpeed);
+		if (mCameraComp) {
+			mCameraComp->SetPitchSpeed(pitchSpeed);
+		}
+		else if (mFPSCamera) {
+			mFPSCamera->SetPitchSpeed(pitchSpeed);
+		}
+	}
+	else {
+		mMeshComp->SetVisible(true);
+		mMoveComp->SetAngularSpeed(0.0f);
+		mCameraComp->SetPitchSpeed(0.0f);
+		if (mCameraComp) {
+			mCameraComp->SetPitchSpeed(0.0f);
+		}
+		else if (mFPSCamera) {
+			mFPSCamera->SetPitchSpeed(0.0f);
+		}
+	}
+
+}
+
+
+//-----------------------------------------------------------------------------
+//   マウス入力処理
+//-----------------------------------------------------------------------------
+void FollowActor::ProcessAttackInput() {
+	int butx = 0, buty = 0;
+
+	Uint32 buttons = SDL_GetMouseState(&butx, &buty);
+
+	// マウス左クリックが押されたか確認
+	if (mAttackTimer < 0.0f && (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) && 
+		mState == State::EGrounded && mStamina >= 0.2f) {
+
+		delete mBlockBoxComp;  // メモリの解放
+		mBlockBoxComp = nullptr;  // ポインタをクリア
+		blockPressed = false;
+		mStamina -= 0.2f;
+
+		if (mItemState == ItemState::ESword || mItemState == ItemState::ETorch) {
+			Attack();
+
+		}
+		if (mItemState == ItemState::EBow) {
+			Shoot();
+		}
+		if (mItemState == ItemState::EBomb) {
+			Bomb();
+		}
+	}
+	// 連続攻撃確認
+	else if (mAttackTimer <= 0.5f && mAttackTimer >= 0.0f && (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) &&
+		mState == State::EGrounded && mStamina >= 0.2f
+		&& (mItemState == ItemState::ESword || mItemState == ItemState::ETorch) 
+		&& mAttackNum <= 3) 
+	{
+		
+		attackCombo = true;
+	
+	}
+}
+
+//-----------------------------------------------------------------------------
+//   アニメーションの再生
+//-----------------------------------------------------------------------------
+void FollowActor::PlayAnimation(const std::string& path, AnimationState state)
+{
+	float animRate = 1.0f;
+	if (state == AnimationState::Attack && mItemState == ItemState::ESword)
+		animRate = 1.5f;
+	
+	mMeshComp->PlayAnimation(GetGame()->GetAnimation(path), animRate);
+	mAnimState = state;
 }
 
 
@@ -354,7 +423,8 @@ void FollowActor::ActorInput(const uint8_t* keys)
 //-----------------------------------------------------------------------------
 void FollowActor::UpdateActor(float deltaTime) {
 
-	if (GetGame()->GetState() == Game::GameState::EBossDefeat || GetGame()->GetState() == Game::GameState::EBossMovie) {
+	if (GetGame()->GetState() == Game::GameState::EBossDefeat 
+		|| GetGame()->GetState() == Game::GameState::EBossMovie) {
 		
 		if (mCameraComp) {
 			delete mCameraComp;
@@ -366,18 +436,22 @@ void FollowActor::UpdateActor(float deltaTime) {
 		}
 		if (mAnimState != AnimationState::Idle) {
 			
-			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
-			mAnimState = AnimationState::Idle;
+			PlayAnimation("Assets/Anim/Player_idle.gpanim", AnimationState::Idle);
+
 		}
 		SetPosition(Vector3(-3000.0f, 0.0f, -100.0f));
 
 	}
 	else{
+
 		mLastFootstep -= deltaTime;
 		mLastRunstep -= deltaTime;
 		if ((!Math::NearZero(mMoveComp->GetForwardSpeed()) ||
 			!Math::NearZero(mMoveComp->GetStrafeSpeed())) &&
-			mLastFootstep <= 0.0f && (mAnimState == AnimationState::Walk || mAnimState == AnimationState::Left || mAnimState == AnimationState::Right || mAnimState == AnimationState::Back))
+			mLastFootstep <= 0.0f && (mAnimState == AnimationState::Walk 
+				|| mAnimState == AnimationState::Left 
+				|| mAnimState == AnimationState::Right 
+				|| mAnimState == AnimationState::Back))
 		{
 			mFootstep.SetPaused(false);
 			mFootstep.Restart();
@@ -392,14 +466,12 @@ void FollowActor::UpdateActor(float deltaTime) {
 			mLastRunstep = 0.46f;
 		}
 
-
-
 		mPlayTime += deltaTime;
 		UpdateState(deltaTime);
 		UpdateStamina(deltaTime);
 		UpdateMovement(deltaTime);
 		UpdateTimers(deltaTime);
-		mState = EFall;
+		mState = State::EFall;
 		FixCollisions();
 		HandleVisibility(deltaTime);
 	}
@@ -413,20 +485,19 @@ void FollowActor::UpdateActor(float deltaTime) {
 void FollowActor::UpdateTimers(float deltaTime) {
 
 	if (mHealth <= 0.0f && deathFlag && GetGame()->GetState()==Game::GameState::EGameplay) {
-		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_dying.gpanim"), 1.0f);
-		mAnimState = AnimationState::Die;
+		PlayAnimation("Assets/Anim/Player_dying.gpanim", AnimationState::Die);
 		mHealthRed = 0.0f;
 		mHealth = 0.0f;
 		GetGame()->SetState(Game::GameState::EGameOver);
 		deathFlag = false;
-
 	}
 
 	changeTimer += deltaTime;
 
 	if (mAttackTimer > 0.0f) {
 		mAttackTimer -= deltaTime;
-		if ((mItemState == ESword ||mItemState == ETorch) && mAttackTimer <= 1.00f && !mAttackFlag) {
+		if ((mItemState == ItemState::ESword ||mItemState == ItemState::ETorch) 
+			&& mAttackTimer <= 0.8f && !mAttackFlag) {
 			mAttackBoxComp = new BoxComponent(this);
 			AABB myBox(Vector3(25.0f, -25.0f, 100.0f),
 				Vector3(75.0f, 25.0f, 170.0f));
@@ -435,16 +506,27 @@ void FollowActor::UpdateTimers(float deltaTime) {
 			mBoxTimer = 0.5f;
 			mAttackFlag = true;
 		}
-		if (mItemState == EBow && mAttackTimer <= 0.0f) {
-			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bowidle.gpanim"));
-			mAnimState == AnimationState::Idle;
-			mAttackFlag = false;
+		if (mAttackTimer <= 0.0f && !attackCombo) {
+			mAttackNum = 1;
+			attackCombo = false;
+			
+			if (mItemState == ItemState::EBow) {
+				PlayAnimation("Assets/Anim/Player_bowidle.gpanim", AnimationState::Idle);
+				mAttackFlag = false;
+			}
+			else{
+				PlayAnimation("Assets/Anim/Player_idle.gpanim", AnimationState::Idle);
+				mAttackFlag = false;
+			}
 		}
-		else if (mItemState != EBow && mAttackTimer <= 0.0f) {
-			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"));
-			mAnimState == AnimationState::Idle;
+		else if (mAttackTimer <= 0.0f && attackCombo) {
+			
+			mStamina -= 0.2f;
+			attackCombo = false;
 			mAttackFlag = false;
+			Attack();
 		}
+
 	}
 
 	if (mBlockTimer > 0.0f) mBlockTimer -= deltaTime;
@@ -468,7 +550,7 @@ void FollowActor::UpdateTimers(float deltaTime) {
 // スタミナ
 //-----------------------------------------------------------------------------
 void FollowActor::UpdateStamina(float deltaTime) {
-	if (mState == EGrounded && mStamina < 1.0f) {
+	if (mState == State::EGrounded && mStamina < 1.0f && mAttackTimer <= 0.0f) {
 
 		mStamina = std::min(mStamina + 0.005f, 1.0f);
 	}
@@ -481,14 +563,14 @@ void FollowActor::UpdateStamina(float deltaTime) {
 //　垂直方向の処理
 //-----------------------------------------------------------------------------
 void FollowActor::UpdateMovement(float deltaTime) {
-	if (mState == EJump) {
+	if (mState == State::EJump) {
 		jumpSpeed += 50000.0f * deltaTime; // 重力
-		if (jumpSpeed >= 0.0f) mState = EFall;
+		if (jumpSpeed >= 0.0f) mState = State::EFall;
 	}
-	else if (mState == EFall) {
+	else if (mState == State::EFall) {
 		jumpSpeed += 100000.0f * deltaTime;
 	}
-	else if (mState == EGrounded) {
+	else if (mState == State::EGrounded) {
 		jumpSpeed = 0.0f;
 	}
 	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
@@ -500,10 +582,10 @@ void FollowActor::UpdateMovement(float deltaTime) {
 //-----------------------------------------------------------------------------
 void FollowActor::UpdateState(float deltaTime) {
 
-	if (mItemState == EBow && mArrowCount <= 0) {
+	if (mItemState == ItemState::EBow && mArrowCount <= 0) {
 		EquipSword();
 	}
-	else if (mItemState == EBomb && mBombCount <= 0) {
+	else if (mItemState == ItemState::EBomb && mBombCount <= 0) {
 		EquipSword();
 	}
 
@@ -515,10 +597,15 @@ void FollowActor::UpdateState(float deltaTime) {
 //　剣と盾を装備させる
 //-----------------------------------------------------------------------------
 void FollowActor::EquipSword() {
-	mItemState = ESword;
-	SwordActor* sword1 = new SwordActor(GetGame(), 1.0f, 0);
-	SwordActor* sword2 = new SwordActor(GetGame(), 1.0f, 1);
-	mAudioComp->PlayEvent("event:/Equipped");
+	
+	sword= new SwordActor(GetGame(), 1.0f, 0);
+	shield= new SwordActor(GetGame(), 1.0f, 1);
+
+	if (mItemState != ItemState::ESword) {
+		mAudioComp->PlayEvent("event:/Equipped");
+		mItemState = ItemState::ESword;
+	}
+
 }
 
 
@@ -569,10 +656,21 @@ void FollowActor::SetVisible(bool visible)
 //-----------------------------------------------------------------------------
 void FollowActor::Attack() {
 
-	mAttackTimer = 1.2f;
-	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_attack.gpanim"), 1.8f);
-	mAnimState = AnimationState::Attack;
-
+	mAttackTimer = 1.0f;
+	
+	if(mAttackNum == 1)
+	    PlayAnimation("Assets/Anim/Player_attack.gpanim", AnimationState::Attack);
+	if (mAttackNum == 2)
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_attack2.gpanim"), 1.2f);
+	if (mAttackNum == 3) {
+		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_attack3.gpanim"), 1.2f);
+		attackCombo = false;
+	}
+		
+	mAttackNum++;
+	if (mAttackNum == 4) {
+		mAttackNum = 1;
+	}
 	if (mItemState ==FollowActor::ItemState::ESword) {
 		mAudioComp->PlayEvent("event:/SwordAttack");
 	}
@@ -588,8 +686,7 @@ void FollowActor::Attack() {
 void FollowActor::Shoot()
 {
 	mArrowCount--;
-	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_bow.gpanim"), 1.0f);
-	mAnimState = AnimationState::Attack;
+	PlayAnimation("Assets/Anim/Player_bow.gpanim", AnimationState::Attack);
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
 	ArrowActor* arrow = new ArrowActor(GetGame());
@@ -616,7 +713,7 @@ void FollowActor::Bomb()
 	mAnimState = AnimationState::Attack;
 	Vector3 start, dir;
 	GetGame()->GetRenderer()->GetScreenDirection(start, dir);
-	BombActor* bomb = new BombActor(GetGame(), 0.15f, 1);
+	BombActor* bomb = new BombActor(GetGame(), 0.10f, 1);
 	bomb->SetPlayer(this);
 	bomb->SetPosition(GetPosition() + Vector3(0.0, 0.0, 200.0) + GetForward() * 50.0f);
 	bomb->RotateToNewForward(dir);
@@ -685,7 +782,6 @@ void FollowActor::FixCollisions()
  	ComputeWorldTransform();
 	mBoxComp->OnUpdateWorldTransform();
 	const AABB& playerBox = mBoxComp->GetWorldBox();
-	const AABB& attackBox = mAttackBoxComp->GetWorldBox();
 	const AABB& blockBox = mBlockBoxComp->GetWorldBox();
 
 	Vector3 pos = GetPosition();
@@ -710,8 +806,8 @@ void FollowActor::FixCollisions()
 			sc->GetPosition();
 			
 
-			if (Game::GameState::EGameplay == GetGame()->GetState()) {
-				if (mItemState != EBow) {
+			if (Game::GameState::EGameplay == GetGame()->GetState() && mState  == FollowActor::State::EGrounded) {
+				if (mItemState != ItemState::EBow) {
 					if (!mCameraComp && mFPSCamera) {
 						mMeshComp->SetVisible(true);
 						mCameraComp = new FollowCamera(this);
@@ -741,7 +837,7 @@ void FollowActor::FixCollisions()
 					if (Intersect(blockBox, enemyAttackBox)) {
 						if (mBlockTimer <= 0.0f) {
 							mBlockTimer = 0.5f;
-							mStamina -= 0.3f;						
+							mStamina -= 0.2f;						
 							if (mDamageTimer < 0.5f) {
 								mAudioComp->PlayEvent("event:/Block");
 								mDamageTimer = 0.5f;
@@ -780,7 +876,7 @@ void FollowActor::FixCollisions()
 
 						if (mBlockTimer <= 0.0f) {
 							mBlockTimer = 1.0f;
-							mStamina -= 0.3f;
+							mStamina -= 0.2f;
 							mAudioComp->PlayEvent("event:/Block");
 						}
 					}
@@ -864,7 +960,7 @@ void FollowActor::ResolveCollision(const AABB& aBox, const AABB& bBox, Vector3& 
 		else
 		{
 			pos.z += dz;
-			mState = EGrounded;
+			mState = State::EGrounded;
 			if (jumpFlag == true) {
 				mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/Player_idle.gpanim"), 1.0f);
 				mAnimState = AnimationState::Idle;

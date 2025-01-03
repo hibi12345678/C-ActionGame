@@ -37,9 +37,11 @@ BossActor::BossActor(Game* game)
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/"+ name +".gpmesh");
 	mMeshComp->SetMesh(mesh);
 	mMeshComp->SetSkeleton(game->GetSkeleton("Assets/Skel/" + name + ".gpskel"));
+	mAudioComp->PlayEvent("event:/Boss");
 	GetGame()->AddBossActor(this);
 	GetGame()->AddEnemy(this);
-	mAnimState = EnemyActor::AnimationState::Idle;
+	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_roa.gpanim"), 1.0f);
+	mAnimState = EnemyActor::AnimationState::Roa;
 	new TargetComponent(this);
 	PointLightComponent* pointLight = new PointLightComponent(this);
 	pointLight->SetCol(Vector3(1.0, 0.6, 0.0));
@@ -63,6 +65,115 @@ BossActor::~BossActor()
 //-----------------------------------------------------------------------------
 void BossActor::UpdateActor(float deltaTime) {
 
+	forwardSpeed = 0.0f;
+	strafeSpeed = 0.0f;
+	auto* player = GetGame()->GetPlayer();
+	Vector3 playerPosition = player->GetPosition();
+	Vector3 pos = GetPosition();
+	diff = playerPosition - pos;
+	float distanceSq = diff.LengthSq();
+
+	if (GetGame()->GetState() == Game::GameState::EBossMovie) {
+		if (mAnimState != EnemyActor::AnimationState::Roa) {
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_roa.gpanim"), 1.0f);
+			mAudioComp->PlayEvent("event:/Boss");
+			mAnimState = EnemyActor::AnimationState::Roa;
+		}
+
+		Vector3 playerPosition = bossCam->GetCameraPos();
+		AlignToTarget(); // ƒ^[ƒQƒbƒg‚ÉŒü‚¯‚Ä‰ñ“]
+	}
+	else if (GetGame()->GetState() == Game::GameState::EBossDefeat) {
+		mMoveComp->SetForwardSpeed(0.0f);
+		mMoveComp->SetStrafeSpeed(0.0f);
+		playerPosition = defCam->GetCameraPos();
+		pos = GetPosition();
+		diff = playerPosition - pos;
+		distanceSq = diff.LengthSq();
+		AlignToTarget(); // ƒ^[ƒQƒbƒg‚ÉŒü‚¯‚Ä‰ñ“]
+	}
+	else {
+
+		HandleMovie();
+
+		if (bossCam) {
+			delete bossCam;
+			bossCam = nullptr;
+		}
+
+
+		//‹——£‚É‚æ‚Á‚Äó‘Ô‘JˆÚ
+		if (mHealth > 0.0f) {
+			if (diff.LengthSq() > 5000000.0f) {
+				mMoveState = MoveState::EPatrol;
+			}
+			else if (diff.LengthSq() <= 5000000.0f && diff.LengthSq() > 500000.0f) {
+				mMoveState = MoveState::EBattle;
+			}
+			else if (diff.LengthSq() <= 500000.0f) {
+				mMoveState = MoveState::EAttack;
+			}
+		}
+
+		UpdateMoveState(deltaTime);
+
+		if ((!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)) && groundFlag == true && normalAttack == true && mAnimState != EnemyActor::AnimationState::Walk)
+		{
+
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_walk.gpanim"), 1.0f);
+			mAnimState = EnemyActor::AnimationState::Walk;
+
+		}
+
+		else if (Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && groundFlag == true && normalAttack == true && !mAttackBoxComp && deathFlag && mAnimState != EnemyActor::AnimationState::Idle)
+		{
+
+			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_idle.gpanim"), 1.0f);
+			mAnimState = EnemyActor::AnimationState::Idle;
+
+		}
+
+		if (mState == State::EJump) {
+
+			jumpSpeed += 50000.0f * deltaTime;
+			if (jumpSpeed >= 0.0f) {
+				mState = State::EFall;
+			}
+		}
+
+		else if (mState == State::EFall) {
+			jumpSpeed += 15000.0f * deltaTime;
+		}
+
+		else if (mState == State::EGrounded) {
+			jumpSpeed = 0.0f;
+
+		}
+
+		//UŒ‚ŽžÃŽ~‚³‚¹‚é
+		if (mAttackBoxComp != nullptr) {
+			forwardSpeed = 0.0f;
+			strafeSpeed = 0.0f;
+		}
+
+		mMoveComp->SetForwardSpeed(forwardSpeed);
+		mMoveComp->SetStrafeSpeed(strafeSpeed);
+		mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
+		mState = State::EFall;
+		FixCollisions();
+
+
+		
+		UpdateHead(deltaTime);
+	}
+
+	UpdateTimers(deltaTime);
+}
+
+//-----------------------------------------------------------------------------
+//@“ª‚ÌBoxˆ—
+//-----------------------------------------------------------------------------
+void BossActor::UpdateHead(float deltaTime) {
 	if (headBox == nullptr) {
 		headBox = new BoxComponent(this);
 		AABB hBox(Vector3(-75.0f, -75.0f, 130.0f),
@@ -70,13 +181,18 @@ void BossActor::UpdateActor(float deltaTime) {
 		headBox->SetObjectBox(hBox);
 		headTime = 0.1f;
 	}
-	
+
 	if (headTime <= 0.0f) {
 		delete headBox;
 		headBox = nullptr;
 	}
 	headTime -= deltaTime;
+}
 
+//-----------------------------------------------------------------------------
+//@Movie’†‚Ìˆ—
+//-----------------------------------------------------------------------------
+void BossActor::HandleMovie() {
 	if (GetGame()->GetState() == Game::GameState::EBossMovie) {
 		if (mAnimState != EnemyActor::AnimationState::Roa) {
 			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_roa.gpanim"), 1.0f);
@@ -99,85 +215,7 @@ void BossActor::UpdateActor(float deltaTime) {
 		float distanceSq = diff.LengthSq();
 		AlignToTarget(); // ƒ^[ƒQƒbƒg‚ÉŒü‚¯‚Ä‰ñ“]
 	}
-
-	else {
-		if (bossCam) {
-			delete bossCam;
-			bossCam = nullptr;
-		}
-		forwardSpeed = 0.0f;
-		strafeSpeed = 0.0f;
-		auto* player = GetGame()->GetPlayer();
-		Vector3 playerPosition = player->GetPosition();
-		Vector3 pos = GetPosition();
-		diff = playerPosition - pos;
-		float distanceSq = diff.LengthSq();
-
-		//‹——£‚É‚æ‚Á‚Äó‘Ô‘JˆÚ
-		if (mHealth > 0.0f) {
-			if (diff.LengthSq() > 5000000.0f) {
-				mMoveState = EPatrol;
-			}
-			else if (diff.LengthSq() <= 5000000.0f && diff.LengthSq() > 250000.0f) {
-				mMoveState = EBattle;
-			}
-			else if (diff.LengthSq() <= 250000.0f) {
-				mMoveState = EAttack;
-			}
-		}
-
-		UpdateMoveState(deltaTime);
-
-		if ((!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)) && groundFlag == true && mAnimState != EnemyActor::AnimationState::Walk)
-		{
-
-			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_walk.gpanim"), 1.0f);
-			mAnimState = EnemyActor::AnimationState::Walk;
-
-		}
-
-		else if (Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && groundFlag == true && !mAttackBoxComp && deathFlag && mAnimState != EnemyActor::AnimationState::Idle)
-		{
-
-			mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_idle.gpanim"), 1.0f);
-			mAnimState = EnemyActor::AnimationState::Idle;
-
-		}
-
-		if (mState == EJump) {
-
-			jumpSpeed += 50000.0f * deltaTime;
-			if (jumpSpeed >= 0.0f) {
-				mState = EFall;
-			}
-		}
-
-		else if (mState == EFall) {
-			jumpSpeed += 15000.0f * deltaTime;
-		}
-
-		else if (mState == EGrounded) {
-			jumpSpeed = 0.0f;
-
-		}
-
-		//UŒ‚ŽžÃŽ~‚³‚¹‚é
-		if (mAttackBoxComp != nullptr) {
-			forwardSpeed = 0.0f;
-			strafeSpeed = 0.0f;
-		}
-
-		mMoveComp->SetForwardSpeed(forwardSpeed);
-		mMoveComp->SetStrafeSpeed(strafeSpeed);
-		mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
-		mState = EFall;
-		FixCollisions();
-		
-	}
-	UpdateTimers(deltaTime);
-
 }
-
 
 //-----------------------------------------------------------------------------
 //@AttackState‚Ìˆ—
@@ -241,14 +279,26 @@ void BossActor::HandleDeath() {
 //-----------------------------------------------------------------------------
 void BossActor::AddAttackBox() {
 	if (mHealth > 0.0f) {
-		mAttackBoxComp = new BoxComponent(this);
-		AABB myBox(Vector3(-150.0f, -125.0f, 0.0f), Vector3(150.0f, 125.0f, 10.0f));
-		mAttackBoxComp->SetObjectBox(myBox);
-		mAttackBoxComp->SetShouldRotate(true);
-		SmokeActor* smoke = new SmokeActor(GetGame());
-		smoke->SetPosition(GetPosition());
-		smoke->SetScale(250.0f);
-		groundFlag = true;
+		if (!groundFlag) {
+			mAttackBoxComp = new BoxComponent(this);
+			AABB myBox(Vector3(-150.0f, -125.0f, 0.0f), Vector3(150.0f, 125.0f, 10.0f));
+			mAttackBoxComp->SetObjectBox(myBox);
+			mAttackBoxComp->SetShouldRotate(true);
+			SmokeActor* smoke = new SmokeActor(GetGame());
+			smoke->SetPosition(GetPosition());
+			smoke->SetScale(200.0f);
+			groundFlag = true;
+		}
+		
+
+		else if (!normalAttack) {
+			mAttackBoxComp = new BoxComponent(this);
+			AABB myBox(Vector3(50.0f, -50.0f, 50.0f),
+				Vector3(125.0f, 50.0f, 170.0f));
+			mAttackBoxComp->SetObjectBox(myBox);
+			mAttackBoxComp->SetShouldRotate(true);
+			normalAttack = true;
+		}
 	}
 
 }
@@ -283,7 +333,7 @@ void BossActor::FixCollisions()
 				const AABB& hBox= headBox->GetWorldBox();
 				if (Intersect(hBox, enemyAttackBox) && mDamageTimer <= 0.0f) {
 					mAudioComp->PlayEvent("event:/Boss");
-					mHealth -= 0.15f;
+					mHealth -= 0.1f;
 					GetGame()->SetHitStopTimer();
 					mDamageTimer = 0.5f;
 				}
@@ -336,8 +386,6 @@ void BossActor::FixCollisions()
 					mDamageTimer = 0.5f;
 				}
 			}
-
-
 
 		}
 	}

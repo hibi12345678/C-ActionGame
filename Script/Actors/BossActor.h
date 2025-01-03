@@ -15,7 +15,7 @@ public:
     // public methods.
     //=========================================================================
     //コンストラクタ
-	BossActor(class Game* game);
+    explicit BossActor(class Game* game);
 
     //デストラクタ
     ~BossActor();
@@ -23,7 +23,9 @@ public:
     //Update
 	void UpdateActor(float deltaTime);
     void UpdateAttackState(float deltaTime) override;
+    void UpdateHead(float deltaTime);
 
+    void HandleMovie();
     void HandleDeath() override;
     void FixCollisions() override;
     void AddAttackBox() override;

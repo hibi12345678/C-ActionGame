@@ -30,7 +30,6 @@ PlaneActor::PlaneActor(Game* game)
 	:Actor(game)
 {
 	SetScale(10.0f);
-	MeshComponent* mc = new MeshComponent(this);
 	// Add collision box
 	mBox = new BoxComponent(this);
 	game->AddPlane(this);

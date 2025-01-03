@@ -36,7 +36,7 @@ UIScreen::UIScreen(Game* game)
 	,mNextItemButtonPos(-200.0f, 100.0f)
 	,mNextTextPos(0.0f, -100.0f)
 	,mBGPos(0.0f, 150.0f)
-	,mUIState(EActive)
+	,mUIState(UIState::EActive)
 	,TutorialNum(0)
 {
 	// Add to UI Stack
@@ -66,58 +66,42 @@ UIScreen::UIScreen(Game* game)
 }
 
 
-
 //-----------------------------------------------------------------------------
 //      デストラクタです.
 //-----------------------------------------------------------------------------
 UIScreen::~UIScreen()
 {
+	// mTitleの解放
 	if (mTitle)
 	{
 		mTitle->Unload();
 		delete mTitle;
 	}
-	for (auto b : mButtons)
-	{
-		delete b;
-	}	
-	for (auto b : mStartButton)
-	{
-		delete b;
-	}
-	for (auto b : mText)
-	{
-		delete b;
-	}
-	for (auto b : mItemButton)
-	{
-		delete b;
-	}
 
+	// mItemTextの解放
 	if (mItemText)
 	{
 		mItemText->Unload();
 		delete mItemText;
 	}
-	if (mTutorialButtonRight)
-	{
-		delete mTutorialButtonRight;
-	}	
-	if (mTutorialButtonLeft)
-	{	
-		delete mTutorialButtonLeft;
-	}
-	if (mCloseButton)
-	{
-		delete mCloseButton;
-	}
+
+	// 各ボタンやテキストの解放
+	for (auto b : mButtons) { delete b; }
+	for (auto b : mStartButton) { delete b; }
+	for (auto b : mText) { delete b; }
+	for (auto b : mItemButton) { delete b; }
+
+	// チュートリアルボタンの解放
+	delete mTutorialButtonRight;
+	delete mTutorialButtonLeft;
+	delete mCloseButton;
+
+	// コンテナのクリア
 	mItemButton.clear();
 	mButtons.clear();
 	mStartButton.clear();
 	mText.clear();
-	
 }
-
 
 
 //-----------------------------------------------------------------------------
@@ -140,171 +124,195 @@ void UIScreen::Update(float deltaTime)
 //-----------------------------------------------------------------------------
 void UIScreen::Draw(Shader* shader)
 {
-
+	// 背景の描画
 	if (mBackground)
 	{
 		DrawTexture(shader, mBackground, mBGPos);
 	}
 
+	// タイトルの描画
 	if (mTitle)
-	{			
-		DrawTexture(shader, mTitle, mTitlePos);	
+	{
+		DrawTexture(shader, mTitle, mTitlePos);
 	}
 
-	for (auto b : mButtons)
-	{
-		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;	
-		DrawTexture(shader, tex, b->GetPosition());
-		DrawTexture(shader,b->GetNameTex(), b->GetPosition());
+	// ボタンの描画
+	DrawUIButtons(shader, mButtons, mButtonOn, mButtonOff);
+	DrawUIButtons(shader, mStartButton, mButtonOn, mButtonOff);
+	DrawUIButtons(shader, mItemButton, mItemButtonOn, mItemButtonOff);
 
-	}	
-
-	for (auto b : mStartButton)
-	{
-
-		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;
-		DrawTexture(shader, tex, b->GetPosition());
-		DrawTexture(shader,b->GetNameTex(), b->GetPosition());	
-	}
-
+	// テキストの描画
 	for (auto tex : mText)
 	{
-		DrawTexture(shader, tex, tex->GetPos());	
+		DrawTexture(shader, tex, tex->GetPos());
 	}
+
+	// アイテムボタンの描画
+	DrawUIItemButtons(shader);
 	
+	// アイテムテキストの描画
+	if (mItemText)
+	{
+		if (mArrowFlag) {
+			DrawTexture(shader, mArrow, Vector2(0.0f, -70.0f), 0.5f);
+		}
+		DrawTexture(shader, mItemText, mItemText->GetPos());
+	}
+
+	// チュートリアル画面の描画
+	if (Game::GameState::ETutorial == mGame->GetState())
+	{
+		DrawUITutorial(shader);
+	}
+
+	// チュートリアルボタンの描画
+	DrawUITutorialButtons(shader);
+
+	// 閉じるボタンの描画
+	DrawUICloseButton(shader);
+
+	// アイテム画面の描画
+	if (Game::GameState::EItem == mGame->GetState())
+	{
+		Texture* mEquipped = mFont->RenderText("Equipped", Color::White, 30);
+		DrawTexture(shader, mEquipped, Vector2(-250.0f, -80.0f));
+
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// ボタンの描画処理
+//-----------------------------------------------------------------------------
+void UIScreen::DrawUIButtons(Shader* shader, const std::vector<Button*>& buttons, Texture* buttonOn, Texture* buttonOff)
+{
+	for (auto b : buttons)
+	{
+		Texture* tex = b->GetHighlighted() ? buttonOn : buttonOff;
+		DrawTexture(shader, tex, b->GetPosition());
+		if(Game::GameState::EItem != mGame->GetState())
+			DrawTexture(shader, b->GetNameTex(), b->GetPosition());	
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// アイテムボタンの描画処理
+//-----------------------------------------------------------------------------
+void UIScreen::DrawUIItemButtons(Shader* shader)
+{
 	for (auto b : mItemButton)
 	{
 		Texture* tex = b->GetHighlighted() ? mItemButtonOn : mItemButtonOff;
 		DrawTexture(shader, tex, b->GetPosition());
-		
-		if (b->GetTexNum() == 0) {
-			DrawTexture(shader, mSword, b->GetPosition());		
-		}
-		else if (b->GetTexNum() == 1) {
-			DrawTexture(shader, mTorch, b->GetPosition());	
-		}
-		else if (b->GetTexNum() == 2) {
-			DrawTexture(shader, mBow, b->GetPosition());		
-		}
-		else if (b->GetTexNum() == 3) {
-			DrawTexture(shader, mBomb, b->GetPosition());
 
-		}
-
-	}
-
-	for (auto b : mStartButton)
-	{
-		Texture* tex = b->GetHighlighted() ? mButtonOn : mButtonOff;
-		DrawTexture(shader, tex, b->GetPosition());
-		DrawTexture(shader, b->GetNameTex(), b->GetPosition());
-	}
-
-	if (mItemText)
-	{
-	
-		if (mArrowFlag == true) {
-			DrawTexture(shader, mArrow, Vector2(0.0f, -70.0f),0.5f);
-		}
-		DrawTexture(shader, mItemText, mItemText->GetPos());
-
-	}
-
-	if (Game::GameState::ETutorial == mGame->GetState()) {
-		DrawTexture(shader, mTutorial, Vector2(0.0f, 0.0f), 0.5f);
-
-		Texture* tex = mFont->RenderText("Guide", Color::Black, 60, 1);
-		DrawTexture(shader, tex, Vector2(0.0f, 240.0f));
-		switch (TutorialNum) {
+		switch (b->GetTexNum())
+		{
 		case 0:
-			tex = mFont->RenderText("Defeat the Boss!!", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
-			DrawTexture(shader, mTutorialTex0, Vector2(0.0f, 50.0f));
+			DrawTexture(shader, mSword, b->GetPosition());
 			break;
-
 		case 1:
-			DrawTexture(shader, mTutorialTex1_1, Vector2(0.0f, 130.0f));
-			DrawTexture(shader, mTutorialTex1_2, Vector2(-120.0f, -40.0f));
-			DrawTexture(shader, mTutorialTex1_3, Vector2(120.0f, -40.0f));
-			tex = mFont->RenderText("Health bar, ", Color::Black, 24, 1);
-			DrawTexture(shader, tex, Vector2(20.0f, 140.0f));
-			tex = mFont->RenderText("Stamina bar, ", Color::Black, 24, 1);
-			DrawTexture(shader, tex, Vector2(20.0f, 120.0f));
-			tex = mFont->RenderText("Rader", Color::Black, 24, 1);
-			DrawTexture(shader, tex, Vector2(-120.0f, 40.0f));
-			tex = mFont->RenderText("Equipped Items", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
+			DrawTexture(shader, mTorch, b->GetPosition());
 			break;
-
 		case 2:
-			tex = mFont->RenderText("Press Tab to select an item", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
-			DrawTexture(shader, mTutorialTex2, Vector2(0.0f, 50.0f));
+			DrawTexture(shader, mBow, b->GetPosition());
 			break;
-
 		case 3:
-			tex = mFont->RenderText("WASD : Move", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(-200.0f, 150.0f));
-			tex = mFont->RenderText("Space : Jump", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(-205.0f, 70.0f));
-			tex = mFont->RenderText("Left Click : Attack", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(-170.0f, -10.0f));
-			tex = mFont->RenderText("E : Skill", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(110.0f, 150.0f));
-			tex = mFont->RenderText("Esc : Menu", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(145.0f, 70.0f));
-			tex = mFont->RenderText("Tab : ItemMenu", Color::Black, 42, 1);
-			DrawTexture(shader, tex, Vector2(190.0f, -10.0f));
+			DrawTexture(shader, mBomb, b->GetPosition());
 			break;
 		}
 	}
-
-	if (mTutorialButtonRight)
-	{
-		Texture* tex = mTutorialButtonRight->GetHighlighted() ? mTutorialRightButtonOn : mTutorialRightButtonOff;
-		if (TutorialNum != 3) {
-			DrawTexture(shader, tex, mTutorialButtonRight->GetPosition());
-		}
-		
-
-	}
-
-	if (mTutorialButtonLeft)
-	{
-		
-		Texture* tex = mTutorialButtonLeft->GetHighlighted() ? mTutorialLeftButtonOn : mTutorialLeftButtonOff;
-		if (TutorialNum != 0) {
-			DrawTexture(shader, tex, mTutorialButtonLeft->GetPosition());
-		}
-		
-
-	}
-
-	if (mCloseButton)
-	{
-
-		// Draw background of button
-		Texture* tex = mCloseButton->GetHighlighted() ? mCloseButtonOn : mCloseButtonOff;
-		if (TutorialNum == 3) {
-
-			DrawTexture(shader, tex, mCloseButton->GetPosition());
-		}
-
-
-	}
-
-	if (Game::GameState::EItem == mGame->GetState()) {
-
-		Texture* mEquipped = new Texture();
-		mEquipped = mFont->RenderText("Equipped", Color::White, 30);
-		DrawTexture(shader, mEquipped, Vector2(-250.0f, -80.0f));
-	}
-
-
-
-
 }
 
+
+//-----------------------------------------------------------------------------
+// チュートリアル画面の描画処理
+//-----------------------------------------------------------------------------
+void UIScreen::DrawUITutorial(Shader* shader)
+{
+	DrawTexture(shader, mTutorial, Vector2(0.0f, 0.0f), 0.5f);
+
+	Texture* tex = mFont->RenderText("Guide", Color::Black, 60, 1);
+	DrawTexture(shader, tex, Vector2(0.0f, 240.0f));
+
+	switch (TutorialNum)
+	{
+	case 0:
+		tex = mFont->RenderText("Defeat the Boss!!", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
+		DrawTexture(shader, mTutorialTex0, Vector2(0.0f, 50.0f));
+		break;
+
+	case 1:
+		DrawTexture(shader, mTutorialTex1_1, Vector2(0.0f, 130.0f));
+		DrawTexture(shader, mTutorialTex1_2, Vector2(-120.0f, -40.0f));
+		DrawTexture(shader, mTutorialTex1_3, Vector2(120.0f, -40.0f));
+		tex = mFont->RenderText("Health bar, ", Color::White, 24, 1);
+		DrawTexture(shader, tex, Vector2(20.0f, 140.0f));
+		tex = mFont->RenderText("Stamina bar, ", Color::White, 24, 1);
+		DrawTexture(shader, tex, Vector2(20.0f, 120.0f));
+		tex = mFont->RenderText("Radar", Color::Black, 24, 1);
+		DrawTexture(shader, tex, Vector2(-120.0f, 40.0f));
+		tex = mFont->RenderText("Equipped Items", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
+		break;
+
+	case 2:
+		tex = mFont->RenderText("Press Tab to select an item", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(0.0f, -150.0f));
+		DrawTexture(shader, mTutorialTex2, Vector2(0.0f, 50.0f));
+		break;
+
+	case 3:
+		tex = mFont->RenderText("WASD : Move", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(-200.0f, 150.0f));
+		tex = mFont->RenderText("Space : Jump", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(-205.0f, 70.0f));
+		tex = mFont->RenderText("Left Click : Attack", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(-170.0f, -10.0f));
+		tex = mFont->RenderText("Shift : Run", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(-200.0f, -90.0f));
+		tex = mFont->RenderText("E : Skill", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(110.0f, 150.0f));
+		tex = mFont->RenderText("Esc : Menu", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(145.0f, 70.0f));
+		tex = mFont->RenderText("Tab : ItemMenu", Color::Black, 42, 1);
+		DrawTexture(shader, tex, Vector2(190.0f, -10.0f));
+		break;
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// チュートリアルボタンの描画処理
+//-----------------------------------------------------------------------------
+void UIScreen::DrawUITutorialButtons(Shader* shader)
+{
+	if (mTutorialButtonRight && TutorialNum != 3)
+	{
+		Texture* tex = mTutorialButtonRight->GetHighlighted() ? mTutorialRightButtonOn : mTutorialRightButtonOff;
+		DrawTexture(shader, tex, mTutorialButtonRight->GetPosition());
+	}
+
+	if (mTutorialButtonLeft && TutorialNum != 0)
+	{
+		Texture* tex = mTutorialButtonLeft->GetHighlighted() ? mTutorialLeftButtonOn : mTutorialLeftButtonOff;
+		DrawTexture(shader, tex, mTutorialButtonLeft->GetPosition());
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// 閉じるボタンの描画処理
+//-----------------------------------------------------------------------------
+void UIScreen::DrawUICloseButton(Shader* shader)
+{
+	if (mCloseButton && TutorialNum == 3)
+	{
+		Texture* tex = mCloseButton->GetHighlighted() ? mCloseButtonOn : mCloseButtonOff;
+		DrawTexture(shader, tex, mCloseButton->GetPosition());
+	}
+}
 
 
 //-----------------------------------------------------------------------------
@@ -312,150 +320,114 @@ void UIScreen::Draw(Shader* shader)
 //-----------------------------------------------------------------------------
 void UIScreen::ProcessInput(const uint8_t* keys)
 {
-	// Do we have buttons?
-	if (!mButtons.empty())
+	// Get mouse position and convert to (0,0) center coordinates
+	Vector2 mousePos = GetMousePosition();
+
+	// Highlight buttons for mButtons
+	HighlightButtons(mButtons, mousePos);
+
+	// Highlight item buttons and set item text for mItemButton
+	HighlightItemButtons(mItemButton, mousePos);
+
+	// Highlight tutorial buttons
+	HighlightTutorialButton(mTutorialButtonRight, mousePos);
+	HighlightTutorialButton(mTutorialButtonLeft, mousePos);
+	HighlightCloseButton(mCloseButton, mousePos);
+}
+
+
+//-----------------------------------------------------------------------------
+//   マウス座標を取得して中心座標に変換する
+//-----------------------------------------------------------------------------
+Vector2 UIScreen::GetMousePosition()
+{
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
+	mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
+	mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
+	return mousePos;
+}
+
+
+//-----------------------------------------------------------------------------
+//   ボタンのハイライト処理
+//-----------------------------------------------------------------------------
+void UIScreen::HighlightButtons(std::vector<Button*>& buttons, const Vector2& mousePos)
+{
+	for (auto b : buttons)
 	{
-		// Get position of mouse
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		// Convert to (0,0) center coordinates
-		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
-		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
-		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
-		
-		// Highlight any buttons
-		for (auto b : mButtons)
-		{
-			
-			if (b->ContainsPoint(mousePos))
-			{
-				b->SetHighlighted(true);
-			}
-			else
-			{
-				b->SetHighlighted(false);
-			}
-		}
-
-	}
-	// Do we have buttons?
-	if (!mItemButton.empty())
-	{
-		// Get position of mouse
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		// Convert to (0,0) center coordinates
-		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
-		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
-		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
-		mArrowFlag = false;
-		// Highlight any buttons
-		for (auto b : mItemButton)
-		{
-
-			if (b->ContainsPoint(mousePos))
-			{
-				b->SetHighlighted(true);
-				
-				if (b->GetTexNum() == 0) {
-					
-					SetItemText("SwordText", Vector2(0.0f, 10.0f), 30);
-					mArrowFlag = true;
-				}
-				else if (b->GetTexNum() == 1) {
-					
-					SetItemText("TorchText", Vector2(0.0f, 10.0f), 30);
-					mArrowFlag = true;
-				}
-				else if (b->GetTexNum() == 2) {
-					
-					SetItemText("BowText", Vector2(0.0f, 10.0f), 30);
-					mArrowFlag = true;
-				}
-				else if (b->GetTexNum() == 3) {
-					
-					SetItemText("BombText", Vector2(0.0f, 10.0f), 30);
-					mArrowFlag = true;
-				}
-				
-				
-			}
-			else
-			{
-				b->SetHighlighted(false);		
-			}
-		}
-
-	}
-
-	if (mTutorialButtonRight)
-	{
-		// Get position of mouse
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		// Convert to (0,0) center coordinates
-		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
-		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
-		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
-
-		if (mTutorialButtonRight->ContainsPoint(mousePos))
-		{
-			mTutorialButtonRight->SetHighlighted(true);
-
-		}
-		else
-		{
-			mTutorialButtonRight->SetHighlighted(false);
-		}
-	}
-
-	if (mTutorialButtonLeft)
-	{
-		// Get position of mouse
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		// Convert to (0,0) center coordinates
-		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
-		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
-		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
-
-		if (mTutorialButtonLeft->ContainsPoint(mousePos))
-		{
-			mTutorialButtonLeft->SetHighlighted(true);
-
-		}
-		else
-		{
-			mTutorialButtonLeft->SetHighlighted(false);
-		}
-
-
-	}
-
-	if (mCloseButton)
-	{
-		// Get position of mouse
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		// Convert to (0,0) center coordinates
-		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
-		mousePos.x -= mGame->GetRenderer()->GetScreenWidth() * 0.5f;
-		mousePos.y = mGame->GetRenderer()->GetScreenHeight() * 0.5f - mousePos.y;
-
-		if (mCloseButton->ContainsPoint(mousePos))
-		{
-			mCloseButton->SetHighlighted(true);
-
-		}
-		else
-		{
-			mCloseButton->SetHighlighted(false);
-		}
-
-
+		b->SetHighlighted(b->ContainsPoint(mousePos));
 	}
 }
 
+//-----------------------------------------------------------------------------
+//   アイテムボタンのハイライト処理とアイテムテキストの設定
+//-----------------------------------------------------------------------------
+void UIScreen::HighlightItemButtons(std::vector<Button*>& itemButtons, const Vector2& mousePos)
+{
+	mArrowFlag = false;
+	for (auto b : itemButtons)
+	{
+		bool isHighlighted = b->ContainsPoint(mousePos);
+		b->SetHighlighted(isHighlighted);
+
+		if (isHighlighted)
+		{
+			SetItemTextForItem(b);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+//   アイテムボタンに対応するテキストを設定
+//-----------------------------------------------------------------------------
+void UIScreen::SetItemTextForItem(Button* button)
+{
+
+	if (button->GetTexNum() == 0)
+	{
+		SetItemText("SwordText", Vector2(0.0f, 10.0f), 30);
+		mArrowFlag = true;
+	}
+	else if (button->GetTexNum() == 1)
+	{
+		SetItemText("TorchText", Vector2(0.0f, 10.0f), 30);
+		mArrowFlag = true;
+	}
+	else if (button->GetTexNum() == 2)
+	{
+		SetItemText("BowText", Vector2(0.0f, 10.0f), 30);
+		mArrowFlag = true;
+	}
+	else if (button->GetTexNum() == 3)
+	{
+		SetItemText("BombText", Vector2(0.0f, 10.0f), 30);
+		mArrowFlag = true;
+	}
+}
+
+//-----------------------------------------------------------------------------
+//   チュートリアルボタンのハイライト処理
+//-----------------------------------------------------------------------------
+void UIScreen::HighlightTutorialButton(Button* button, const Vector2& mousePos)
+{
+	if (button)
+	{
+		button->SetHighlighted(button->ContainsPoint(mousePos));
+	}
+}
+
+//-----------------------------------------------------------------------------
+//   クローズボタンのハイライト処理
+//-----------------------------------------------------------------------------
+void UIScreen::HighlightCloseButton(Button* button, const Vector2& mousePos)
+{
+	if (button)
+	{
+		button->SetHighlighted(button->ContainsPoint(mousePos));
+	}
+}
 
 
 //-----------------------------------------------------------------------------
@@ -495,73 +467,43 @@ void UIScreen::StartInput(const uint8_t* keys)
 //-----------------------------------------------------------------------------
 void UIScreen::HandleKeyPress(int key)
 {
-	switch (key)
+	if (key == SDL_BUTTON_LEFT)
 	{
-	case SDL_BUTTON_LEFT:
-		if (!mButtons.empty())
-		{
-			for (auto b : mButtons)
-			{
-				if (b->GetHighlighted())
-				{
-					b->OnClick();
-					break;
-				}
-			}
-		}
-		if (!mItemButton.empty())
-		{
-			for (auto b : mItemButton)
-			{
-				if (b->GetHighlighted())
-				{
-					b->OnClick();
-					break;
-				}
-			}
-		}
-		if (!mStartButton.empty())
-		{
-			for (auto b : mStartButton)
-			{
-				if (b->GetHighlighted())
-				{
-					b->OnClick();
-					break;
-				}
-			}
+		// ボタン配列の処理
+		HandleButtonClick(mButtons);
+		HandleButtonClick(mItemButton);
+		HandleButtonClick(mStartButton);
 
-		}
-		if (mTutorialButtonRight)
-		{		
-			if (mTutorialButtonRight->GetHighlighted())
-			{
-				mTutorialButtonRight->OnClick();
-				break;
-			}
-		}
-		if (mTutorialButtonLeft)
+		// 単一ボタンの処理
+		if (mTutorialButtonRight && mTutorialButtonRight->GetHighlighted())
 		{
-			if (mTutorialButtonLeft->GetHighlighted())
-			{
-				mTutorialButtonLeft->OnClick();
-				break;
-			}
+			mTutorialButtonRight->OnClick();
 		}
-		if (mCloseButton)
+		if (mTutorialButtonLeft && mTutorialButtonLeft->GetHighlighted())
 		{
-			if (mCloseButton->GetHighlighted())
-			{
-				mCloseButton->OnClick();
-				break;
-			}
+			mTutorialButtonLeft->OnClick();
 		}
-		break;
-	default:
-		break;
+		if (mCloseButton && mCloseButton->GetHighlighted())
+		{
+			mCloseButton->OnClick();
+		}
 	}
-	
+}
 
+//-----------------------------------------------------------------------------
+//    ボタンのクリック処理
+//-----------------------------------------------------------------------------
+template <typename T>
+void UIScreen::HandleButtonClick(const std::vector<T*>& buttons)
+{
+	for (auto b : buttons)
+	{
+		if (b->GetHighlighted())
+		{
+			b->OnClick();
+			break;
+		}
+	}
 }
 
 
@@ -570,7 +512,7 @@ void UIScreen::HandleKeyPress(int key)
 //-----------------------------------------------------------------------------
 void UIScreen::Close()
 {
-	mUIState = EClosing;
+	mUIState = UIState::EClosing;
 }
 
 
@@ -581,7 +523,7 @@ void UIScreen::CloseTutorial()
 {
 	if (TutorialNum == 3) {
 		mMusicEvent = mGame->GetAudioSystem()->PlayEvent("event:/Tutorial");
-		mUIState = EClosing;
+		mUIState = UIState::EClosing;
 	}
 	
 }
@@ -619,7 +561,6 @@ void UIScreen::AddText(const std::string& text, Vector2 pos, int pointSize,
 	tex = mFont->RenderText(text, color, pointSize,num);
 	tex->SetPos(pos);
 	mText.emplace_back(tex);
-	
 	
 }
 
@@ -677,7 +618,7 @@ void UIScreen::StartButton(const std::string& name, std::function<void()> onClic
 {
 	Vector2 dims(static_cast<float>(mButtonOn->GetWidth()),
 		static_cast<float>(mButtonOn->GetHeight()));
-	Button* b = new Button(name, mFont, onClick, Vector2(50.0f, -100.0f), dims,0);	
+	Button* b = new Button(name, mFont, onClick, Vector2(0.0f, -100.0f), dims,0);	
 	mStartButton.emplace_back(b);	
 }
 

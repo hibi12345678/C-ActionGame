@@ -45,7 +45,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	AudioSystem(class Game* game);
+	explicit AudioSystem(class Game* game);
 	//デストラクタ
 	~AudioSystem();
 	

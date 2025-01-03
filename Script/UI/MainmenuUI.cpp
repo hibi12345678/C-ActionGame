@@ -14,7 +14,7 @@
 MainmenuUI::MainmenuUI(Game* game)
 	:UIScreen(game)
 {
-	AddText("Title", Vector2(50.0f,100.0f),72);
+	AddText("Title", Vector2(0.0f,100.0f),72);
 	mGame->GetRenderer()->SetAmbientLight(Vector3(0.4f, 0.4f, 0.4f));
 	StartButton("StartButton", [this]() {
 		Close();

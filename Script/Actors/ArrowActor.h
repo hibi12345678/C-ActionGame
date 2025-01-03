@@ -24,7 +24,7 @@ public:
 	// public methiods.
 	//=========================================================================
 	//コンストラクタ
-	ArrowActor(class Game* game);
+	explicit ArrowActor(class Game* game);
 
 	//デストラクタ
 	~ArrowActor();
@@ -35,8 +35,6 @@ public:
 	//Getter,Setter
 	void SetPlayer(Actor* player);
 	class BoxComponent* GetBox() { return mBoxComp; }
-
-	void HitTarget();
 
 private:
 	//=========================================================================

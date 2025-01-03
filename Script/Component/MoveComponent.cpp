@@ -25,6 +25,9 @@ MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
 :Component(owner, updateOrder)
 ,mAngularSpeed(0.0f)
 ,mForwardSpeed(0.0f)
+,mStrafeSpeed(0.0f)
+,mJumpSpeed(0.0f)
+,angle(0.0f)
 {
 	
 }

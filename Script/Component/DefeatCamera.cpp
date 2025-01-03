@@ -65,7 +65,7 @@ void DefeatCamera::Update(float deltaTime)
 
 	// 終了条件（目標位置に到達したら処理を終了するなど）
 	if (t >= 1.0f) {
-		mOwner->GetGame()->SetState(Game::GameState::EBossDefeat);
+		
 		// 必要に応じてフラグを立てるなどの処理
 		mElapsedTime = 0.0f;
 	}

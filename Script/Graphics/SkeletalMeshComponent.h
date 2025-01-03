@@ -28,7 +28,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	SkeletalMeshComponent(class Actor* owner);
+	explicit SkeletalMeshComponent(class Actor* owner);
 
 	//Update
 	void Update(float deltaTime) override;

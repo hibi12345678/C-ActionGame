@@ -41,12 +41,13 @@ ItemMenu::ItemMenu(Game* game)
 	menuState = static_cast<ItemMenu::ItemState>(player->GetItemState());
 	
 	uiActor = new UIActor(mGame);
+
 	//選択したボタンに応じたテキスト
 	static const std::vector<std::pair<std::string, FollowActor::ItemState>> items = {
-		{"SwordText", FollowActor::ESword},
-		{"TorchText", FollowActor::ETorch},
-		{"BowText", FollowActor::EBow},
-		{"BombText", FollowActor::EBomb}
+		{"SwordText", FollowActor::ItemState::ESword},
+		{"TorchText", FollowActor::ItemState::ETorch},
+		{"BowText", FollowActor::ItemState::EBow},
+		{"BombText", FollowActor::ItemState::EBomb}
 	};
 
 	const int itemNum = hudInstance->GetItemNum();
@@ -83,20 +84,20 @@ ItemMenu::~ItemMenu()
 	FollowActor::ItemState currentState = mGame->GetPlayer()->GetItemState();
 	uiActor->SetState(Actor::EDead);
 	//アイテムメニューを閉じたら武器を生成する
-	if (menuState != currentState) {
+	if (menuState != static_cast<ItemMenu::ItemState>(currentState)) {
 		switch (currentState) {
-		case FollowActor::ESword:
+		case FollowActor::ItemState::ESword:
 			new SwordActor(mGame, 1.0f, 0);
 			new SwordActor(mGame, 1.0f, 1);
 			break;
-		case FollowActor::ETorch:
+		case FollowActor::ItemState::ETorch:
 			new TorchItemActor(mGame, 50.0f, 0);
 			break;
-		case FollowActor::EBow:
+		case FollowActor::ItemState::EBow:
 			new BowActor(mGame, 1.0f, 1);
 			break;
-		case FollowActor::EBomb:
-			new BombActor(mGame, 0.15f, 0);
+		case FollowActor::ItemState::EBomb:
+			new BombActor(mGame, 0.10f, 0);
 			break;
 		default:
 			break;

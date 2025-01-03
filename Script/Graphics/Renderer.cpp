@@ -24,8 +24,9 @@
 #include <stb_image.h>
 #include <algorithm>
 #include <iostream>
-#include "FollowActor.h"
 #include "CameraComponent.h"
+//#include "Effect.h"
+#include "FollowActor.h"
 #include "FollowCamera.h"
 #include "Game.h"
 #include "GBuffer.h"
@@ -46,7 +47,6 @@
 #include "VertexArray.h"
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // Renderer class
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,6 +64,7 @@ Renderer::Renderer(Game* game)
 	,mGPointLightShader(nullptr)
 	,angle(0.0f)
 	,mPerspective(70.0f)
+	, mBoxFlag(false)
 {
 }
 
@@ -286,6 +287,9 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
 	//terrainÇÃèâä˙âª
 	mTerrain = new Terrain(mTessellationShader,mView,mProjection);
 
+	//EffekseerÇÃèâä˙âª
+	//effect = new Effect();
+
 	return true;
 }
 
@@ -366,6 +370,9 @@ void Renderer::Draw()
 	//Draw Terrain
 	mTerrain->GenerateTerrain(mView, mProjection);
 
+	//Draw Effect
+	//effect->DrawEffect();
+	
 	//Draw SkyBox
 	DrawSkybox();
 	// Set the frame buffer back to zero (screen's frame buffer)
@@ -379,6 +386,7 @@ void Renderer::Draw()
 	glEnable(GL_BLEND);
 	glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
 
 
 	mSpriteShader->SetActive();
@@ -1139,10 +1147,10 @@ void Renderer::GetScreenDirection(Vector3& outStart, Vector3& outDir) const
 	outDir.Normalize();
 }
 
+
 //-----------------------------------------------------------------------------
 // ImGuièâä˙âªä÷êî
 //-----------------------------------------------------------------------------
-
 void Renderer::InitializeImGui(SDL_Window* imguiWindow, SDL_GLContext imguiContext) {
 	// ImGuiÇÃê›íË
 	IMGUI_CHECKVERSION();
@@ -1157,7 +1165,6 @@ void Renderer::InitializeImGui(SDL_Window* imguiWindow, SDL_GLContext imguiConte
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 }
-
 
 
 //-----------------------------------------------------------------------------

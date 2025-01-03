@@ -15,7 +15,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	DropItemActor(class Game* game);
+	explicit DropItemActor(class Game* game);
 
 	//デストラクタ
 	~DropItemActor();

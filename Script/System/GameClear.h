@@ -24,7 +24,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	GameClear(class Game* game);
+	explicit GameClear(class Game* game);
 
     //デストラクタ
 	~GameClear();

@@ -16,7 +16,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	MainmenuUI(class Game* game);
+	explicit MainmenuUI(class Game* game);
 
 	//デストラクタ
 	~MainmenuUI();

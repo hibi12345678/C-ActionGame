@@ -24,7 +24,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	BombMove(class Actor* owner);
+	explicit BombMove(class Actor* owner);
 
 	//Update
 	void Update(float deltaTime) override;

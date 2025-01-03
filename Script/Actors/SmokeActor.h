@@ -15,7 +15,7 @@ public:
     // public methods.
     //=========================================================================
     //コンストラクタ
-    SmokeActor(Game* game);
+    explicit SmokeActor(Game* game);
 
     //Update
     void UpdateActor(float deltaTime) override;

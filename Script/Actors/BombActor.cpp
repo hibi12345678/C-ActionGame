@@ -36,13 +36,17 @@ BombActor::BombActor(Game* game, float scale, int num)
 	, blinkTime(0.0f)
 	, blinkInterval(0.2f)
 	, isVisible (true)
+	, mSoundFlag(true)
 
 {
+
+
 	Mesh* mesh = GetGame()->GetRenderer()->GetMesh("Assets/Object/Bomb3D.gpmesh");
 	mc->SetMesh(mesh);
+	SetScale(0.20f);
 
 	if (mNum == 1) {
-		SetScale(0.25f);
+		SetScale(0.20f);
 		mMyMove = new BombMove(this);
 		mMyMove->SetForwardSpeed(600.0f);
 		mMyMove->SetStrafeSpeed(0.0f);
@@ -54,6 +58,9 @@ BombActor::BombActor(Game* game, float scale, int num)
 			Vector3(100.0f, 100.0f, 200.0f));
 		mBoxComp->SetObjectBox(myBox);
 		mBoxComp->SetShouldRotate(false);
+	}
+	else {
+		SetScale(0.15f);
 	}
 }
 
@@ -71,7 +78,7 @@ void BombActor::UpdateActor(float deltaTime)
 		ItemActorBase::UpdateActor(deltaTime);
 		Game* game = GetGame();
 
-		if (FollowActor::EBomb != game->GetPlayer()->GetItemState()) {
+		if (FollowActor::ItemState::EBomb != game->GetPlayer()->GetItemState()) {
 
 			SetState(Actor::EDead);
 		}
@@ -81,6 +88,13 @@ void BombActor::UpdateActor(float deltaTime)
 		Actor::UpdateActor(deltaTime);
 		Game* game = GetGame();
 		mLifeSpan -= deltaTime;
+
+		if (mLifeSpan < 5.0f && mSoundFlag)
+		{
+			mAudioComp->PlayEvent("event:/Doukasen");
+			mSoundFlag = false;
+		}
+
 		if (mLifeSpan < 3.0f)
 		{
 
@@ -97,7 +111,6 @@ void BombActor::UpdateActor(float deltaTime)
 			if (blinkTime >= blinkInterval)
 			{
 
-				mAudioComp->PlayEvent("event:/Alert");
 				isVisible = !isVisible;
 				mc->SetVisible(isVisible);
 				// タイマーをリセット
@@ -121,14 +134,6 @@ void BombActor::SetPlayer(Actor* player)
 	mMyMove->SetPlayer(player);
 }
 
-
-//-----------------------------------------------------------------------------
-// TargetにHitしたら音を出す
-//-----------------------------------------------------------------------------
-void BombActor::HitTarget()
-{
-	mAudioComp->PlayEvent("event:/Ding");
-}
 
 //-----------------------------------------------------------------------------
 // 衝突処理

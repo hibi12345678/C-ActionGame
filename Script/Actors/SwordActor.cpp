@@ -41,7 +41,7 @@ void SwordActor::UpdateActor(float deltaTime)
 	// Šî’êƒNƒ‰ƒX‚ÌUpdateActorŒÄ‚Ño‚µ
 	ItemActorBase::UpdateActor(deltaTime);
 	Game* game = GetGame();
-	if (FollowActor::ESword != game->GetPlayer()->GetItemState()) {
+	if (FollowActor::ItemState::ESword != game->GetPlayer()->GetItemState()) {
 
 		SetState(Actor::EDead);
 

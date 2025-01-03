@@ -55,7 +55,7 @@ void TorchItemActor::UpdateActor(float deltaTime)
 {
 	ItemActorBase::UpdateActor(deltaTime);
 	Game* game = GetGame();
-	if (FollowActor::ETorch != game->GetPlayer()->GetItemState()) {
+	if (FollowActor::ItemState::ETorch != game->GetPlayer()->GetItemState()) {
 
 		for (auto b : mPointLights) {
 			delete b;

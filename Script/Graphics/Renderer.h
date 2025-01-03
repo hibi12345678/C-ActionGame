@@ -47,6 +47,7 @@ public:
 	//初期化
 	bool Initialize(float screenWidth, float screenHeight);
 	void InitializeImGui(SDL_Window* window, SDL_GLContext context);
+	//void InitializeEffect();
 
 	//終了処理
 	void Shutdown();
@@ -106,6 +107,7 @@ private:
 	SDL_Window* mImGuiWindow; // ImGuiWindow
 	SDL_GLContext mImGuiContext; //ImGuicontext
 	DirectionalLight mDirLight;
+
 	class Game* mGame;
 	class Terrain* mTerrain;
 	class GBuffer* mGBuffer;
@@ -120,6 +122,7 @@ private:
 	class Shader* mGGlobalShader; //Gbuffer用シェーダー
 	class Shader* mGPointLightShader; //PointLight用シェーダー
 	class Mesh* mPointLightMesh;
+	class Effect* effect;
 	std::vector<class PointLightComponent*> mPointLights;
 	std::unordered_map<std::string, class Texture*> mTextures;
 	std::unordered_map<std::string, class Mesh*> mMeshes;
@@ -127,6 +130,7 @@ private:
 	std::vector<class MeshComponent*> mMeshComps;
 	std::vector<class SkeletalMeshComponent*> mSkeletalMeshes;
 	std::vector<class UIMeshComponent*> mUIMeshComps;
+
 
     //=========================================================================
     // private methods.
