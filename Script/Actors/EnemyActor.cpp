@@ -34,7 +34,7 @@
 EnemyActor::EnemyActor(Game* game)
 	:Actor(game)
 	, mMoving(false)
-	, mState(EGrounded)
+	, mState(State::EGrounded)
 	, jumpSpeed(0.0f)
 	, mHealth(1.0f)
 	, mAttackBoxComp(nullptr)
@@ -49,6 +49,7 @@ EnemyActor::EnemyActor(Game* game)
 	, mReactFlag(true)
 	, groundFlag(true)
 	, deathFlag(true)
+	, normalAttack(true)
 
 {
 	name = "Enemy";
@@ -90,24 +91,25 @@ void EnemyActor::UpdateActor(float deltaTime){
 	Vector3 playerPosition = player->GetPosition();
 	Vector3 pos = GetPosition();
 	diff = playerPosition - pos;
-	float distanceSq = diff.LengthSq();
 
 	//‹——£‚É‚æ‚Á‚Äó‘Ô‘JˆÚ
 	if (mHealth > 0.0f) {
 		if (diff.LengthSq() > 1000000.0f) {
-			mMoveState = EPatrol;
+			mMoveState = MoveState::EPatrol;
 		}
 		else if (diff.LengthSq() <= 200000.0f && diff.LengthSq() > 100000.0f) {
-			mMoveState = EBattle;
+			mMoveState = MoveState::EBattle;
 		}
 		else if (diff.LengthSq() <= 100000.0f) {
-			mMoveState = EAttack;
+			mMoveState = MoveState::EAttack;
 		}
 	}
 
 	UpdateMoveState(deltaTime);
 
-	if ((!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)) && groundFlag == true && mAnimState != EnemyActor::AnimationState::Walk)
+	if ((!Math::NearZero(forwardSpeed) || !Math::NearZero(strafeSpeed)) 
+		&& groundFlag == true && normalAttack == true 
+		&& mAnimState != EnemyActor::AnimationState::Walk)
 	{
 
 		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_walk.gpanim"), 1.0f);
@@ -115,7 +117,9 @@ void EnemyActor::UpdateActor(float deltaTime){
 
 	}
 
-	else if (Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) && groundFlag == true && !mAttackBoxComp && deathFlag && mAnimState != EnemyActor::AnimationState::Idle)
+	else if (Math::NearZero(forwardSpeed) && Math::NearZero(strafeSpeed) 
+		&& groundFlag == true && normalAttack == true && !mAttackBoxComp 
+		&& deathFlag && mAnimState != EnemyActor::AnimationState::Idle)
 	{
 
 		mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_idle.gpanim"), 1.0f);
@@ -123,19 +127,19 @@ void EnemyActor::UpdateActor(float deltaTime){
 		
 	}
 
-	if (mState == EJump) {
+	if (mState == State::EJump) {
 
 		jumpSpeed += 50000.0f * deltaTime; 
 		if (jumpSpeed >= 0.0f) {
-			mState = EFall;
+			mState = State::EFall;
 		}
 	}
 
-	else if (mState == EFall) {
+	else if (mState == State::EFall) {
 		jumpSpeed += 15000.0f * deltaTime;
 	}
 
-	else if (mState == EGrounded) {
+	else if (mState == State::EGrounded) {
 		jumpSpeed = 0.0f;
 
 	}
@@ -149,7 +153,7 @@ void EnemyActor::UpdateActor(float deltaTime){
 	mMoveComp->SetForwardSpeed(forwardSpeed);
 	mMoveComp->SetStrafeSpeed(strafeSpeed);
 	mMoveComp->SetJumpSpeed(jumpSpeed * deltaTime);
-	mState = EFall;
+	mState = State::EFall;
 	FixCollisions();
 	UpdateTimers(deltaTime);
 
@@ -174,15 +178,15 @@ void EnemyActor::UpdateMoveState(float deltaTime) {
 	}
 
 	switch (mMoveState){
-	case EPatrol:
+	case MoveState::EPatrol:
 		UpdatePatrolState(deltaTime);
 		break;
 
-	case EBattle:
+	case MoveState::EBattle:
 		UpdateBattleState(deltaTime);
 		break;
 
-	case EAttack:
+	case MoveState::EAttack:
 		UpdateAttackState(deltaTime);
 		break;
 	}
@@ -246,13 +250,15 @@ void EnemyActor::UpdateAttackState(float deltaTime) {
 	if (diff.LengthSq() <= 20000.0f) {
 		forwardSpeed = 0.0f;
 
-		if (randomValue == 0) {
+		if (randomValue == 0 && mAttackTimer <= 0.0f) {
 			strafeSpeed += 50.0f;
+			
 		}
-		else if (randomValue == 1) {
+		else if (randomValue == 1 && mAttackTimer <= 0.0f) {
 			strafeSpeed -= 50.0f;
+			
 		}
-		else if ((randomValue == 2 || randomValue == 3 || randomValue == 4) && mAttackTimer <= 0.0f) {
+		else if ((randomValue == 2 || randomValue == 3 || randomValue == 4)) {
 			(randomValue == 2 || randomValue == 3) ? Attack() : AttackGround();
 		}
 
@@ -285,9 +291,13 @@ void EnemyActor::CreateReactActor() {
 //@FollowActor‚Ì•ûŒü‚ðŒü‚­
 //-----------------------------------------------------------------------------
 void EnemyActor::AlignToTarget() {
+
+	if (mBoxTimer > 0.0f) return;
 	float angle = atan2(diff.y, diff.x);
 	Quaternion rotation = Quaternion::CreateFromAxisAngle(angle);
 	SetRotation(rotation);
+	
+
 }
 
 
@@ -296,16 +306,14 @@ void EnemyActor::AlignToTarget() {
 //-----------------------------------------------------------------------------
 void EnemyActor::Attack() {
 
-	mAttackBoxComp = new BoxComponent(this);
-	AABB myBox(Vector3(50.0f, -50.0f, 50.0f),
-		Vector3(125.0f, 50.0f, 170.0f));
-	mAttackBoxComp->SetObjectBox(myBox);
-	mAttackBoxComp->SetShouldRotate(true);
-	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_attack.gpanim"), 1.0f);
-	mAnimState = EnemyActor::AnimationState::Attack;
-	mBoxTimer = 0.5f;
+	if (mBoxTimer > 0.0f) return;
+	mBoxTimer = 1.5f;
 	mAttackTimer = 4.0f;
+	normalAttack = false;
 	groundFlag = true;
+	
+	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_attack.gpanim"), 0.8f);
+	mAnimState = EnemyActor::AnimationState::Attack;
 	mAudioComp->PlayEvent("event:/EnemyAttack");
 }
 
@@ -315,9 +323,12 @@ void EnemyActor::Attack() {
 //-----------------------------------------------------------------------------
 void EnemyActor::AttackGround() {
 
+	if (mBoxTimer > 0.0f) return;
 	mBoxTimer = 2.1f;
 	mAttackTimer = 4.0f;
 	groundFlag = false;
+	normalAttack = true;
+
 	mMeshComp->PlayAnimation(GetGame()->GetAnimation("Assets/Anim/" + name + "_jump_attack.gpanim"), 1.0f);
 	mAnimState = EnemyActor::AnimationState::Attack;
 	mAudioComp->PlayEvent("event:/EnemyAttack2");
@@ -339,10 +350,8 @@ void EnemyActor::UpdateTimers(float deltaTime) {
 	}
 	
 	else {
-
 		mMeshComp->SetVisible(true);
 		blinkTime = 0.0f;
-
 	}
 	
 	if (mBoxTimer > 0.0f) {
@@ -401,6 +410,9 @@ void EnemyActor::HandleAttackBox() {
 	else if (mBoxTimer <= 0.3f && !groundFlag) {
 		AddAttackBox();
 	}
+	else if (mBoxTimer <= 1.0f && !normalAttack) {
+		AddAttackBox();
+	}
 }
 
 
@@ -423,14 +435,24 @@ void EnemyActor::CleanUpAttackBox() {
 //-----------------------------------------------------------------------------
 void EnemyActor::AddAttackBox() {
 	if (mHealth > 0.0f) {
-		mAttackBoxComp = new BoxComponent(this);
-		AABB myBox(Vector3(-150.0f, -125.0f, 0.0f), Vector3(150.0f, 125.0f, 10.0f));
-		mAttackBoxComp->SetObjectBox(myBox);
-		mAttackBoxComp->SetShouldRotate(true);
-		SmokeActor* smoke = new SmokeActor(GetGame());
-		smoke->SetPosition(GetPosition());
-
-		groundFlag = true;
+		if (!groundFlag) {
+			mAttackBoxComp = new BoxComponent(this);
+			AABB myBox(Vector3(-150.0f, -125.0f, 0.0f), Vector3(150.0f, 125.0f, 10.0f));
+			mAttackBoxComp->SetObjectBox(myBox);
+			mAttackBoxComp->SetShouldRotate(true);
+			SmokeActor* smoke = new SmokeActor(GetGame());
+			smoke->SetPosition(GetPosition());
+			groundFlag = true;
+		}
+		else if (!normalAttack) {
+			mAttackBoxComp = new BoxComponent(this);
+			AABB myBox(Vector3(50.0f, -50.0f, 50.0f),
+				Vector3(125.0f, 50.0f, 170.0f));
+			mAttackBoxComp->SetObjectBox(myBox);
+			mAttackBoxComp->SetShouldRotate(true);
+			normalAttack = true;
+		}
+	
 	}
 }
 
@@ -463,7 +485,6 @@ void EnemyActor::FixCollisions()
 	
     ComputeWorldTransform();
 	const AABB& playerBox = mBox->GetWorldBox();
-	const AABB& attackBox = mAttackBoxComp->GetWorldBox();
 	Vector3 pos = GetPosition();
 	auto& planes = GetGame()->GetPlanes();
 	auto* player = GetGame()->GetPlayer();
@@ -566,7 +587,7 @@ void EnemyActor::ResolveCollision(const AABB& aBox, const AABB& bBox, Vector3& p
 		else
 		{
 			pos.z += dz;
-			mState = EGrounded;
+			mState = State::EGrounded;
 		}
 
 		boxComponent->GetOwner()->SetPosition(pos);

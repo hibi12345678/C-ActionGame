@@ -23,7 +23,7 @@ class FollowActor : public Actor
 {
 public:
 	//Enum State
-	enum State
+	enum class State
 	{
 		EJump,
 		EFall,
@@ -32,7 +32,7 @@ public:
 	};
 
 	//Enum ItemState 
-	enum ItemState
+	enum class ItemState
 	{
 		ESword,
 		ETorch,
@@ -58,7 +58,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//デストラクタ
-	FollowActor(class Game* game);
+	explicit FollowActor(class Game* game);
 
 	//Update
 	void UpdateActor(float deltaTime) override;
@@ -71,6 +71,17 @@ public:
 
 	//入力
 	void ActorInput(const uint8_t* keys) override;
+	void ProcessMovementInput(const uint8_t* keys);
+	float HandleForwardMovement(const uint8_t* keys);
+	float HandleBackwardMovement();
+	float HandleStrafeMovement(AnimationState direction);
+
+	void ProcessJumpInput(const uint8_t* keys);
+	void ProcessBlockInput(const uint8_t* keys);
+	void ClearBlockState();
+	void ProcessMouseInput();
+	void ProcessAttackInput();
+	void PlayAnimation(const std::string& path, AnimationState state);
 
 	//Getter,Setter
 	class FollowCamera* GetCameraComponent() { return mCameraComp; }
@@ -121,8 +132,12 @@ private:
 	bool mMoving; 
 	bool mAttackFlag;
 	bool lowStaminaFlag;
+	bool attackCombo;
 	int mArrowCount; //矢の数
 	int mBombCount; //ボムの数
+	int mAttackNum;
+	float forwardSpeed;
+	float strafeSpeed;
 	float mAttackTimer; //攻撃のクールタイム
 	float mBlockTimer; //ブロック判定クールタイム
 	float mBoxTimer; //攻撃判定クールタイム
@@ -152,6 +167,8 @@ private:
 	class FollowCamera* mCameraComp;
 	class FPSCamera* mFPSCamera;
 	class SkeletalMeshComponent* mMeshComp;
+	class SwordActor* sword;
+	class SwordActor* shield;
 	class BoxComponent* mBoxComp;
 	class BoxComponent* mAttackBoxComp;
 	class BoxComponent* mBlockBoxComp;

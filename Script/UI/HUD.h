@@ -31,15 +31,10 @@ public:
 	};
 
 	//=========================================================================
-	// public variables.
-	//=========================================================================
-	State currentState;
-
-	//=========================================================================
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	HUD(class Game* game);
+	explicit HUD(class Game* game);
 
     //デストラクタ
 	~HUD();
@@ -58,6 +53,14 @@ public:
 
 
 	void Draw(class Shader* shader) override;
+
+	void DrawMainMenu(Shader* shader);
+	void DrawGameplayHUD(Shader* shader);
+	void DrawItemScreen(Shader* shader);
+	void DrawBossMovie(Shader* shader);
+	void DrawGameOverScreen(Shader* shader);
+	void DrawGameClearScreen(Shader* shader);
+	void DrawArrowOrBombCount(Shader* shader, int num, Vector2 pos);
 
 protected:
 	//=========================================================================
@@ -100,6 +103,9 @@ protected:
 	class Texture* mStart;
 	class Texture* mTips;
 	class Texture* mTips2;
+	class Texture* tex;
+	class Texture* scoretex;
+	class Texture* bosstex;
 	std::vector<class TargetComponent*> mTargetComps;
 	std::vector<Vector2> mBlips;
 

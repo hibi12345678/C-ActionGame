@@ -14,7 +14,7 @@ class ItemMenu : public UIScreen
 {
 public:
 	//Enum ItemState
-	enum ItemState
+	enum class ItemState
 	{
 		ESword,
 		ETorch,
@@ -26,7 +26,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	ItemMenu(class Game* game);
+	explicit ItemMenu(class Game* game);
 
 	//デストラクタ
 	~ItemMenu();
@@ -38,7 +38,7 @@ private:
 	//=========================================================================
 	// private variables.
 	//=========================================================================
-	ItemMenu::ItemState menuState; //アイテムステート
+	ItemState menuState; //アイテムステート
 
 	SoundEvent mMusicEvent; //ステートがMainMenuかGamePalyか
 	class UIActor* uiActor;

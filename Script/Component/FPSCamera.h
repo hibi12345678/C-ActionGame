@@ -24,7 +24,7 @@ public:
     // public methods.
     //=========================================================================
     //コンストラクタ
-	FPSCamera(class Actor* owner);
+    explicit FPSCamera(class Actor* owner);
 
     //Update
 	void Update(float deltaTime) override;

@@ -222,9 +222,6 @@
     <ClCompile Include="Script\Actors\DropItemActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Script\Actors\EffectActor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Script\Actors\EnemyActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -300,6 +297,9 @@
     <ClCompile Include="Script\Component\DefeatCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Script\Actors\EffectActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Script\UI\DialogBox.h" />
@@ -348,7 +348,6 @@
     <ClInclude Include="Script\Actors\BossActor.h" />
     <ClInclude Include="Script\Actors\BowActor.h" />
     <ClInclude Include="Script\Actors\DropItemActor.h" />
-    <ClInclude Include="Script\Actors\EffectActor.h" />
     <ClInclude Include="Script\Actors\EnemyActor.h" />
     <ClInclude Include="Script\Actors\ExplosionActor.h" />
     <ClInclude Include="Script\Actors\FollowActor.h" />
@@ -377,5 +376,6 @@
     <ClInclude Include="Script\Actors\StageChange.h" />
     <ClInclude Include="Script\Component\BossCamera.h" />
     <ClInclude Include="Script\Component\DefeatCamera.h" />
+    <ClInclude Include="Script\Actors\EffectActor.h" />
   </ItemGroup>
 </Project>

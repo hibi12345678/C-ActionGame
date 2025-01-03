@@ -24,7 +24,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	ArrowMove(class Actor* owner);
+	explicit ArrowMove(class Actor* owner);
 
 	//Update
 	void Update(float deltaTime) override;

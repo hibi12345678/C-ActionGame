@@ -45,7 +45,7 @@ void BowActor::UpdateActor(float deltaTime)
 	ItemActorBase::UpdateActor(deltaTime);
 	Game* game = GetGame();
 
-	if (FollowActor::EBow != game->GetPlayer()->GetItemState()) {
+	if (FollowActor::ItemState::EBow != game->GetPlayer()->GetItemState()) {
 		SetState(Actor::EDead);
 	}
 }

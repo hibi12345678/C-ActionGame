@@ -8,11 +8,13 @@ Audio/
 .vs/
 .git/
 
+
 # Ignore Visual Studio files
 *.suo
 *.user
 *.userprefs
 *.sln.ide
+*.vcxproj.user
 
 # Ignore debug files
 *.pdb

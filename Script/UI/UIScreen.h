@@ -61,31 +61,17 @@ class UIScreen
 {
 public:
 	//Enum UIState
-	enum UIState
+	enum class UIState
 	{
 		EActive,
 		EClosing
 	};
 
-	//Enum State
-	enum State {
-		EMainMenu,
-		EGameplay,
-		EPaused,
-		EItem,
-		EQuit
-	};
-
-	//=========================================================================
-	// public variables.
-	//=========================================================================
-	State currentState;
-
     //=========================================================================
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	UIScreen(class Game* game);
+	explicit UIScreen(class Game* game);
 
 	//デストラクタ
 	virtual ~UIScreen();
@@ -95,8 +81,16 @@ public:
 
 	//入力
 	virtual void ProcessInput(const uint8_t* keys);
+	Vector2 GetMousePosition();
+	void HighlightButtons(std::vector<Button*>& buttons, const Vector2& mousePos);
+	void HighlightItemButtons(std::vector<Button*>& itemButtons, const Vector2& mousePos);
+	void SetItemTextForItem(Button* button);
+	void HighlightTutorialButton(Button* button, const Vector2& mousePos);
+	void HighlightCloseButton(Button* button, const Vector2& mousePos);
 	virtual void StartInput(const uint8_t* keys);
 	virtual void HandleKeyPress(int key);
+	template <typename T>
+	void HandleButtonClick(const std::vector<T*>& buttons);
 
 	//終了処理
 	void Close();
@@ -127,6 +121,11 @@ public:
 	void RemoveTutorialNum();
 
 	virtual void Draw(class Shader* shader);
+	void DrawUIButtons(Shader* shader, const std::vector<Button*>& buttons, class Texture* buttonOn, class Texture* buttonOff);
+	void DrawUICloseButton(Shader* shader);
+	void DrawUIItemButtons(Shader* shader);
+	void DrawUITutorial(Shader* shader);
+	void DrawUITutorialButtons(Shader* shader);
 
 protected:
 	//=========================================================================
@@ -174,7 +173,7 @@ protected:
 	class Button* mTutorialButtonRight;
 	class Button* mTutorialButtonLeft;
 	class Button* mCloseButton;
-	std::vector<Texture*> mText;
+	class std::vector<Texture*> mText;
 	std::vector<Button*> mButtons;
 	std::vector<Button*> mStartButton;
 	std::vector<Button*> mItemButton;

@@ -24,7 +24,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	PlaneActor(class Game* game);
+	explicit PlaneActor(class Game* game);
 
 	//デストラクタ
 	~PlaneActor();

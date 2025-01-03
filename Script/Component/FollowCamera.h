@@ -24,7 +24,7 @@ public:
 	// public methods.
 	//=========================================================================
     //コンストラクタ
-	FollowCamera(class Actor* owner);
+	explicit FollowCamera(class Actor* owner);
 
 	//Update
 	void Update(float deltaTime) override;

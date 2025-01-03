@@ -26,7 +26,7 @@
 class Game
 {
 public:
-    //Enum Clus GameState
+    //Enum Class GameState
     enum class GameState {
         EMainMenu,
         EGameplay,
@@ -58,9 +58,26 @@ public:
 
     //Update
     void UpdateGame();
+    float CalculateDeltaTime();
+    void UpdateGameplay(float deltaTime);
+    void ResetGameplay();
+    void UpdateActors(float deltaTime);
+    void AddPendingActors();
+    void DeleteDeadActors();
+    void UpdateBossMovie(float deltaTime);
+    void UpdateBossDefeat(float deltaTime);
+    void UpdateGameOver(float deltaTime);
+    void UpdateGameClear();
+    void UpdateMainMenu();
+    void ResetMainMenu();
+    void UpdateLoadStage(float deltaTime);
+    void UpdateUI(float deltaTime);
 
     //ì¸óÕ
     void ProcessInput();
+    void HandleKeyInput(int key);
+    void HandleMouseInput(Uint8 button);
+    void ProcessGameplayInput(const Uint8* state);
     void HandleKeyPress(int key);
 
     //èâä˙âª

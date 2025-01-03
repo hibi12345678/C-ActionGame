@@ -27,7 +27,7 @@ public:
     // public methods.
     //=========================================================================
 	//コンストラクタ
-	Font(class Game* game);
+	explicit Font(class Game* game);
 
 	//デストラクタ
 	~Font();

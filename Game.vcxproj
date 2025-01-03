@@ -245,6 +245,7 @@
       <AdditionalIncludeDirectories>External\SDL\include;External\SDL\include\SDL;External\GLEW\include;External\glm;External\stb-master;External\SOIL\include;External\imgui-1.91.3-docking;External\imgui-1.91.3-docking\backends;External\rapidjson\include;External\FMOD Studio API Windows\api\studio\inc;External\FMOD Studio API Windows\api\lowlevel\inc;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;Script\Actors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -273,6 +274,7 @@ xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studi
       <AdditionalIncludeDirectories>External\SDL\include;External\SDL\include\SDL;External\GLEW\include;External\glm;External\stb-master;External\SOIL\include;External\imgui-1.91.3-docking;External\imgui-1.91.3-docking\backends;External\rapidjson\include;External\FMOD Studio API Windows\api\studio\inc;External\FMOD Studio API Windows\api\lowlevel\inc;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;Script\Actors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

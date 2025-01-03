@@ -78,14 +78,3 @@ void ArrowActor::SetPlayer(Actor* player)
 {
 	mMyMove->SetPlayer(player);
 }
-
-
-//-----------------------------------------------------------------------------
-// Target‚ÉHit‚µ‚½‚ç‰¹‚ðo‚·
-//-----------------------------------------------------------------------------
-void ArrowActor::HitTarget()
-{
-	mAudioComp->PlayEvent("event:/Ding");
-}
-
-

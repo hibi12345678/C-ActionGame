@@ -51,7 +51,7 @@ public:
     // public methods.
     //=========================================================================
 	//コンストラクタ 
-    Actor(class Game* game);
+    explicit Actor(class Game* game);
 
 	//デストラクタ
     virtual ~Actor();

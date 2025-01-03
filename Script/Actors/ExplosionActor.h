@@ -16,7 +16,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	ExplosionActor(class Game* game);
+	explicit ExplosionActor(class Game* game);
 
 	//デストラクタ
 	~ExplosionActor();

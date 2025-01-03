@@ -23,7 +23,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	GameOver(class Game* game);
+	explicit GameOver(class Game* game);
 	//デストラクタ
 	~GameOver();
 

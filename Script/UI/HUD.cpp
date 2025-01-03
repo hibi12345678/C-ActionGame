@@ -101,211 +101,275 @@ void HUD::Update(float deltaTime)
 }
 
 
-//-----------------------------------------------------------------------------
-//  •`‰æˆ—
-//-----------------------------------------------------------------------------
-void HUD::Draw(Shader* shader)
-{
-	if (Game::GameState::EMainMenu == mGame->GetState()) {
-		DrawTexture(shader, mStart,Vector2(0.0f,0.0f),1.1f);
+
+void HUD::Draw(Shader* shader) {
+	switch (mGame->GetState()) {
+	case Game::GameState::EMainMenu:
+		DrawMainMenu(shader);
+		break;
+	case Game::GameState::EGameplay:
+		DrawGameplayHUD(shader);
+		break;
+	case Game::GameState::EItem:
+		DrawItemScreen(shader);
+		break;
+	case Game::GameState::EBossMovie:
+		DrawBossMovie(shader);
+		break;
+	case Game::GameState::EGameOver:
+		DrawGameOverScreen(shader);
+		break;
+	case Game::GameState::EGameClear:
+		DrawGameClearScreen(shader);
+		break;
+	default:
+		break;
+	}
+}
+
+
+void HUD::DrawMainMenu(Shader* shader) {
+	DrawTexture(shader, mStart, Vector2(0.0f, 0.0f), 1.1f);
+}
+
+
+void HUD::DrawGameplayHUD(Shader* shader) {
+	const Vector2 cRadarPos(-413.0f, 283.0f);
+	DrawTexture(shader, mRadar, cRadarPos, 1.0f);
+
+	// Blips‚Ì•`‰æ
+	for (const Vector2& blip : mBlips) {
+		DrawTexture(shader, mBlipTex, cRadarPos + blip, 1.0f);
 	}
 
-	if (Game::GameState::EGameplay == mGame->GetState() ) {
+	// ƒŒ[ƒ_[‚Ì–îˆó•`‰æ
+	DrawTexture(shader, mRadarArrow, cRadarPos);
 
+	// ƒvƒŒƒCƒ„[‚ÌŽæ“¾‚ÆŠÖ˜A•`‰æ
+	FollowActor* followActor = mGame->GetPlayer();
+	if (followActor != nullptr) {
+		// ƒXƒ^ƒ~ƒiƒo[‚Ì•`‰æ
+		float stamina = followActor->GetStamina();
+		DrawTexture(shader, mStaminaBar, Vector2(-276.0f, 320.0f), stamina * 0.99f, false, 1);
+		DrawTexture(shader, mStaminaFrame, Vector2(-280.0f, 320.0f), 1.0f, false, 1);
 
-		
-		const Vector2 cRadarPos(-413.0f, 283.0f);
-		DrawTexture(shader, mRadar, cRadarPos, 1.0f);
-		for (Vector2& blip : mBlips)
-		{
-			DrawTexture(shader, mBlipTex, cRadarPos + blip, 1.0f);
+		// ƒwƒ‹ƒXƒo[‚Ì•`‰æ
+		float health = followActor->GetHealth();
+		float healthRed = followActor->GetHealthRed();
+		DrawTexture(shader, mHealthRedBar, Vector2(-276.0f, 345.0f), healthRed * 0.99f, true, 1);
+		DrawTexture(shader, mHealthBar, Vector2(-276.0f, 345.0f), health * 0.99f, true, 1);
+		DrawTexture(shader, mStaminaFrame, Vector2(-280.0f, 345.0f), 1.0f, true, 1);
+
+		// ƒvƒŒƒCƒ„[ƒAƒCƒeƒ€‚Ì•`‰æ
+		Vector2 itemPos(447.0f, -319.0f);
+		DrawTexture(shader, mRadar, itemPos, 0.65f);
+		switch (followActor->GetItemState()) {
+		case FollowActor::ItemState::ESword:
+			DrawTexture(shader, mSword2, itemPos + Vector2(0.0f, -5.0f), 1.0f);
+			break;
+		case FollowActor::ItemState::ETorch:
+			DrawTexture(shader, mTorch2, itemPos, 1.0f);
+			break;
+		case FollowActor::ItemState::EBow:
+			DrawTexture(shader, mBow2, itemPos + Vector2(-5.0f, 5.0f), 1.0f);
+			DrawTexture(shader, mCrosshair, Vector2::Zero, 0.5f);
+			DrawTexture(shader, mCross, Vector2(467.0f, -349.0f), 1.0f);
+			DrawArrowOrBombCount(shader, followActor->GetArrowNum(), Vector2(487.0f, -351.0f));
+			break;
+		case FollowActor::ItemState::EBomb:
+			DrawTexture(shader, mBomb2, itemPos + Vector2(-8.0f, 5.0f), 1.0f);
+			DrawTexture(shader, mCross, Vector2(467.0f, -349.0f), 1.0f);
+			DrawArrowOrBombCount(shader, followActor->GetBombNum(), Vector2(487.0f, -351.0f));
+			break;
+		default:
+			break;
 		}
 
-
-		DrawTexture(shader, mRadarArrow, cRadarPos);
-		FollowActor* followActor = mGame->GetPlayer();
-		if (followActor != nullptr) {
-			float stamina = followActor->GetStamina();
-
-		    DrawTexture(shader, mStaminaBar, Vector2(-276.0f, 320.0f),  stamina * 0.99 , false, 1);
-			DrawTexture(shader, mStaminaFrame, Vector2(-280.0f, 320.0f), 1, false, 1);
-			float health = followActor->GetHealth();
-			float healthRed = followActor->GetHealthRed();
-			DrawTexture(shader, mHealthRedBar, Vector2(-276.0f, 345.0f), healthRed * 0.99, true, 1);
-			DrawTexture(shader, mHealthBar, Vector2(-276.0f, 345.0f), health * 0.99, true, 1);	
-			DrawTexture(shader, mStaminaFrame, Vector2(-280.0f, 345.0f), 1, true, 1);
-			DrawTexture(shader, mRadar, Vector2(447.0f, -319.0f), 0.65f);
-			if (mGame->GetPlayer()->GetItemState() == FollowActor::ItemState::ESword) {
-				DrawTexture(shader, mSword2, Vector2(447.0f, -324.0f), 1.0f);
-			}
-
-			else if (mGame->GetPlayer()->GetItemState() == FollowActor::ItemState::ETorch) {
-				DrawTexture(shader, mTorch2, Vector2(447.0f, -319.0f), 1.0f);
-			}
-			else if (mGame->GetPlayer()->GetItemState() == FollowActor::ItemState::EBow) {
-
-				DrawTexture(shader, mBow2, Vector2(442.0f, -314.0f), 1.0f);
-				Texture* cross = mCrosshair;
-				DrawTexture(shader, cross, Vector2::Zero, 0.5f);
-				DrawTexture(shader, mCross, Vector2(467.0f, -349.0f), 1.0f);
-				int arrow = followActor->GetArrowNum();
-				std::string str = std::to_string(arrow);
-				Texture* tex = new Texture();
-				tex = mFont->RenderText(str, Color::White, 24, 1);
-				DrawTexture(shader, tex, Vector2(487.0f, -351.0f));
-			}
-			else if (mGame->GetPlayer()->GetItemState() == FollowActor::ItemState::EBomb) {
-				DrawTexture(shader, mBomb2, Vector2(439.0f, -314.0f), 1.0f);
-				DrawTexture(shader, mCross, Vector2(467.0f, -349.0f), 1.0f);
-				int bomb = followActor->GetBombNum();
-				std::string str = std::to_string(bomb);
-				Texture* tex = new Texture();
-				tex = mFont->RenderText(str, Color::White, 24,1);
-				DrawTexture(shader, tex, Vector2(487.0f, -351.0f));
-			}
-			
-			else {
-				
-			}
-
-			Texture* tex = new Texture();
-			int mTime = mGame->GetTimer()->GetElapsedTime();
-			std::string str = std::to_string(mTime);
+		int mTime = mGame->GetTimer()->GetElapsedTime();
+		// •ª‚Æ•b‚É•ÏŠ·
+		int minutes = mTime / 60;
+		int seconds = mTime % 60;
+		if (minutes < 10) {
+			std::string str = std::to_string(minutes);
 			tex = mFont->RenderText(str, Color::White, 24, 1);
-			DrawTexture(shader, tex, Vector2(470.0, 333.0f));
-			DrawTexture(shader, mTimer, Vector2(435.0, 337.0f),0.25f);
-
-			if (mStageNum == 1 || mStageNum == 2) {
-
-				if (mDrawTime< 0.5f) {
-					DrawTexture(shader, mTips, Vector2(450.0f - mDrawTime * 120.0f, 170.0f), 0.07);
-				}
-				
-				else if(mDrawTime >=0.5f){
-					DrawTexture(shader, mTips, Vector2(390.0f, 170.0f), 0.07);
-					Texture* tex = new Texture();
-					tex = mFont->RenderText("- Go Lights!", Color::Black, 22, 1);
-					DrawTexture(shader, tex, Vector2(345.0f, 190.0f));
-					tex = mFont->RenderText("- Enemy Drops Items", Color::Black, 22, 1);
-					DrawTexture(shader, tex, Vector2(390.0f, 150.0f));
-				}
-				
-
-			}
-
-			else if(mStageNum == 3) {
-
-				if (mBossDrawTime < 0.5f) {
-					DrawTexture(shader, mTips, Vector2(450.0f - mDrawTime * 120.0f, 170.0f), 0.07);
-				}
-
-				else if (mBossDrawTime >= 0.5f) {
-					DrawTexture(shader, mTips, Vector2(390.0f, 170.0f), 0.07);
-					Texture* tex = new Texture();
-					tex = mFont->RenderText("- Head is weakness", Color::Black, 22, 1);
-					DrawTexture(shader, tex, Vector2(390.0f, 190.0f));
-					tex = mFont->RenderText("- Bombs are effective", Color::Black, 22, 1);
-					DrawTexture(shader, tex, Vector2(395.0f, 150.0f));
-				}
-
-			}
-
+			DrawTexture(shader, tex, Vector2(460.0, 334.0f));
 		}
 		else {
-			
-		}	
+			std::string str = std::to_string(minutes);
+			tex = mFont->RenderText(str, Color::White, 24, 1);
+			DrawTexture(shader, tex, Vector2(455.0, 334.0f));
+		}
+		if (seconds < 10) {
+			std::string str = std::to_string(seconds);
+			tex = mFont->RenderText(str, Color::White, 24, 1);
+			DrawTexture(shader, tex, Vector2(495.0, 334.0f));
+			tex = mFont->RenderText("0", Color::White, 24, 1);
+			DrawTexture(shader, tex, Vector2(483.0, 334.0f));
+		}
+		else {
+			std::string str = std::to_string(seconds);
+			tex = mFont->RenderText(str, Color::White, 24, 1);
+			DrawTexture(shader, tex, Vector2(490.0, 334.0f));
+		}
 
-		auto& bosses = mGame->GetBoss();
+		tex = mFont->RenderText(":", Color::White, 26, 1);
+		DrawTexture(shader, tex, Vector2(473.0, 336.0f));
+		DrawTexture(shader, mTimer, Vector2(425.0, 337.0f), 0.25f);
 
-		for (auto boss : bosses) {
-			if (boss != nullptr) {
+		if (mStageNum == 1 || mStageNum == 2) {
 
-				
-				Texture* bosstex = new Texture();
-				bosstex = mFont->RenderText("BossName", Color::White, 24);
-				DrawTexture(shader, bosstex, Vector2(-200.0, -265.0f));
-				float health = boss->GetHealth();
-				DrawTexture(shader, mHealthBar, Vector2(-250.0f, -300.0f), health * 1.5, false, 1);
-				DrawTexture(shader, mStaminaFrame, Vector2(-250.0f, -300.0f), 1.5, false, 1);
+			if (mDrawTime < 0.5f) {
+				DrawTexture(shader, mTips, Vector2(450.0f - mDrawTime * 120.0f, 170.0f), 0.07);
+			}
+
+			else if (mDrawTime >= 0.5f) {
+				DrawTexture(shader, mTips, Vector2(390.0f, 170.0f), 0.07);
+				tex = mFont->RenderText("- Go Lights!", Color::Black, 22, 1);
+				DrawTexture(shader, tex, Vector2(345.0f, 190.0f));
+				tex = mFont->RenderText("- Enemy Drops Items", Color::Black, 22, 1);
+				DrawTexture(shader, tex, Vector2(390.0f, 150.0f));
+			}
+
+
+		}
+
+		else if (mStageNum == 3) {
+
+			if (mBossDrawTime < 0.5f) {
+				DrawTexture(shader, mTips, Vector2(450.0f - mDrawTime * 120.0f, 170.0f), 0.07);
+			}
+
+			else if (mBossDrawTime >= 0.5f) {
+				DrawTexture(shader, mTips, Vector2(390.0f, 170.0f), 0.07);
+				tex = mFont->RenderText("- Head is weakness", Color::Black, 22, 1);
+				DrawTexture(shader, tex, Vector2(390.0f, 190.0f));
+				tex = mFont->RenderText("- Bombs are effective", Color::Black, 22, 1);
+				DrawTexture(shader, tex, Vector2(395.0f, 150.0f));
 			}
 		}
 	}
 
-	if (Game::GameState::EItem == mGame->GetState()) {
-			
-		DrawTexture(shader, mFrame, Vector2(0.0f, -160.0f), 0.7f);
-		DrawTexture(shader, mFrame2, Vector2(0.0f, 120.0f), 0.7f);
-		DrawTexture(shader, mHighlight, Vector2(-270.0f, -160.0f), 0.7f);
-		if (itemNum == 0) {
-			DrawTexture(shader, mSword, Vector2(-270.0f, -160.0f), 0.7f);		
-			
-		}
-		else if (itemNum == 1) {
-			DrawTexture(shader, mTorch, Vector2(-270.0f, -160.0f), 0.7f);
-			
-		}
-		else if (itemNum == 2) {
-			DrawTexture(shader, mBow, Vector2(-270.0f, -160.0f), 0.7f);
-			
-			
-		}
-		else if (itemNum == 3) {
-			DrawTexture(shader, mBomb, Vector2(-270.0f, -160.0f), 0.7f);
-			
+	// ƒ{ƒX‚Ì•`‰æ
+	for (auto boss : mGame->GetBoss()) {
+		if (boss != nullptr) {
+			bosstex = mFont->RenderText("BossName", Color::White, 24);
+			DrawTexture(shader, bosstex, Vector2(-200.0, -265.0f));
+			float health = boss->GetHealth();
+			DrawTexture(shader, mHealthBar, Vector2(-250.0f, -300.0f), health * 1.5, false, 1);
+			DrawTexture(shader, mStaminaFrame, Vector2(-250.0f, -300.0f), 1.5, false, 1);
 		}
 	}
+}
 
-	if (Game::GameState::EBossMovie == mGame->GetState()) {
-				DrawTexture(shader, mTips2, Vector2(0.0f, -250.0f), 1.00f);
-		Texture* tex = new Texture();
-		tex = mFont->RenderText("The Boss appears!", Color::Black, 48, 1);
-		DrawTexture(shader, tex, Vector2(0.0f, -250.0f));
+
+void HUD::DrawItemScreen(Shader* shader) 
+{
+	DrawTexture(shader, mFrame, Vector2(0.0f, -160.0f), 0.7f);
+	DrawTexture(shader, mFrame2, Vector2(0.0f, 120.0f), 0.7f);
+	DrawTexture(shader, mHighlight, Vector2(-270.0f, -160.0f), 0.7f);
+	if (itemNum == 0) {
+		DrawTexture(shader, mSword, Vector2(-270.0f, -160.0f), 0.7f);
+
 	}
+	else if (itemNum == 1) {
+		DrawTexture(shader, mTorch, Vector2(-270.0f, -160.0f), 0.7f);
 
-	if (Game::GameState::EGameOver == mGame->GetState()) {
-		Texture* tex = new Texture();
+	}
+	else if (itemNum == 2) {
+		DrawTexture(shader, mBow, Vector2(-270.0f, -160.0f), 0.7f);
 
-		int mTime = mGame->GetTimer()->GetElapsedTime();
-		std::string str = std::to_string(mTime);
+
+	}
+	else if (itemNum == 3) {
+		DrawTexture(shader, mBomb, Vector2(-270.0f, -160.0f), 0.7f);
+
+	}
+}
+
+
+void HUD::DrawBossMovie(Shader* shader) {
+	DrawTexture(shader, mTips2, Vector2(0.0f, -250.0f), 1.00f);
+	tex = mFont->RenderText("The Boss appears!", Color::Black, 48, 1);
+	DrawTexture(shader, tex, Vector2(0.0f, -250.0f));
+}
+
+void HUD::DrawGameOverScreen(Shader* shader) {
+	int mTime = mGame->GetTimer()->GetElapsedTime();
+	// •ª‚Æ•b‚É•ÏŠ·
+	int minutes = mTime / 60;
+	int seconds = mTime % 60;
+	if (minutes < 10) {
+		std::string str = std::to_string(minutes);
 		tex = mFont->RenderText(str, Color::White, 44, 1);
-		DrawTexture(shader, tex, Vector2(50.0f, 200.0f));
-		Texture* scoretex = new Texture();
-
-		scoretex = mFont->RenderText("Time : ", Color::White, 44, 1);
-		DrawTexture(shader, scoretex, Vector2(-70.0f, 200.0f));
-		DrawTexture(shader, mLine, Vector2(0.0f, 170.0f), 2.0f);
-
+		DrawTexture(shader, tex, Vector2(50.0, 200.0f));
 	}
-
-	if (Game::GameState::EGameOver == mGame->GetState()) {
-		Texture* tex = new Texture();
-
-		int mTime = mGame->GetTimer()->GetElapsedTime();
-		std::string str = std::to_string(mTime);
+	else {
+		std::string str = std::to_string(minutes);
 		tex = mFont->RenderText(str, Color::White, 44, 1);
-		DrawTexture(shader, tex, Vector2(50.0f, 200.0f));
-		Texture* scoretex = new Texture();
-
-		scoretex = mFont->RenderText("Time : ", Color::White, 44, 1);
-		DrawTexture(shader, scoretex, Vector2(-70.0f, 200.0f));
-		DrawTexture(shader, mLine, Vector2(0.0f, 170.0f), 2.0f);
+		DrawTexture(shader, tex, Vector2(35.0, 200.0f));
 	}
-
-	if (Game::GameState::EGameClear == mGame->GetState()) {
-		DrawTexture(shader, mTips2, Vector2(0.0f, 200.0f), 1.5f);
-		Texture* tex = new Texture();
-
-		int mTime = mGame->GetTimer()->GetElapsedTime();
-		std::string str = std::to_string(mTime);
+	if (seconds < 10) {
+		std::string str = std::to_string(seconds);
 		tex = mFont->RenderText(str, Color::White, 44, 1);
-		DrawTexture(shader, tex, Vector2(70.0f, 180.0f));
-		Texture* scoretex = new Texture();
-
-		scoretex = mFont->RenderText("Clear Time :", Color::White, 44, 1);
-		DrawTexture(shader, scoretex, Vector2(-120.0f, 180.0f));
-		DrawTexture(shader, mLine, Vector2(0.0f, 160.0f), 3.0f);
-
+		DrawTexture(shader, tex, Vector2(120.0, 200.0f));
+		tex = mFont->RenderText("0", Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(95.0, 200.0f));
 	}
+	else {
+		std::string str = std::to_string(seconds);
+		tex = mFont->RenderText(str, Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(105.0, 200.0f));
+	}
+
+	tex = mFont->RenderText(":", Color::White, 44, 1);
+	DrawTexture(shader, tex, Vector2(73.0, 203.0f));
+	scoretex = mFont->RenderText("Time : ", Color::White, 44, 1);
+	DrawTexture(shader, scoretex, Vector2(-70.0f, 200.0f));
+	DrawTexture(shader, mLine, Vector2(0.0f, 170.0f), 2.0f);
+}
+
+void HUD::DrawGameClearScreen(Shader* shader) {
+	DrawTexture(shader, mTips2, Vector2(0.0f, 200.0f), 1.5f);
+	int mTime = mGame->GetTimer()->GetElapsedTime();
+	// •ª‚Æ•b‚É•ÏŠ·
+	int minutes = mTime / 60;
+	int seconds = mTime % 60;
+	if (minutes < 10) {
+		std::string str = std::to_string(minutes);
+		tex = mFont->RenderText(str, Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(70.0, 180.0f));
+	}
+	else {
+		std::string str = std::to_string(minutes);
+		tex = mFont->RenderText(str, Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(55.0, 180.0f));
+	}
+	if (seconds < 10) {
+		std::string str = std::to_string(seconds);
+		tex = mFont->RenderText(str, Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(140.0, 180.0f));
+		tex = mFont->RenderText("0", Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(115.0, 180.0f));
+	}
+	else {
+		std::string str = std::to_string(seconds);
+		tex = mFont->RenderText(str, Color::White, 44, 1);
+		DrawTexture(shader, tex, Vector2(125.0, 180.0f));
+	}
+
+	tex = mFont->RenderText(":", Color::White, 44, 1);
+	DrawTexture(shader, tex, Vector2(93.0, 182.0f));
+
+	scoretex = mFont->RenderText("Clear Time :", Color::White, 44, 1);
+	DrawTexture(shader, scoretex, Vector2(-120.0f, 180.0f));
+	DrawTexture(shader, mLine, Vector2(0.0f, 160.0f), 3.0f);
+}
+
+void HUD::DrawArrowOrBombCount(Shader* shader, int num, Vector2 pos) {
+	
+	std::string str = std::to_string(num);
+	tex = mFont->RenderText(str, Color::White, 24, 1);
+	DrawTexture(shader, tex, pos);
 }
 
 

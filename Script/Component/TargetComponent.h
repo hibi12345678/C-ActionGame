@@ -24,7 +24,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	TargetComponent(class Actor* owner);
+	explicit TargetComponent(class Actor* owner);
 
 	//デストラクタ
 	~TargetComponent();

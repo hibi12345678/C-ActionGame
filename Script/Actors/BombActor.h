@@ -23,7 +23,6 @@ public:
 	//Getter,Setter
 	void SetPlayer(Actor* player);
 
-	void HitTarget();
 	void FixCollisions();
 
 private:
@@ -31,6 +30,7 @@ private:
     // private variables.
     //=========================================================================
 	bool isVisible;
+	bool mSoundFlag;
 	float mLifeSpan; //•\Ž¦ŽžŠÔ
 	float blinkTime; //“_–ÅŽžŠÔ
 	float blinkInterval; //“_–ÅŠÔŠu

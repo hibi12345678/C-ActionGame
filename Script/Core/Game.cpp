@@ -70,6 +70,9 @@ Game::Game()
     , mBossTime(0.0f)
 	, stageNumber(1)
 	, mHitStopTimer(0.0f)
+	, mHUD(nullptr)
+	, mFollowActor(nullptr)
+	, mCrosshair(nullptr)
 {	
 }
 
@@ -149,74 +152,101 @@ void Game::ProcessInput()
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
-#ifdef DEBUG
+#ifdef _DEBUG
 		// ImGuiにSDLイベントを処理させる
 		ImGui_ImplSDL2_ProcessEvent(&event);
 #endif // DEBUG
 
-
 		switch (event.type)
 		{
-			case SDL_QUIT:
-				mGameState = GameState::EQuit;
-				break;
-			case SDL_KEYDOWN:
-				if (!event.key.repeat)
-				{
-					if (mGameState == GameState::EGameplay || mGameState == GameState::EMainMenu)
-					{
-						HandleKeyPress(event.key.keysym.sym);
-					}
-					else if (!mUIStack.empty())
-					{
-						mUIStack.back()->
-							HandleKeyPress(event.key.keysym.sym);
-					}
-				}
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-				if (mGameState == GameState::EGameplay && gameOverFlag == false && gameClearFlag == false)
-				{
-					HandleKeyPress(event.button.button);
-				}
-				else if (!mUIStack.empty())
-				{
-					mUIStack.back()->
-						HandleKeyPress(event.button.button);
-				}
-				break;
-			default:
-				break;
+		case SDL_QUIT:
+			mGameState = GameState::EQuit;
+			break;
+		case SDL_KEYDOWN:
+			if (!event.key.repeat)
+			{
+				HandleKeyInput(event.key.keysym.sym);
+			}
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+
+			HandleMouseInput(event.button.button);
+			break;
+		default:
+			break;
 		}
 	}
-	
+
 	const Uint8* state = SDL_GetKeyboardState(NULL);
+
 	if (mGameState == GameState::EGameplay)
 	{
-		if (gameOverFlag == false && gameClearFlag == false) {
-
-			for (auto actor : mActors)
-			{
-				if (actor->GetState() == Actor::EActive)
-				{
-					actor->ProcessInput(state);
-				}
-			}
-			
+		ProcessGameplayInput(state);
+	}
+	else if (!mUIStack.empty())
+	{
+		if (mGameState == GameState::EMainMenu)
+		{
+			mUIStack.back()->StartInput(state);
 		}
-		else {
+		else
+		{
 			mUIStack.back()->ProcessInput(state);
 		}
 	}
+}
 
-	else if (!mUIStack.empty() && mGameState != GameState::EMainMenu)
+
+//-----------------------------------------------------------------------------
+//  GameState判別
+//-----------------------------------------------------------------------------
+void Game::HandleKeyInput(int key)
+{
+	if (mGameState == GameState::EGameplay || mGameState == GameState::EMainMenu)
 	{
-		
-		mUIStack.back()->ProcessInput(state);
+		HandleKeyPress(key);
 	}
-	else if (mGameState == GameState::EMainMenu) {
+	else if (!mUIStack.empty())
+	{
+		mUIStack.back()->HandleKeyPress(key);
+	}
+}
 
-		mUIStack.back()->StartInput(state);
+
+//-----------------------------------------------------------------------------
+//  マウス入力処理
+//-----------------------------------------------------------------------------
+void Game::HandleMouseInput(Uint8 button)
+{
+	if (mGameState == GameState::EGameplay && !gameOverFlag && !gameClearFlag)
+	{
+		HandleKeyPress(button);
+	}
+	else if (!mUIStack.empty())
+	{
+		mUIStack.back()->HandleKeyPress(button);
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+//  GamePlay中にのみ入力処理が反応するように
+//-----------------------------------------------------------------------------
+void Game::ProcessGameplayInput(const Uint8* state)
+{
+	if (!gameOverFlag && !gameClearFlag)
+	{
+		for (auto actor : mActors)
+		{
+			if (actor->GetState() == Actor::EActive)
+			{
+				actor->ProcessInput(state);
+			}
+		}
+	}
+	else if (!mUIStack.empty())
+	{
+		mUIStack.back()->ProcessInput(state);
 	}
 }
 
@@ -229,19 +259,19 @@ void Game::HandleKeyPress(int key)
 	switch (key)
 	{
 	case SDLK_ESCAPE:
-		//pause menuの生成
+		// Pause menu
 		new PauseMenu(this);
 		mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
 		timer->StopTimer();
 		break;
 	case SDLK_TAB:
-		if (mGameState == GameState::EGameplay) {
-			//ItemMenuの生成
+		if (mGameState == GameState::EGameplay)
+		{
+			// Item menu
 			new ItemMenu(this);
 			mMusicEvent = mAudioSystem->PlayEvent("event:/Button");
 			timer->StopTimer();
 		}
-		
 		break;
 	default:
 		break;
@@ -266,7 +296,55 @@ void Game::UpdateGame()
 	}
 	
 	//delta timeの計算
-	// 前のフレームから16ミリ秒が経過するまで待つ
+	// DeltaTime計算
+	float deltaTime = CalculateDeltaTime();
+
+	// Update audio system
+	mAudioSystem->Update(deltaTime);
+	// ゲーム状態に応じた処理
+	switch (mGameState)
+	{
+	case GameState::EGameplay:
+		UpdateGameplay(deltaTime);
+		break;
+
+	case GameState::EBossMovie:
+		UpdateBossMovie(deltaTime);
+		break;
+
+	case GameState::EBossDefeat:
+		UpdateBossDefeat(deltaTime);
+		break;
+
+	case GameState::EGameOver:
+		UpdateGameOver(deltaTime);
+		break;
+
+	case GameState::EGameClear:
+		UpdateGameClear();
+		break;
+
+	case GameState::EMainMenu:
+		UpdateMainMenu();
+		break;
+
+	case GameState::ELoadStage:
+		UpdateLoadStage(deltaTime);
+		break;
+
+	default:
+		break;
+	}
+
+	// UIの更新
+	UpdateUI(deltaTime);
+
+}
+//-----------------------------------------------------------------------------
+// DeltaTime計算
+//-----------------------------------------------------------------------------
+float Game::CalculateDeltaTime()
+{
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16))
 		;
 
@@ -276,178 +354,209 @@ void Game::UpdateGame()
 		deltaTime = 0.05f;
 	}
 	mTicksCount = SDL_GetTicks();
-	float mStamina;
+	return deltaTime;
+}
 
-	// Update audio system
-	mAudioSystem->Update(deltaTime);
-
-	//EGameplay中の処理
-	if (mGameState == GameState::EGameplay )
+//-----------------------------------------------------------------------------
+// EGameplay状態の処理
+//-----------------------------------------------------------------------------
+void Game::UpdateGameplay(float deltaTime)
+{
+	if (!playFlag)
 	{
-
-		if (playFlag == false) {
-			// Clear the UI stack
-			while (!mUIStack.empty())
-			{
-				delete mUIStack.back();
-				mUIStack.pop_back();
-			}
-			LoadData();
-			playFlag = true;
-			mainFlag = false;
-		}
-		// Update all actors
-		mUpdatingActors = true;
-		mHitStopTimer -= deltaTime;
-		for (auto actor : mActors)
-		{
-		
-			if (mHitStopTimer < 0.0f || mHitStopTimer > 0.15f) {
-				actor->Update(deltaTime);
-			}
-			else{
-				actor->Update(deltaTime * 0.1f);
-			}
-		}
-		mUpdatingActors = false;
-
-		// Move any pending actors to mActors
-		for (auto pending : mPendingActors)
-		{
-			pending->ComputeWorldTransform();
-			mActors.emplace_back(pending);
-		}
-		mPendingActors.clear();
-
-		// Add any dead actors to a temp vector
-		std::vector<Actor*> deadActors;
-		for (auto actor : mActors)
-		{
-			if (actor->GetState() == Actor::EDead)
-			{
-				deadActors.emplace_back(actor);
-			}
-		}
-
-		// Delete dead actors (which removes them from mActors)
-		for (auto actor : deadActors)
-		{
-			delete actor;
-		}
-
+		ResetGameplay();
 	}
 
-	//EBossMovie中の処理
-	if (mGameState == GameState::EBossMovie)
+	// アクターの更新
+	UpdateActors(deltaTime);
+
+	// 新しいアクターの追加
+	AddPendingActors();
+
+	// 死亡したアクターの削除
+	DeleteDeadActors();
+}
+
+//-----------------------------------------------------------------------------
+// ゲームプレイのリセット
+//-----------------------------------------------------------------------------
+void Game::ResetGameplay()
+{
+	while (!mUIStack.empty())
 	{
-		for (auto actor : mBossActor)
+		delete mUIStack.back();
+		mUIStack.pop_back();
+	}
+	LoadData();
+	playFlag = true;
+	mainFlag = false;
+}
+
+//-----------------------------------------------------------------------------
+// アクターの更新
+//-----------------------------------------------------------------------------
+void Game::UpdateActors(float deltaTime)
+{
+	mUpdatingActors = true;
+	mHitStopTimer -= deltaTime;
+
+	for (auto actor : mActors)
+	{
+		if (mHitStopTimer < 0.0f || mHitStopTimer > 0.15f)
 		{
 			actor->Update(deltaTime);
 		}
-
-	}
-
-	//EBossMovie中の処理 , EBossMovie中の処理
-	if (mGameState == GameState::EBossDefeat)
-	{
-		for (auto actor : mActors)
+		else
 		{
-			actor->Update(deltaTime);
+			actor->Update(deltaTime * 0.1f);
 		}
-		
 	}
 
-	//EGameOver中の処理
-	if (mGameState == GameState::EGameOver)
+	mUpdatingActors = false;
+}
+
+//-----------------------------------------------------------------------------
+// 新しいアクターの追加
+//-----------------------------------------------------------------------------
+void Game::AddPendingActors()
+{
+	for (auto pending : mPendingActors)
 	{
-
-		mFollowActor->Update(deltaTime);
-		Vector3 light = this->GetRenderer()->GetAmbientLight();
-		
-		this->GetRenderer()->SetAmbientLight(light - Vector3(0.003f, 0.003f, 0.003f));
-
+		pending->ComputeWorldTransform();
+		mActors.emplace_back(pending);
 	}
+	mPendingActors.clear();
+}
 
-	//EGameClear中の処理
-	if (mGameState == GameState::EGameClear)
+//-----------------------------------------------------------------------------
+// 死亡したアクターの削除
+//-----------------------------------------------------------------------------
+void Game::DeleteDeadActors()
+{
+	std::vector<Actor*> deadActors;
+	for (auto actor : mActors)
 	{
-		if (!gameClearFlag) {
-			//GameClearBGMの生成
-			mMusicEvent = mAudioSystem->PlayEvent("event:/GameClear");
-			new GameClear(this);
-			gameClearFlag = true;
-		}
-		
-	
-
-	}
-
-
-	//EmainMenu中の処理
-	if (mGameState == GameState::EMainMenu) {
-		
-		if (mainFlag == false) {
-
-			while (!mActors.empty())
-			{
-				delete mActors.back();
-			}
-
-			while (!mUIStack.empty())
-			{
-				delete mUIStack.back();
-				mUIStack.pop_back();
-			}
-			//sc->~StageChange();
-			LoadData();
-			
-			mainFlag = true;
-			playFlag = false;
-		}
-		GetRenderer()->GetTerrain()->SetTex(false);
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-		SDL_ShowCursor(SDL_ENABLE);
-	}
-
-	//EGameplay中の処理
-	if (mGameState == GameState::ELoadStage)
-	{
-		// Add any dead actors to a temp vector
-		std::vector<Actor*> deadActors;
-		for (auto actor : mActors)
+		if (actor->GetState() == Actor::EDead)
 		{
-			if (actor->GetState() == Actor::EDead)
-			{
-				deadActors.emplace_back(actor);
-			}
+			deadActors.emplace_back(actor);
 		}
-
-		// Delete dead actors (which removes them from mActors)
-		for (auto actor : deadActors)
-		{
-			delete actor;
-		}
-		
-        sc->MoveStage(stageNumber);
-		
 	}
 
-	// Update UI screens
+	for (auto actor : deadActors)
+	{
+		delete actor;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// EBossMovie状態の処理
+//-----------------------------------------------------------------------------
+void Game::UpdateBossMovie(float deltaTime)
+{
+	for (auto actor : mBossActor)
+	{
+		actor->Update(deltaTime);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// EBossDefeat状態の処理
+//-----------------------------------------------------------------------------
+void Game::UpdateBossDefeat(float deltaTime)
+{
+	for (auto actor : mActors)
+	{
+		actor->Update(deltaTime);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// EGameOver状態の処理
+//-----------------------------------------------------------------------------
+void Game::UpdateGameOver(float deltaTime)
+{
+	mFollowActor->Update(deltaTime);
+	Vector3 light = this->GetRenderer()->GetAmbientLight();
+	this->GetRenderer()->SetAmbientLight(light - Vector3(0.003f, 0.003f, 0.003f));
+}
+
+//-----------------------------------------------------------------------------
+// EGameClear状態の処理
+//-----------------------------------------------------------------------------
+void Game::UpdateGameClear()
+{
+	if (!gameClearFlag)
+	{
+		mMusicEvent = mAudioSystem->PlayEvent("event:/GameClear");
+		new GameClear(this);
+		gameClearFlag = true;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// EMainMenu状態の処理
+//-----------------------------------------------------------------------------
+void Game::UpdateMainMenu()
+{
+	if (!mainFlag)
+	{
+		ResetMainMenu();
+	}
+
+	GetRenderer()->GetTerrain()->SetTex(false);
+	SDL_SetRelativeMouseMode(SDL_FALSE);
+	SDL_ShowCursor(SDL_ENABLE);
+}
+
+//-----------------------------------------------------------------------------
+// メインメニューのリセット
+//-----------------------------------------------------------------------------
+void Game::ResetMainMenu()
+{
+	while (!mActors.empty())
+	{
+		delete mActors.back();
+	}
+
+	while (!mUIStack.empty())
+	{
+		delete mUIStack.back();
+		mUIStack.pop_back();
+	}
+	LoadData();
+	mainFlag = true;
+	playFlag = false;
+}
+
+//-----------------------------------------------------------------------------
+// ELoadStage状態の処理
+//-----------------------------------------------------------------------------
+void Game::UpdateLoadStage(float deltaTime)
+{
+	DeleteDeadActors();
+	sc->MoveStage(stageNumber);
+}
+
+//-----------------------------------------------------------------------------
+// UIの更新
+//-----------------------------------------------------------------------------
+void Game::UpdateUI(float deltaTime)
+{
 	for (auto ui : mUIStack)
 	{
-		if (ui->GetState() == UIScreen::EActive)
+		if (ui->GetState() == UIScreen::UIState::EActive)
 		{
 			ui->Update(deltaTime);
 		}
 	}
 
-	// Delete any UIScreens that are closed
+	// 閉じられたUIの削除
 	auto iter = mUIStack.begin();
 	while (iter != mUIStack.end())
 	{
-		if ((*iter)->GetState() == UIScreen::EClosing)
+		if ((*iter)->GetState() == UIScreen::UIState::EClosing)
 		{
-			delete *iter;
+			delete* iter;
 			iter = mUIStack.erase(iter);
 		}
 		else
@@ -455,8 +564,8 @@ void Game::UpdateGame()
 			++iter;
 		}
 	}
-
 }
+
 
 //描画処理
 void Game::GenerateOutput()
@@ -464,11 +573,13 @@ void Game::GenerateOutput()
 	mRenderer->Draw();
 }
 
+
 //-----------------------------------------------------------------------------
 //  オブジェクトを読み取り、配置する
 //-----------------------------------------------------------------------------
 void Game::LoadData()
 {
+	// UIスタックのクリア
 	if (!mUIStack.empty()) {
 		while (!mUIStack.empty()) {
 			delete mUIStack.back();
@@ -476,51 +587,59 @@ void Game::LoadData()
 		}
 	}
 
+	// ゲームプレイ時の処理
 	if (mGameState == GameState::EGameplay) {
-		
 		scoreNumber = 0;
 		LoadText("Assets/Text/Main.gptext");
 		mHUD = new HUD(this);
 		LevelLoader::LoadLevel(this, "Assets/Level/Actor.gplevel");
+
 		mFollowActor->GetMoveComponent()->SetAngularSpeed(90.0f);
-		class Tutorial* mTutorial = new Tutorial(this);
+		new Tutorial(this);
 		sc = new StageChange(this);
 		sc->SetPosition(Vector3(-200.0f, 2500.0f, -100.0f));
-		
-		for (int i = 0; i < 9; ++i) {  
-			float xPosition = -1800.0f + (i * 400.0f);  
+
+		// 木の配置
+		for (int i = 0; i < 9; ++i) {
+			float xPosition = -1800.0f + (i * 400.0f);
 			TreeActor* tree = new TreeActor(this);
-			tree->SetPosition(Vector3(xPosition, -1500.0f, -100.0f));  // X, Y, Z座標を設定
+			tree->SetPosition(Vector3(xPosition, -1500.0f, -100.0f));
 		}
-		for (int i = 0; i < 7; ++i) {  
-			float xPosition = -2200.0f + (i * 400.0f);  
+		for (int i = 0; i < 7; ++i) {
+			float xPosition = -2200.0f + (i * 400.0f);
 			TreeActor* tree = new TreeActor(this);
-			tree->SetPosition(Vector3( 1500.0f, xPosition, -100.0f));  // X, Y, Z座標を設定
+			tree->SetPosition(Vector3(1500.0f, xPosition, -100.0f));
 		}
-		for (int i = 0; i < 7; ++i) {  
-			float xPosition = -2200.0f + (i * 400.0f);  // Y座標を-1300から400ずつ増やす
+		for (int i = 0; i < 7; ++i) {
+			float xPosition = -2200.0f + (i * 400.0f);
 			TreeActor* tree = new TreeActor(this);
-			tree->SetPosition(Vector3( -1500.0f, xPosition, -100.0f));  // X, Y, Z座標を設定
+			tree->SetPosition(Vector3(-1500.0f, xPosition, -100.0f));
 		}
+
+		// ゲームオーバー・ゲームクリアフラグの初期化
 		gameOverFlag = false;
 		gameClearFlag = false;
 		timer->ResetTimer();
 		timer->StartTimer();
 	}
-
+	// メインメニュー時の処理
 	else if (mGameState == GameState::EMainMenu) {
-		
 		LoadText("Assets/Text/Mainmenu.gptext");
 		mHUD = new HUD(this);
 		LevelLoader::LoadLevel(this, "Assets/Level/Stage.gplevel");
 		LevelLoader::LoadLevel(this, "Assets/Level/Light.gplevel");
 		LevelLoader::LoadLevel(this, "Assets/Level/Obstacle.gplevel");
+
 		new MainmenuUI(this);
 		stageNumber = 1;
-		
-		this->GetRenderer()->GetTerrain()->SetTranslate(glm::vec3(15300.0f, 10000.0f, -100.0f));
-		GetRenderer()->GetTerrain()->SetAngle(0.0f);
-		GetRenderer()->GetTerrain()->SetScale(glm::vec3(30.0f, 30.0f, 30.0f));
+
+		// Terrainの設定
+		auto terrain = this->GetRenderer()->GetTerrain();
+		terrain->SetTranslate(glm::vec3(15300.0f, 10000.0f, -100.0f));
+		terrain->SetAngle(0.0f);
+		terrain->SetScale(glm::vec3(30.0f, 30.0f, 30.0f));
+
+		// マウス設定
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 		SDL_ShowCursor(SDL_ENABLE);
 	}
@@ -961,6 +1080,8 @@ void Game::GetData() {
 	GetAnimation("Assets/Anim/Player_idle.gpanim");
 	GetAnimation("Assets/Anim/Player_walk.gpanim");
 	GetAnimation("Assets/Anim/Player_attack.gpanim");
+	GetAnimation("Assets/Anim/Player_attack2.gpanim");
+	GetAnimation("Assets/Anim/Player_attack3.gpanim");
 	GetAnimation("Assets/Anim/Player_block.gpanim");
 	GetAnimation("Assets/Anim/Player_jump.gpanim");
 	GetAnimation("Assets/Anim/Player_bow.gpanim");

@@ -40,7 +40,7 @@ public:
     // public methods.
     //=========================================================================
 	//コンストラクタ
-	PhysWorld(class Game* game);
+	explicit PhysWorld(class Game* game);
 
 	//Getter,Setter
 	const std::vector<class BoxComponent*>& PhysWorld::GetBoxComponents() const { return mBoxes; }

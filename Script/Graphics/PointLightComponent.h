@@ -33,7 +33,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	PointLightComponent(class Actor* owner);
+	explicit PointLightComponent(class Actor* owner);
 
 	//デストラクタ
 	~PointLightComponent();

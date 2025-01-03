@@ -18,7 +18,7 @@ class EnemyActor : public Actor
 {
 public:
 	//Enum　State
-	enum State
+	enum class State
 	{
 		EJump,
 		EFall,
@@ -27,7 +27,7 @@ public:
 	};
 
 	//Enum　MoveState
-	enum MoveState
+	enum class MoveState
 	{
 		EAttack,
 		EPatrol,
@@ -53,7 +53,7 @@ public:
 	// public methods.
 	//=========================================================================
 	//コンストラクタ
-	EnemyActor(class Game* game);
+	explicit EnemyActor(class Game* game);
 
 	//デストラクタ
 	~EnemyActor();
@@ -68,15 +68,15 @@ public:
 	void HandleBlinking(float deltaTime);
 
 	//Getterr,Setter
-	void SetVisible(bool visible);
-	void SetRandomRotation();
-	void SetName(std::string enemyname) { name = enemyname; }
-	void SetState(State state) { mState = state; }
 	State GetState() const { return mState; }
 	TypeID GetType() const override { return TEnemyActor; }
 	float GetHealth() { return  mHealth; }
 	class BoxComponent* GetBox() { return mBox; }
 	class BoxComponent* GetAttackBox() { return mAttackBoxComp; }
+	void SetVisible(bool visible);
+	void SetRandomRotation();
+	void SetName(const std::string& enemyname) { name = enemyname; }
+	void SetState(State state) { mState = state; }
 
 	//Load,Save
 	void LoadProperties(const rapidjson::Value& inObj) override;
@@ -104,6 +104,7 @@ protected:
 	bool mMoving;
 	bool mReactFlag;
 	bool groundFlag; //ジャンプによる空中判定
+	bool normalAttack; //攻撃のBox判定
 	bool deathFlag; //死亡判定
 	int randomValue;
 	float mDamageTimer; //ダメージのクールタイム
