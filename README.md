@@ -20,7 +20,7 @@
 
  - **オペレーティングシステム** : Windows 10以降
  - **グラフィックス** : OpenGL 4.2以上に対応したGPU
- - **依存関係** : Visual Studio 2019以降用のVisual C++再頒布可能パッケージ（x86）
+ - **依存関係** : Visual Studio 2019以降用のVisual C++（x86）
 
 ## ビルド環境
 
