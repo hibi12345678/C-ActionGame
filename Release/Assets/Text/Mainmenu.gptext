@@ -1,0 +1,18 @@
+{
+	"TextMap":{
+                "Title":"Knight's Action",
+		"PauseTitle": "PAUSED",
+		"ResumeButton": "Resume",
+                "StartButton": "Game start",
+		"QuitButton": "Quit",
+		"QuitText": "Do you want to quit?",
+		"OKButton": "OK",
+		"CancelButton": "Cancel",
+                "Explain1" : "WASD:Move",
+                "Explain2" : "Space:Jump",
+                "Explain3" : "Left Click: Attack",
+                "Explain4" : "E: Block",
+                "Explain5" : "Esc:Menu"
+                  
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"TextMap":{
+                "Title":"Knight's Action",
+		"PauseTitle": "PAUSED",
+		"ResumeButton": "Resume",
+                "StartText": "Do you want to back to start?",
+                "StartButton": "Back to start",
+		"QuitButton": "Quit",
+		"QuitText": "Do you want to quit?",
+		"OKButton": "OK",
+                "Item" : "Item Select",
+                "Equipped" : "Equipped",
+                "SwordText" : "You can guard with a shield : Atk 25",
+                "TorchText" : "Light up surroundings",
+                "BowText" : "Press R to zoom in : Atk 25",
+                "BombText" : "Hold and throw a bomb : Atk 100",
+		"CancelButton": "Cancel",
+                "GameClear" : "Game Clear!",
+                "GameOver" : "Game Over",
+                "Score" : "number of defeats :    /3",
+                "Score4" : "Defeat the Boss",
+                "BossName" : "Boss"
+ 	}
+}

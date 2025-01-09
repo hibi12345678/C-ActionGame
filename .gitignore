@@ -1,7 +1,5 @@
 # Ignore build directories
 Build/
-Debug/
-Release/
 Animation/
 Blend/
 Audio/
