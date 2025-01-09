@@ -19,7 +19,7 @@
 ## システム要件
 
  - **オペレーティングシステム** : Windows 10以降
- - **グラフィックス** : OpenGL 4.2以上に対応したGPU
+ - **グラフィックス** : OpenGL 4.2以上に対応した専用GPUを搭載したPCが必要です
  - **依存関係** : Visual Studio 2019以降用のVisual C++（x86）
 
 ## ビルド環境
@@ -37,7 +37,7 @@
 , [SDL_ttf](https://github.com/libsdl-org/SDL_ttf)
 , [imgui(ver. 1.91.3-docking)](https://github.com/ocornut/imgui)
 , [FMOD Studi API Windows](https://www.fmod.com/)
-,[rapidjson](https://github.com/Tencent/rapidjson)
+, [rapidjson](https://github.com/Tencent/rapidjson)
   
 ## 実行方法
 
