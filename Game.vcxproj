@@ -242,7 +242,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>External\SDL\include;External\SDL\include\SDL;External\GLEW\include;External\glm;External\stb-master;External\SOIL\include;External\imgui-1.91.3-docking;External\imgui-1.91.3-docking\backends;External\rapidjson\include;External\FMOD Studio API Windows\api\studio\inc;External\FMOD Studio API Windows\api\lowlevel\inc;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;Script\Actors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)External\SDL\include;$(ProjectDir)External\SDL\include\SDL;$(ProjectDir)External\GLEW\include;$(ProjectDir)External\glm;$(ProjectDir)External\stb-master;$(ProjectDir)External\SOIL\include;$(ProjectDir)External\imgui-1.91.3-docking;$(ProjectDir)External\imgui-1.91.3-docking\backends;$(ProjectDir)External\rapidjson\include;$(ProjectDir)External\FMOD Studio API Windows\api\studio\inc;$(ProjectDir)External\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Script\Component;$(ProjectDir)Script\Core;$(ProjectDir)Script\Graphics;$(ProjectDir)Script\Shaders;$(ProjectDir)Script\System;$(ProjectDir)Script\UI;$(ProjectDir)Script\Actors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -250,15 +250,15 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>External\SDL\lib\x86;External\SOIL\lib\win\x86;External\GLEW\lib\win\x86;External\FMOD Studio API Windows\api\studio\lib;External\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)External\SDL\lib\x86;$(ProjectDir)External\SOIL\lib\win\x86;$(ProjectDir)External\GLEW\lib\win\x86;$(ProjectDir)External\FMOD Studio API Windows\api\studio\lib;$(ProjectDir)External\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;SOIL.lib;glew32.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)\..\external\SDL\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
-xcopy "$(ProjectDir)\..\external\GLEW\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
-xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib\*.dll" "$(OutDir)" /i /s /y
-xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib\*.dll" "$(OutDir)" /i /s /y
+      <Command>xcopy "$(ProjectDir)External\SDL\lib\x86\*.dll" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)External\GLEW\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)External\FMOD Studio API Windows\api\lowlevel\lib\*.dll" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)External\FMOD Studio API Windows\api\studio\lib\*.dll" "$(OutDir)" /i /s /y
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -271,7 +271,7 @@ xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studi
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>External\SDL\include;External\SDL\include\SDL;External\GLEW\include;External\glm;External\stb-master;External\SOIL\include;External\imgui-1.91.3-docking;External\imgui-1.91.3-docking\backends;External\rapidjson\include;External\FMOD Studio API Windows\api\studio\inc;External\FMOD Studio API Windows\api\lowlevel\inc;Script\Component;Script\Core;Script\Graphics;Script\Shaders;Script\System;Script\UI;Script\Actors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)External\SDL\include;$(ProjectDir)External\SDL\include\SDL;$(ProjectDir)External\GLEW\include;$(ProjectDir)External\glm;$(ProjectDir)External\stb-master;$(ProjectDir)External\SOIL\include;$(ProjectDir)External\imgui-1.91.3-docking;$(ProjectDir)External\imgui-1.91.3-docking\backends;$(ProjectDir)External\rapidjson\include;$(ProjectDir)External\FMOD Studio API Windows\api\studio\inc;$(ProjectDir)External\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Script\Component;$(ProjectDir)Script\Core;$(ProjectDir)Script\Graphics;$(ProjectDir)Script\Shaders;$(ProjectDir)Script\System;$(ProjectDir)Script\UI;$(ProjectDir)Script\Actors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -281,14 +281,14 @@ xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>External\SDL\lib\x86;External\SOIL\lib\win\x86;External\GLEW\lib\win\x86;External\FMOD Studio API Windows\api\studio\lib;External\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)External\SDL\lib\x86;$(ProjectDir)External\SOIL\lib\win\x86;$(ProjectDir)External\GLEW\lib\win\x86;$(ProjectDir)External\FMOD Studio API Windows\api\studio\lib;$(ProjectDir)External\FMOD Studio API Windows\api\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;SOIL.lib;glew32.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)\..\external\SDL\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
-xcopy "$(ProjectDir)\..\external\GLEW\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
-xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib\*.dll" "$(OutDir)" /i /s /y
-xcopy "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib\*.dll" "$(OutDir)" /i /s /y
+      <Command>xcopy "$(ProjectDir)External\SDL\lib\x86\*.dll" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)External\GLEW\lib\win\x86\*.dll" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)External\FMOD Studio API Windows\api\lowlevel\lib\*.dll" "$(OutDir)" /i /s /y
+xcopy "$(ProjectDir)External\FMOD Studio API Windows\api\studio\lib\*.dll" "$(OutDir)" /i /s /y
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

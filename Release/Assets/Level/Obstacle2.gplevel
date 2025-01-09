@@ -1,0 +1,170 @@
+{
+    "version": 1,
+    "globalProperties": {
+         "ambientLight": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+        ],
+        "directionalLight": {
+            "direction": [
+                0.0,
+                -0.7070000171661377,
+                -0.7070000171661377
+            ],
+            "color": [
+                0.7799999713897705,
+                0.8799999952316284,
+                1.0
+            ]
+        }
+        
+    },
+    "actors": [{
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    -622.0,
+                    319.0,
+                    -50.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0
+            },
+            "components": [ 
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/SmallTree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },{
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    800.0,
+                    700.0,
+                    -50.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0
+            },
+            "components": [ 
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/SmallTree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },{
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1200.0,
+                    700.0,
+                    -50.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0
+            },
+            "components": [ 
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/SmallTree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },{
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    1200.0,
+                    -200.0,
+                    -50.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0
+            },
+            "components": [ 
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/SmallTree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        },{
+            "type": "PlaneActor",
+            "properties": {
+                "state": "active",
+                "position": [
+                    300.0,
+                    -432.0,
+                    -50.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": 1.0
+            },
+            "components": [ 
+                {
+                     "type": "MeshComponent",
+                    "properties": {
+                        "updateOrder": 100,
+                        "meshFile": "Assets/Object/SmallTree.gpmesh",
+                        "textureIndex": 0,
+                        "visible": true,
+                        "isSkeletal": false
+                    }
+                }
+            ]
+        }
+]
+}
